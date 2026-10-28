@@ -23,11 +23,28 @@ abstract class AppTheme {
       outlineVariant: AppColors.lightBorderStrong,
     );
 
+    final textTheme = TextTheme(
+      displayLarge: AppTypography.numberLarge.copyWith(color: AppColors.lightInk),
+      headlineLarge: AppTypography.titleLarge.copyWith(color: AppColors.lightInk),
+      headlineMedium: AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
+      headlineSmall: AppTypography.heading.copyWith(color: AppColors.lightInk),
+      titleLarge: AppTypography.subheading.copyWith(color: AppColors.lightInk),
+      titleMedium: AppTypography.bodyStrong.copyWith(color: AppColors.lightInk),
+      titleSmall: AppTypography.captionStrong.copyWith(color: AppColors.lightInk),
+      bodyLarge: AppTypography.bodyStrong.copyWith(color: AppColors.lightInk),
+      bodyMedium: AppTypography.body.copyWith(color: AppColors.lightInk),
+      bodySmall: AppTypography.caption.copyWith(color: AppColors.lightMuted),
+      labelLarge: AppTypography.captionStrong.copyWith(color: AppColors.lightInk),
+      labelSmall: AppTypography.micro.copyWith(color: AppColors.lightMuted),
+    );
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.lightBackground,
       fontFamily: AppTypography.fontLatin,
+      textTheme: textTheme,
+      dividerColor: AppColors.lightBorder,
       cardTheme: const CardThemeData(
         color: AppColors.lightSurface,
         elevation: 0,
@@ -95,11 +112,28 @@ abstract class AppTheme {
       outlineVariant: AppColors.darkBorderStrong,
     );
 
+    final textTheme = TextTheme(
+      displayLarge: AppTypography.numberLarge.copyWith(color: AppColors.darkInk),
+      headlineLarge: AppTypography.titleLarge.copyWith(color: AppColors.darkInk),
+      headlineMedium: AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
+      headlineSmall: AppTypography.heading.copyWith(color: AppColors.darkInk),
+      titleLarge: AppTypography.subheading.copyWith(color: AppColors.darkInk),
+      titleMedium: AppTypography.bodyStrong.copyWith(color: AppColors.darkInk),
+      titleSmall: AppTypography.captionStrong.copyWith(color: AppColors.darkInk),
+      bodyLarge: AppTypography.bodyStrong.copyWith(color: AppColors.darkInk),
+      bodyMedium: AppTypography.body.copyWith(color: AppColors.darkInk),
+      bodySmall: AppTypography.caption.copyWith(color: AppColors.darkMuted),
+      labelLarge: AppTypography.captionStrong.copyWith(color: AppColors.darkInk),
+      labelSmall: AppTypography.micro.copyWith(color: AppColors.darkMuted),
+    );
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.darkBackground,
       fontFamily: AppTypography.fontLatin,
+      textTheme: textTheme,
+      dividerColor: AppColors.darkBorder,
       cardTheme: const CardThemeData(
         color: AppColors.darkSurface,
         elevation: 0,

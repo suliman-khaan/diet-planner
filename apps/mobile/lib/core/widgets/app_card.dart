@@ -25,6 +25,7 @@ class AppCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = backgroundColor ?? (isDark ? AppColors.darkSurface : AppColors.lightSurface);
     final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final textColor = isDark ? AppColors.darkInk : AppColors.lightInk;
 
     final content = Container(
       padding: padding,
@@ -33,7 +34,13 @@ class AppCard extends StatelessWidget {
         borderRadius: AppRadii.cardRadius,
         border: Border.all(color: border, width: 1),
       ),
-      child: child,
+      child: DefaultTextStyle.merge(
+        style: TextStyle(color: textColor),
+        child: IconTheme.merge(
+          data: IconThemeData(color: textColor),
+          child: child,
+        ),
+      ),
     );
 
     if (onTap != null) {
