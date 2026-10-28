@@ -23,10 +23,10 @@ Status: `Open` · `In progress` · `Implemented, awaiting verification` · `Veri
 | U-02 | Shared widgets | UI | U-01 | Implemented, awaiting verification | Antigravity | ui |
 | U-03 | State widgets | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
 | U-04 | Bottom nav + scaffold | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
-| U-05 | Dev Screen Gallery | UI | U-04 | Open | | |
-| U-06 | Onboarding screens | UI | U-03 | Open | | |
-| U-07 | Today (all modes) | UI | U-04 | Open | | |
-| U-08 | Meal detail | UI | U-02 | Open | | |
+| U-05 | Dev Screen Gallery | UI | U-04 | Implemented, awaiting verification | Antigravity | ui |
+| U-06 | Onboarding screens | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
+| U-07 | Today (all modes) | UI | U-04 | Implemented, awaiting verification | Antigravity | ui |
+| U-08 | Meal detail | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
 | U-09 | Portion picker + guides | UI | U-02 | Open | | |
 | U-10 | Foods search + detail | UI | U-03 | Open | | |
 | U-11 | Add / replace / quick-add sheets | UI | U-10 | Open | | |
