@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_radii.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_card.dart';
@@ -24,6 +23,35 @@ class ShoppingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      appBar: AppBar(
+        title: Text(
+          'Shopping List',
+          style: AppTypography.titleMedium.copyWith(
+            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+          ),
+        ),
+        actions: [
+          if (vm.items.isNotEmpty && onClearCompleted != null)
+            TextButton(
+              onPressed: onClearCompleted,
+              child: Text(
+                'Clear checked',
+                style: AppTypography.captionStrong.copyWith(
+                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                ),
+              ),
+            ),
+        ],
+      ),
+      body: _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (vm.items.isEmpty) {
       return const EmptyStateWidget(
         icon: Icons.shopping_basket_outlined,
@@ -42,28 +70,6 @@ class ShoppingScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Shopping List',
-                style: AppTypography.titleLarge.copyWith(
-                  color: isDark ? AppColors.darkInk : AppColors.lightInk,
-                ),
-              ),
-              if (onClearCompleted != null)
-                TextButton(
-                  onPressed: onClearCompleted,
-                  child: Text(
-                    'Clear checked',
-                    style: AppTypography.captionStrong.copyWith(
-                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
           ...categories.entries.map((entry) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

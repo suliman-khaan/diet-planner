@@ -16,7 +16,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Progress'), findsOneWidget);
+      expect(find.text('Weight & Consistency'), findsOneWidget);
       expect(find.text('Week'), findsOneWidget);
       expect(find.text('Month'), findsOneWidget);
       expect(find.text('78.4'), findsOneWidget);
@@ -36,7 +36,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Progress'), findsOneWidget);
+      expect(find.text('Weight & Consistency'), findsOneWidget);
       expect(find.text('78.4'), findsOneWidget);
     });
   });

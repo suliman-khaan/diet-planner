@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radii.dart';
-import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_buttons.dart';
-import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/app_text_field.dart';
 
 /// Quick Add sheet for direct manual calorie and macro logging.
@@ -54,95 +52,117 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final viewInsets = MediaQuery.of(context).viewInsets;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
-      ),
-      padding: AppSpacing.screenPadding,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Quick add calories',
-                  style: AppTypography.titleMedium.copyWith(
-                    color: isDark ? AppColors.darkInk : AppColors.lightInk,
+    return Padding(
+      padding: EdgeInsets.only(bottom: viewInsets.bottom),
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: screenHeight * 0.85,
+        ),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Log food eaten outside or custom dishes without searching the catalogue.',
-              style: AppTypography.caption.copyWith(
-                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
               ),
-            ),
-            const SizedBox(height: 16),
-            AppTextField(
-              controller: _caloriesController,
-              hintText: 'Calories (kcal) *',
-              errorText: _error,
-              autofocus: true,
-              prefixIcon: Icon(
-                Icons.local_fire_department_outlined,
-                color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            AppTextField(
-              controller: _labelController,
-              hintText: 'What did you eat? (optional)',
-              helperText: 'e.g. Wedding biryani, Chai at dhabba',
-              prefixIcon: Icon(
-                Icons.edit_note,
-                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Meal Slot',
-              style: AppTypography.captionStrong.copyWith(
-                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: _slots.map((slot) {
-                final isSelected = slot == _selectedSlot;
-                final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-
-                return ChoiceChip(
-                  label: Text(slot),
-                  selected: isSelected,
-                  selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
-                  backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                  labelStyle: AppTypography.captionStrong.copyWith(
-                    color: isSelected
-                        ? primary
-                        : (isDark ? AppColors.darkInk : AppColors.lightInk),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Quick add calories',
+                    style: AppTypography.titleMedium.copyWith(
+                      color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                    ),
                   ),
-                  onSelected: (_) => setState(() => _selectedSlot = slot),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
-            PrimaryButton(
-              label: 'Add to today',
-              onPressed: _handleSubmit,
-            ),
-          ],
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Log food eaten outside or custom dishes without searching the catalogue.',
+                style: AppTypography.caption.copyWith(
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                controller: _caloriesController,
+                hintText: 'Calories (kcal) *',
+                errorText: _error,
+                autofocus: false,
+                prefixIcon: Icon(
+                  Icons.local_fire_department_outlined,
+                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                ),
+              ),
+              const SizedBox(height: 12),
+              AppTextField(
+                controller: _labelController,
+                hintText: 'What did you eat? (optional)',
+                helperText: 'e.g. Wedding biryani, Chai at dhabba',
+                autofocus: false,
+                prefixIcon: Icon(
+                  Icons.edit_note,
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Meal Slot',
+                style: AppTypography.captionStrong.copyWith(
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _slots.map((slot) {
+                  final isSelected = slot == _selectedSlot;
+                  final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+
+                  return ChoiceChip(
+                    label: Text(slot),
+                    selected: isSelected,
+                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                    backgroundColor: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+                    labelStyle: AppTypography.captionStrong.copyWith(
+                      color: isSelected
+                          ? primary
+                          : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                    ),
+                    onSelected: (_) => setState(() => _selectedSlot = slot),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
+              PrimaryButton(
+                label: 'Add to today',
+                onPressed: _handleSubmit,
+              ),
+            ],
+          ),
         ),
       ),
     );

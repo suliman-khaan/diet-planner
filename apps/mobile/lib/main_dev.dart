@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_colors.dart';
+import 'core/theme/app_radii.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/app_typography.dart';
+import 'core/widgets/app_buttons.dart';
+import 'core/widgets/app_card.dart';
 import 'core/widgets/app_scaffold.dart';
 import 'core/widgets/badges.dart';
 import 'core/widgets/segmented_controls.dart';
@@ -96,6 +100,7 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
 
   String _foodsSearchQuery = '';
   String _foodsSelectedCategory = 'All';
+  OilLevel _defaultRichness = OilLevel.normal;
 
   void _filterFoods() {
     var results = FoodsFixtures.allCatalogueFoods;
@@ -246,6 +251,359 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
     );
   }
 
+  // --- Preference Modal Sheets ---
+  void _showProfileTargetSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Profile & Health Target',
+                  style: AppTypography.titleMedium.copyWith(
+                    color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            AppCard(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  _buildProfileRow('Sex & Age', 'Male · 28 years old', isDark),
+                  const Divider(height: 16),
+                  _buildProfileRow('Height & Weight', '175 cm · 78.4 kg (BMI 25.6)', isDark),
+                  const Divider(height: 16),
+                  _buildProfileRow('Activity Level', 'Moderate (3–5 workouts/week)', isDark),
+                  const Divider(height: 16),
+                  _buildProfileRow('Daily Calorie Target', '1,850 kcal/day (400 kcal deficit)', isDark),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            PrimaryButton(
+              label: 'Re-run Onboarding Assessment',
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                setState(() => _isOnboarding = true);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileRow(String label, String value, bool isDark) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: AppTypography.caption.copyWith(
+            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+          ),
+        ),
+        Text(
+          value,
+          style: AppTypography.captionStrong.copyWith(
+            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showCookingRichnessSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Default Cooking Richness',
+                    style: AppTypography.titleMedium.copyWith(
+                      color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Sets how much oil or ghee is assumed in family pot dishes (salan, karahi, daal).',
+                style: AppTypography.caption.copyWith(
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
+              ),
+              const SizedBox(height: 18),
+              OilLevelSelector(
+                selected: _defaultRichness,
+                onChanged: (level) {
+                  setSheetState(() => _defaultRichness = level);
+                  setState(() => _defaultRichness = level);
+                },
+              ),
+              const SizedBox(height: 24),
+              PrimaryButton(
+                label: 'Save Richness Preference',
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Cooking richness updated.')),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAllergiesSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Allergies & Exclusions',
+                    style: AppTypography.titleMedium.copyWith(
+                      color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Foods matching your excluded categories will never appear in your suggested plans.',
+                style: AppTypography.caption.copyWith(
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
+              ),
+              const SizedBox(height: 16),
+              AppCard(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  children: [
+                    _buildSwitchItem('Vegetarian only', 'Excludes meat, chicken, fish', false, isDark),
+                    const Divider(height: 1),
+                    _buildSwitchItem('Nut allergy', 'Excludes peanuts, almonds, pistachios', true, isDark),
+                    const Divider(height: 1),
+                    _buildSwitchItem('Lactose intolerant', 'Excludes whole milk, doodh patti, lassi', false, isDark),
+                    const Divider(height: 1),
+                    _buildSwitchItem('Gluten sensitive', 'Excludes wheat roti, parathas, naan', false, isDark),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              PrimaryButton(
+                label: 'Save Exclusions',
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Allergies and exclusions saved.')),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwitchItem(String title, String subtitle, bool initial, bool isDark) {
+    return StatefulBuilder(
+      builder: (ctx, setItemState) {
+        return SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          activeColor: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+          title: Text(
+            title,
+            style: AppTypography.bodyStrong.copyWith(
+              color: isDark ? AppColors.darkInk : AppColors.lightInk,
+            ),
+          ),
+          subtitle: Text(
+            subtitle,
+            style: AppTypography.caption.copyWith(
+              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+            ),
+          ),
+          value: initial,
+          onChanged: (val) => setItemState(() => initial = val),
+        );
+      },
+    );
+  }
+
+  void _showLanguageSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Language / زبان',
+                  style: AppTypography.titleMedium.copyWith(
+                    color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            AppCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Column(
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.check, color: AppColors.lightPrimary),
+                    title: const Text('English (Default)'),
+                    subtitle: const Text('Full interface and food catalogue in English'),
+                    onTap: () => Navigator.of(ctx).pop(),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const SizedBox(width: 24),
+                    title: const Text('اردو (Urdu)'),
+                    subtitle: const Text('Coming in next update (Nastaliq translation in review)'),
+                    onTap: () {
+                      Navigator.of(ctx).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Urdu localization is in review and coming in v0.2.0')),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -253,7 +611,12 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
     if (_isOnboarding) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Diet Planner · Onboarding'),
+          title: Text(
+            'Diet Planner · Onboarding',
+            style: AppTypography.titleMedium.copyWith(
+              color: isDark ? AppColors.darkInk : AppColors.lightInk,
+            ),
+          ),
           actions: [
             IconButton(
               icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
@@ -282,7 +645,14 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
       body: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: Text(_getTabTitle(_currentTab)),
+          elevation: 0,
+          scrolledUnderElevation: 2,
+          title: Text(
+            _getTabTitle(_currentTab),
+            style: AppTypography.titleMedium.copyWith(
+              color: isDark ? AppColors.darkInk : AppColors.lightInk,
+            ),
+          ),
           actions: [
             if (_currentTab == AppTab.today)
               IconButton(
@@ -312,7 +682,22 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
             ),
           ],
         ),
-        body: _buildCurrentTabBody(context),
+        // Animated switcher for smooth tab-to-tab transitions
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          switchInCurve: Curves.easeOut,
+          switchOutCurve: Curves.easeIn,
+          transitionBuilder: (child, animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          child: KeyedSubtree(
+            key: ValueKey(_currentTab),
+            child: _buildCurrentTabBody(context),
+          ),
+        ),
       ),
     );
   }
@@ -451,6 +836,10 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
               MaterialPageRoute(builder: (_) => const TransparencyScreen()),
             );
           },
+          onOpenProfileTarget: () => _showProfileTargetSheet(context),
+          onOpenCookingRichness: () => _showCookingRichnessSheet(context),
+          onOpenAllergies: () => _showAllergiesSheet(context),
+          onOpenLanguage: () => _showLanguageSheet(context),
         );
     }
   }

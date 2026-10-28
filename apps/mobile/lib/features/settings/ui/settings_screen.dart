@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_radii.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_card.dart';
@@ -12,6 +11,10 @@ class SettingsScreen extends StatelessWidget {
   final VoidCallback? onOpenReminders;
   final VoidCallback? onOpenShopping;
   final VoidCallback? onOpenHistory;
+  final VoidCallback? onOpenProfileTarget;
+  final VoidCallback? onOpenCookingRichness;
+  final VoidCallback? onOpenAllergies;
+  final VoidCallback? onOpenLanguage;
 
   const SettingsScreen({
     super.key,
@@ -20,6 +23,10 @@ class SettingsScreen extends StatelessWidget {
     this.onOpenReminders,
     this.onOpenShopping,
     this.onOpenHistory,
+    this.onOpenProfileTarget,
+    this.onOpenCookingRichness,
+    this.onOpenAllergies,
+    this.onOpenLanguage,
   });
 
   @override
@@ -31,23 +38,16 @@ class SettingsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'More',
-            style: AppTypography.titleLarge.copyWith(
-              color: isDark ? AppColors.darkInk : AppColors.lightInk,
-            ),
-          ),
-          const SizedBox(height: 16),
           _buildGroupHeader(context, 'DAILY TOOLS'),
           AppCard(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Column(
               children: [
-                _buildTile(context, icon: Icons.history, title: 'Past days & history', onTap: onOpenHistory),
+                _buildTile(context, icon: Icons.history, title: 'Past days & history', subtitle: 'Immutable daily nutrition snapshots', onTap: onOpenHistory),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.shopping_basket_outlined, title: 'Shopping list', onTap: onOpenShopping),
+                _buildTile(context, icon: Icons.shopping_basket_outlined, title: 'Shopping list', subtitle: 'Aggregated planned ingredients', onTap: onOpenShopping),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.notifications_none, title: 'Meal reminders', onTap: onOpenReminders),
+                _buildTile(context, icon: Icons.notifications_none, title: 'Meal reminders', subtitle: 'Logging alerts with Ramadan shift', onTap: onOpenReminders),
               ],
             ),
           ),
@@ -57,13 +57,37 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Column(
               children: [
-                _buildTile(context, icon: Icons.person_outline, title: 'Profile & calorie target', subtitle: 'Recalculates upcoming meal portions'),
+                _buildTile(
+                  context,
+                  icon: Icons.person_outline,
+                  title: 'Profile & calorie target',
+                  subtitle: '1,850 kcal/day · Recalculates portions',
+                  onTap: onOpenProfileTarget,
+                ),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.soup_kitchen_outlined, title: 'Default cooking richness', subtitle: 'Normal (2 tsp oil per katori)'),
+                _buildTile(
+                  context,
+                  icon: Icons.soup_kitchen_outlined,
+                  title: 'Default cooking richness',
+                  subtitle: 'Normal (2 tsp oil per katori)',
+                  onTap: onOpenCookingRichness,
+                ),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.no_food_outlined, title: 'Allergies & exclusions', subtitle: 'Vegetarian, nut exclusions'),
+                _buildTile(
+                  context,
+                  icon: Icons.no_food_outlined,
+                  title: 'Allergies & exclusions',
+                  subtitle: 'Vegetarian, nut exclusions',
+                  onTap: onOpenAllergies,
+                ),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.language, title: 'Language', subtitle: 'English (Urdu coming soon)'),
+                _buildTile(
+                  context,
+                  icon: Icons.language,
+                  title: 'Language',
+                  subtitle: 'English (Urdu coming soon)',
+                  onTap: onOpenLanguage,
+                ),
               ],
             ),
           ),

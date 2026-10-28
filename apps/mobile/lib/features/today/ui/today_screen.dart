@@ -147,8 +147,7 @@ class TodayScreen extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -439,10 +438,10 @@ class TodayScreen extends StatelessWidget {
           const LoadingSkeleton(width: double.infinity, height: 200, borderRadius: AppRadii.cardRadius),
           const SizedBox(height: 16),
           const LoadingSkeleton(width: double.infinity, height: 160, borderRadius: AppRadii.cardRadius),
-          const SizedBox(height: 20),
-          const LoadingSkeleton(width: double.infinity, height: 72, borderRadius: BorderRadius.all(Radius.circular(AppRadii.row))),
+          const SizedBox(height: 16),
+          const LoadingSkeleton(width: double.infinity, height: 72),
           const SizedBox(height: 8),
-          const LoadingSkeleton(width: double.infinity, height: 72, borderRadius: BorderRadius.all(Radius.circular(AppRadii.row))),
+          const LoadingSkeleton(width: double.infinity, height: 72),
         ],
       ),
     );

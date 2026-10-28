@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_radii.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_card.dart';
@@ -21,6 +20,23 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      appBar: AppBar(
+        title: Text(
+          'Past Days & History',
+          style: AppTypography.titleMedium.copyWith(
+            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+          ),
+        ),
+      ),
+      body: _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (vm.isLoading) {
@@ -49,13 +65,6 @@ class HistoryScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'History',
-            style: AppTypography.titleLarge.copyWith(
-              color: isDark ? AppColors.darkInk : AppColors.lightInk,
-            ),
-          ),
-          const SizedBox(height: 6),
           Text(
             'Past logs store immutable nutrition snapshots. Catalogue corrections never alter past records.',
             style: AppTypography.caption.copyWith(

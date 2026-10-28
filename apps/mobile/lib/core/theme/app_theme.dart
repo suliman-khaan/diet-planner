@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_radii.dart';
-import 'app_spacing.dart';
 import 'app_typography.dart';
 
 /// AppTheme builds light and dark ThemeData instances honoring design/spec.md.
@@ -68,12 +67,14 @@ abstract class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.lightBackground,
         foregroundColor: AppColors.lightInk,
         elevation: 0,
         scrolledUnderElevation: 0,
-        titleTextStyle: AppTypography.titleMedium,
+        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
+        iconTheme: const IconThemeData(color: AppColors.lightInk),
+        actionsIconTheme: const IconThemeData(color: AppColors.lightInk),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.lightSurface,
@@ -171,12 +172,14 @@ abstract class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: AppColors.darkBackground,
         foregroundColor: AppColors.darkInk,
         elevation: 0,
         scrolledUnderElevation: 0,
-        titleTextStyle: AppTypography.titleMedium,
+        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
+        iconTheme: const IconThemeData(color: AppColors.darkInk),
+        actionsIconTheme: const IconThemeData(color: AppColors.darkInk),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.darkSurface,

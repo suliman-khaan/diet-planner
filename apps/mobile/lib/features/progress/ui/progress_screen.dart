@@ -48,8 +48,8 @@ class ProgressScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Progress',
-                style: AppTypography.titleLarge.copyWith(
+                'Weight & Consistency',
+                style: AppTypography.titleMedium.copyWith(
                   color: isDark ? AppColors.darkInk : AppColors.lightInk,
                 ),
               ),
@@ -77,6 +77,7 @@ class ProgressScreen extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(3),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           _buildToggleOption(
             context,
@@ -159,8 +160,7 @@ class ProgressScreen extends StatelessWidget {
                     ),
                   ),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
                         vm.currentWeightKg.toStringAsFixed(1),
@@ -170,10 +170,13 @@ class ProgressScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        'kg',
-                        style: AppTypography.subheading.copyWith(
-                          color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(
+                          'kg',
+                          style: AppTypography.subheading.copyWith(
+                            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                          ),
                         ),
                       ),
                     ],
@@ -266,7 +269,7 @@ class ProgressScreen extends StatelessWidget {
           SizedBox(
             height: 130,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: vm.weekEating.map((day) {
                 return Expanded(
                   child: Padding(
@@ -275,23 +278,26 @@ class ProgressScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Expanded(
-                          child: FractionallySizedBox(
+                          child: Align(
                             alignment: Alignment.bottomCenter,
-                            heightFactor: day.percentageOfTarget.clamp(0.12, 1.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: day.status == EatingLogStatus.fullyLogged
-                                    ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
-                                    : (day.status == EatingLogStatus.partlyLogged
-                                        ? (isDark ? const Color(0xFF43735E) : AppColors.plannedFill)
-                                        : Colors.transparent),
-                                borderRadius: BorderRadius.circular(8),
-                                border: day.status == EatingLogStatus.notLogged
-                                    ? Border.all(
-                                        color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
-                                        width: 2,
-                                      )
-                                    : null,
+                            child: FractionallySizedBox(
+                              heightFactor: day.percentageOfTarget.clamp(0.12, 1.0),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: day.status == EatingLogStatus.fullyLogged
+                                      ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                                      : (day.status == EatingLogStatus.partlyLogged
+                                          ? (isDark ? const Color(0xFF43735E) : AppColors.plannedFill)
+                                          : Colors.transparent),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: day.status == EatingLogStatus.notLogged
+                                      ? Border.all(
+                                          color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
+                                          width: 2,
+                                        )
+                                      : null,
+                                ),
                               ),
                             ),
                           ),
@@ -482,6 +488,8 @@ class _WeightLineChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (size.width < 60 || size.height < 40) return;
+
     if (points.isEmpty) {
       final textSpan = TextSpan(
         text: 'No weight data logged yet',
@@ -503,6 +511,8 @@ class _WeightLineChartPainter extends CustomPainter {
     const double bottomPadding = 14.0;
     final chartWidth = size.width - yAxisWidth;
     final chartHeight = size.height - topPadding - bottomPadding;
+
+    if (chartWidth <= 0 || chartHeight <= 0) return;
 
     // Calculate min and max weights with breathing margin
     double minW = points.map((p) => p.weightKg).reduce(math.min);
