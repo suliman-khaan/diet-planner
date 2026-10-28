@@ -44,6 +44,7 @@ Task-level status: `docs/WORKBOARD.md`. Phase details: `docs/phases/`.
   flows through the real controllers (onboarding → plan → log → restart, manual-only, vegetarian re-plan, meal edits,
   shopping ticks, reminders, low-intake check-in).
 - Domain line coverage **97.5 %** (gate ≥ 90 %).
+- Prod arm64 release APK (obfuscated): **21.3 MB** (budget ≤ 25 MB), CI run 40772657361.
 - Planner: ≥ 95 % of 1,000 generated profiles within ±10 % of target, zero exclusion violations, same seed → same plan.
 - Food pack validator rejects every case in blueprint Phase 1.
 
