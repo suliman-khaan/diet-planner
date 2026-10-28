@@ -27,7 +27,8 @@ void main() {
       expect(find.text('Mark as eaten'), findsOneWidget);
 
       // Verify meals list items
-      expect(find.textContaining('Breakfast', findRichText: true), findsWidgets);
+      expect(
+          find.textContaining('Breakfast', findRichText: true), findsWidgets);
       expect(find.textContaining('Lunch', findRichText: true), findsWidgets);
     });
 
@@ -52,7 +53,8 @@ void main() {
         MaterialApp(
           theme: AppTheme.light,
           home: const Scaffold(
-            body: TodayScreen(vm: TodayFixtures.emptyNoPlan, onGeneratePlan: _noop),
+            body: TodayScreen(
+                vm: TodayFixtures.emptyNoPlan, onGeneratePlan: _noop),
           ),
         ),
       );

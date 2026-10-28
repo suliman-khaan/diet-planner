@@ -25,7 +25,8 @@ const _steps = [
 ];
 
 /// Onboarding form. The argument is true when editing an existing profile.
-class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, bool> {
+class OnboardingController
+    extends FamilyAsyncNotifier<ovm.OnboardingViewModel, bool> {
   late ovm.OnboardingStep _step;
   bool _editing = false;
   UserSetup? _existing;
@@ -83,13 +84,20 @@ class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, 
     final policy = ref.read(targetPolicyProvider);
     final checker = ref.read(eligibilityCheckerProvider);
     final profile = _profile;
-    final eligibility = _birthYear == null ? null : checker.check(profile, today);
+    final eligibility =
+        _birthYear == null ? null : checker.check(profile, today);
     final eligible = eligibility != null && eligibility is! ManualOnly;
-    final result = eligible ? policy.compute(profile.copyWith(goal: checker.effectiveGoal(profile, eligibility)), today) : null;
+    final result = eligible
+        ? policy.compute(
+            profile.copyWith(goal: checker.effectiveGoal(profile, eligibility)),
+            today)
+        : null;
     final target = result?.target;
     final notes = [
-      if (result?.explanation.floorApplied ?? false) 'Your target was raised to our safety minimum.',
-      if (policy.config.isProvisional) 'Safety limits are being confirmed by a nutrition professional.',
+      if (result?.explanation.floorApplied ?? false)
+        'Your target was raised to our safety minimum.',
+      if (policy.config.isProvisional)
+        'Safety limits are being confirmed by a nutrition professional.',
       'All values are estimates.',
     ];
     final index = _steps.indexOf(_step);
@@ -103,7 +111,9 @@ class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, 
         Goal.gain => ovm.WeightGoal.gainWeight,
       },
       birthYear: _birthYear ?? 0,
-      birthYearOptions: [for (var y = today.year - 10; y >= today.year - 100; y--) y],
+      birthYearOptions: [
+        for (var y = today.year - 10; y >= today.year - 100; y--) y
+      ],
       sex: _sex == Sex.male ? ovm.BiologicalSex.male : ovm.BiologicalSex.female,
       heightCm: _heightCm,
       weightKg: _weightKg,
@@ -147,26 +157,30 @@ class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, 
         ovm.WeightGoal.maintain => Goal.maintain,
         ovm.WeightGoal.gainWeight => Goal.gain,
       });
-  void setSex(ovm.BiologicalSex s) => _update(() => _sex = s == ovm.BiologicalSex.male ? Sex.male : Sex.female);
+  void setSex(ovm.BiologicalSex s) =>
+      _update(() => _sex = s == ovm.BiologicalSex.male ? Sex.male : Sex.female);
   void setHeight(double cm) => _update(() => _heightCm = cm);
   void setWeight(double kg) => _update(() => _weightKg = kg);
   void setBirthYear(int y) => _update(() => _birthYear = y);
-  void setActivity(ovm.ActivityLevel a) => _update(() => _activity = switch (a) {
-        ovm.ActivityLevel.sedentary => ActivityLevel.sedentary,
-        ovm.ActivityLevel.lightlyActive => ActivityLevel.light,
-        ovm.ActivityLevel.moderatelyActive => ActivityLevel.moderate,
-        ovm.ActivityLevel.veryActive => ActivityLevel.veryActive,
-      });
+  void setActivity(ovm.ActivityLevel a) =>
+      _update(() => _activity = switch (a) {
+            ovm.ActivityLevel.sedentary => ActivityLevel.sedentary,
+            ovm.ActivityLevel.lightlyActive => ActivityLevel.light,
+            ovm.ActivityLevel.moderatelyActive => ActivityLevel.moderate,
+            ovm.ActivityLevel.veryActive => ActivityLevel.veryActive,
+          });
   void toggleCondition(String key) => _update(() {
         final c = HealthCondition.values.byName(key);
         _conditions.contains(c) ? _conditions.remove(c) : _conditions.add(c);
       });
-  void setDiet(ovm.DietType d) => _update(() => _diet = DietType.values.byName(d.name));
+  void setDiet(ovm.DietType d) =>
+      _update(() => _diet = DietType.values.byName(d.name));
   void toggleAllergy(String key) => _update(() {
         final a = Allergen.values.byName(key);
         _allergies.contains(a) ? _allergies.remove(a) : _allergies.add(a);
       });
-  void setRichness(ui.OilLevel level) => _update(() => _richness = Fmt.fromUiOil(level));
+  void setRichness(ui.OilLevel level) =>
+      _update(() => _richness = Fmt.fromUiOil(level));
 
   /// Moves on, or shows why not.
   void next() {
@@ -175,9 +189,11 @@ class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, 
     if (_step == ovm.OnboardingStep.aboutYou) {
       final errors = validateProfile(_profile, today);
       if (errors.contains(ProfileFieldError.heightOutOfRange)) {
-        error = 'Please enter a height between ${ProfileLimits.minHeightCm.round()} and ${ProfileLimits.maxHeightCm.round()} cm.';
+        error =
+            'Please enter a height between ${ProfileLimits.minHeightCm.round()} and ${ProfileLimits.maxHeightCm.round()} cm.';
       } else if (errors.contains(ProfileFieldError.weightOutOfRange)) {
-        error = 'Please enter a weight between ${ProfileLimits.minWeightKg.round()} and ${ProfileLimits.maxWeightKg.round()} kg.';
+        error =
+            'Please enter a weight between ${ProfileLimits.minWeightKg.round()} and ${ProfileLimits.maxWeightKg.round()} kg.';
       }
     } else if (_step == ovm.OnboardingStep.eligibility && _birthYear == null) {
       error = 'Please choose the year you were born.';
@@ -207,7 +223,12 @@ class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, 
     final checker = ref.read(eligibilityCheckerProvider);
     final policy = ref.read(targetPolicyProvider);
     final e = checker.check(profile, today);
-    final target = e is ManualOnly ? null : policy.compute(profile.copyWith(goal: checker.effectiveGoal(profile, e)), today).target;
+    final target = e is ManualOnly
+        ? null
+        : policy
+            .compute(profile.copyWith(goal: checker.effectiveGoal(profile, e)),
+                today)
+            .target;
     final setup = UserSetup(
       profile: profile,
       preferences: (_existing?.preferences ?? const DietaryPreferences())
@@ -220,11 +241,14 @@ class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, 
 
     final weights = ref.read(weightRepositoryProvider);
     final previous = await weights.all();
-    if (previous.isEmpty || (previous.last.weightKg - profile.weightKg).abs() >= 0.05) {
+    if (previous.isEmpty ||
+        (previous.last.weightKg - profile.weightKg).abs() >= 0.05) {
       await weights.add(today, profile.weightKg);
     }
     // Plans already made for later days are made again with the new details.
-    await ref.read(planRepositoryProvider).removePlansFrom(_editing ? today.addDays(1) : today);
+    await ref
+        .read(planRepositoryProvider)
+        .removePlansFrom(_editing ? today.addDays(1) : today);
 
     final settingsRepo = ref.read(settingsRepositoryProvider);
     final settings = await settingsRepo.load();
@@ -242,5 +266,7 @@ class OnboardingController extends FamilyAsyncNotifier<ovm.OnboardingViewModel, 
   }
 }
 
-final onboardingControllerProvider =
-    AsyncNotifierProvider.family<OnboardingController, ovm.OnboardingViewModel, bool>(OnboardingController.new);
+final onboardingControllerProvider = AsyncNotifierProvider.family<
+    OnboardingController,
+    ovm.OnboardingViewModel,
+    bool>(OnboardingController.new);

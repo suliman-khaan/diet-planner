@@ -19,7 +19,8 @@ import 'package:mobile/domain/log/food_log.dart';
 import 'package:mobile/domain/profile/user_profile.dart';
 import 'package:mobile/features/meal/controller/meal_controller.dart';
 import 'package:mobile/features/onboarding/controller/onboarding_controller.dart';
-import 'package:mobile/features/onboarding/view_model/onboarding_view_model.dart' as ovm;
+import 'package:mobile/features/onboarding/view_model/onboarding_view_model.dart'
+    as ovm;
 import 'package:mobile/features/progress/controller/progress_controller.dart';
 import 'package:mobile/features/reminders/controller/reminders_page.dart';
 import 'package:mobile/features/settings/controller/settings_controller.dart';
@@ -42,17 +43,21 @@ void main() {
 
   /// A fresh container on the same database, like restarting the app. No network anywhere.
   ProviderContainer app({int hour = 7}) => ProviderContainer(overrides: [
-        appConfigProvider.overrideWithValue(const AppConfig(flavor: Flavor.dev)),
+        appConfigProvider
+            .overrideWithValue(const AppConfig(flavor: Flavor.dev)),
         databaseProvider.overrideWithValue(db),
         foodRepositoryProvider.overrideWithValue(
-          AssetFoodRepository(() => File('assets/packs/pk-core.json').readAsString()),
+          AssetFoodRepository(
+              () => File('assets/packs/pk-core.json').readAsString()),
         ),
         clockProvider.overrideWithValue(FixedClock(today.atMinutes(hour * 60))),
-        idGeneratorProvider.overrideWithValue(SequentialIdGenerator('t${DateTime.now().microsecondsSinceEpoch}')),
+        idGeneratorProvider.overrideWithValue(
+            SequentialIdGenerator('t${DateTime.now().microsecondsSinceEpoch}')),
         reminderServiceProvider.overrideWithValue(reminders),
       ]);
 
-  Future<void> onboard(ProviderContainer c, {int birthYear = 1992, Set<String> conditions = const {}}) async {
+  Future<void> onboard(ProviderContainer c,
+      {int birthYear = 1992, Set<String> conditions = const {}}) async {
     final p = onboardingControllerProvider(false);
     await c.read(p.future);
     final o = c.read(p.notifier);
@@ -94,9 +99,15 @@ void main() {
 
     // Logging a planned meal is one action; doing it again never logs twice.
     final firstMeal = s1.vm.meals.first.id;
-    final ids = await c1.read(todayControllerProvider.notifier).markMealEaten(firstMeal);
+    final ids = await c1
+        .read(todayControllerProvider.notifier)
+        .markMealEaten(firstMeal);
     expect(ids, isNotEmpty);
-    expect(await c1.read(todayControllerProvider.notifier).markMealEaten(firstMeal), isEmpty);
+    expect(
+        await c1
+            .read(todayControllerProvider.notifier)
+            .markMealEaten(firstMeal),
+        isEmpty);
     final afterLog = await c1.read(todayControllerProvider.future);
     expect(afterLog.vm.meals.first.status, MealStatus.eaten);
     expect(afterLog.vm.eatenKcal, greaterThan(0));
@@ -110,11 +121,15 @@ void main() {
 
     // Undo.
     await c2.read(todayControllerProvider.notifier).undo(ids);
-    expect((await c2.read(todayControllerProvider.future)).vm.meals.first.status, MealStatus.planned);
+    expect(
+        (await c2.read(todayControllerProvider.future)).vm.meals.first.status,
+        MealStatus.planned);
     c2.dispose();
   });
 
-  test('under-18 users get manual logging only, with an explanation and no target', () async {
+  test(
+      'under-18 users get manual logging only, with an explanation and no target',
+      () async {
     final c = app();
     await onboard(c, birthYear: today.year - 16);
     final setup = await c.read(userSetupProvider.future);
@@ -122,7 +137,8 @@ void main() {
     final s = await c.read(todayControllerProvider.future);
     expect(s.day!.plan, isNull);
     expect(s.vm.isManualOnly, isTrue);
-    expect(s.vm.hasNoPlan, isFalse, reason: 'manual mode still shows the day so food can be logged');
+    expect(s.vm.hasNoPlan, isFalse,
+        reason: 'manual mode still shows the day so food can be logged');
     expect(s.vm.manualOnlyMessage, contains('18'));
     expect(s.vm.targetKcal, 0);
     c.dispose();
@@ -140,16 +156,20 @@ void main() {
     await onboard(c);
     await c.read(todayControllerProvider.future);
     await c.read(settingsControllerProvider.future);
-    await c.read(settingsControllerProvider.notifier).setDietType(DietType.vegetarian);
+    await c
+        .read(settingsControllerProvider.notifier)
+        .setDietType(DietType.vegetarian);
     final s = await c.read(todayControllerProvider.future);
     final pack = s.day!.pack;
     for (final m in s.day!.plan!.meals) {
       for (final i in m.items) {
         final d = pack.food(i.foodId)!.dietary;
-        expect(d.containsMeat || d.containsFish || d.containsEgg, isFalse, reason: i.foodId);
+        expect(d.containsMeat || d.containsFish || d.containsEgg, isFalse,
+            reason: i.foodId);
       }
     }
-    expect((await c.read(settingsControllerProvider.future)).exclusionsSummary, contains('Vegetarian'));
+    expect((await c.read(settingsControllerProvider.future)).exclusionsSummary,
+        contains('Vegetarian'));
     c.dispose();
   });
 
@@ -157,7 +177,8 @@ void main() {
     final c = app();
     await onboard(c);
     final s = await c.read(todayControllerProvider.future);
-    final dinner = s.day!.plan!.meals.firstWhere((m) => m.slot == MealSlot.dinner);
+    final dinner =
+        s.day!.plan!.meals.firstWhere((m) => m.slot == MealSlot.dinner);
     final key = MealKey(today, dinner.id);
     final p = mealControllerProvider(key);
     final before = (await c.read(p.future))!;
@@ -171,13 +192,16 @@ void main() {
     await mc.setOil(OilLevel.rich);
     final rich = (await c.read(p.future))!;
     expect(rich.vm.oilRichness, ui.OilLevel.rich);
-    expect(rich.vm.totalCalories, greaterThanOrEqualTo(bigger.vm.totalCalories));
+    expect(
+        rich.vm.totalCalories, greaterThanOrEqualTo(bigger.vm.totalCalories));
 
     final side = rich.vm.sideItems.first;
     final undo = await mc.removeItem(side.id);
-    expect((await c.read(p.future))!.vm.sideItems.any((i) => i.id == side.id), isFalse);
+    expect((await c.read(p.future))!.vm.sideItems.any((i) => i.id == side.id),
+        isFalse);
     await mc.restore(undo!);
-    expect((await c.read(p.future))!.vm.sideItems.any((i) => i.id == side.id), isTrue);
+    expect((await c.read(p.future))!.vm.sideItems.any((i) => i.id == side.id),
+        isTrue);
 
     expect(await mc.replace(), isTrue);
     expect((await c.read(p.future))!.meal.comboId, isNot(dinner.comboId));
@@ -188,7 +212,8 @@ void main() {
     c.dispose();
   });
 
-  test('shopping list comes from the plan and ticks survive recalculation', () async {
+  test('shopping list comes from the plan and ticks survive recalculation',
+      () async {
     final c = app();
     await onboard(c);
     final vm = await c.read(shoppingControllerProvider.future);
@@ -199,25 +224,38 @@ void main() {
     final again = await c.read(shoppingControllerProvider.future);
     expect(again.items.firstWhere((i) => i.id == first.id).isPurchased, isTrue);
     await c.read(shoppingControllerProvider.notifier).addManual('Soap');
-    expect((await c.read(shoppingControllerProvider.future)).items.any((i) => i.name == 'Soap'), isTrue);
+    expect(
+        (await c.read(shoppingControllerProvider.future))
+            .items
+            .any((i) => i.name == 'Soap'),
+        isTrue);
     c.dispose();
   });
 
-  test('reminders: permission on enable, skip logged meals, denied keeps them off', () async {
+  test(
+      'reminders: permission on enable, skip logged meals, denied keeps them off',
+      () async {
     final c = app();
     await onboard(c);
     await c.read(remindersControllerProvider.future);
     await c.read(remindersControllerProvider.notifier).setEnabled(true);
     expect(reminders.scheduled, isNotEmpty);
-    expect(reminders.scheduled.map((r) => r.id).toSet().length, reminders.scheduled.length, reason: 'no duplicates');
-    final breakfastToday = reminders.scheduled.where((r) => r.date == today && r.slot == MealSlot.breakfast);
+    expect(reminders.scheduled.map((r) => r.id).toSet().length,
+        reminders.scheduled.length,
+        reason: 'no duplicates');
+    final breakfastToday = reminders.scheduled
+        .where((r) => r.date == today && r.slot == MealSlot.breakfast);
     expect(breakfastToday, isNotEmpty);
 
     final s = await c.read(todayControllerProvider.future);
-    final breakfast = s.day!.plan!.meals.firstWhere((m) => m.slot == MealSlot.breakfast);
+    final breakfast =
+        s.day!.plan!.meals.firstWhere((m) => m.slot == MealSlot.breakfast);
     await c.read(todayControllerProvider.notifier).markMealEaten(breakfast.id);
     await c.read(remindersControllerProvider.notifier).setSlot('dinner', true);
-    expect(reminders.scheduled.where((r) => r.date == today && r.slot == MealSlot.breakfast), isEmpty);
+    expect(
+        reminders.scheduled
+            .where((r) => r.date == today && r.slot == MealSlot.breakfast),
+        isEmpty);
 
     await c.read(remindersControllerProvider.notifier).setEnabled(false);
     expect(reminders.scheduled, isEmpty);
@@ -242,7 +280,8 @@ void main() {
           slot: MealSlot.lunch,
           source: LogSource.quickAdd,
           label: 'Quick add',
-          nutrition: const Nutrition(kcal: 500, protein: 0, carbs: 0, fat: 0, fibre: 0),
+          nutrition: const Nutrition(
+              kcal: 500, protein: 0, carbs: 0, fat: 0, fibre: 0),
           loggedAtUtc: DateTime.utc(2026),
         ),
       ]);
@@ -258,10 +297,12 @@ void main() {
     await onboard(c);
     final vm = await c.read(progressControllerProvider.future);
     expect(vm.weekEating, hasLength(7));
-    expect(vm.weekEating.take(6).every((d) => d.status.name == 'notLogged'), isTrue);
+    expect(vm.weekEating.take(6).every((d) => d.status.name == 'notLogged'),
+        isTrue);
     expect(vm.currentWeightKg, 70);
     await c.read(progressControllerProvider.notifier).addWeight(69.5);
-    expect((await c.read(progressControllerProvider.future)).currentWeightKg, 69.5);
+    expect((await c.read(progressControllerProvider.future)).currentWeightKg,
+        69.5);
     c.dispose();
   });
 }

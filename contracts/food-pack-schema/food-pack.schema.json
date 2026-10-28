@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dietplanner.invalid/schemas/food-pack-1.json",
+  "title": "Food pack (schemaVersion 1)",
+  "description": "A built, versioned country food pack as loaded by the app. Produced by tools/food-pack/build.js from content/<country>/ and checked by tools/food-pack/validate.js, which also enforces cross-field rules this schema cannot express (unique ids, valid references, oil levels increasing, reviewed status needing a reviewer).",
+  "type": "object",
+  "required": ["schemaVersion", "packId", "packVersion", "country", "status", "license", "ingredients", "foods", "combos"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "packId": { "type": "string", "minLength": 1 },
+    "packVersion": { "type": "string", "minLength": 1 },
+    "country": { "type": "string", "pattern": "^[A-Z]{2}$" },
+    "status": { "$ref": "#/$defs/status" },
+    "license": { "type": "string", "minLength": 1 },
+    "notice": { "type": "string" },
+    "measures": { "type": "array", "items": { "$ref": "#/$defs/measure" } },
+    "ingredients": { "type": "array", "items": { "$ref": "#/$defs/ingredient" } },
+    "foods": { "type": "array", "items": { "$ref": "#/$defs/food" } },
+    "combos": { "type": "array", "items": { "$ref": "#/$defs/combo" } }
+  },
+  "$defs": {
+    "status": { "enum": ["draft", "reviewed", "published"] },
+    "slot": { "enum": ["breakfast", "lunch", "chai", "dinner", "sehri", "iftar"] },
+    "allergen": { "enum": ["gluten", "dairy", "nuts", "egg", "fish"] },
+    "nonNegative": { "type": "number", "minimum": 0 },
+    "positive": { "type": "number", "exclusiveMinimum": 0 },
+    "nutrition": {
+      "description": "Per 100 g. kcal and grams.",
+      "type": "object",
+      "required": ["kcal", "protein", "carbs", "fat", "fibre"],
+      "properties": {
+        "kcal": { "$ref": "#/$defs/nonNegative" },
+        "protein": { "$ref": "#/$defs/nonNegative" },
+        "carbs": { "$ref": "#/$defs/nonNegative" },
+        "fat": { "$ref": "#/$defs/nonNegative" },
+        "fibre": { "$ref": "#/$defs/nonNegative" }
+      }
+    },
+    "measure": {
+      "type": "object",
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "ur": { "type": "string" },
+        "description": { "type": "string" },
+        "grams": { "$ref": "#/$defs/positive" },
+        "ml": { "$ref": "#/$defs/positive" }
+      }
+    },
+    "ingredient": {
+      "type": "object",
+      "required": ["id", "name", "category", "origin", "allergens", "per100g", "source"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "origin": { "enum": ["plant", "meat", "fish", "egg", "dairy"] },
+        "allergens": { "type": "array", "items": { "$ref": "#/$defs/allergen" } },
+        "per100g": { "$ref": "#/$defs/nutrition" },
+        "source": {
+          "type": "object",
+          "required": ["dataset"],
+          "properties": {
+            "dataset": { "type": "string", "minLength": 1 },
+            "fdcId": { "type": ["integer", "null"] },
+            "description": { "type": "string" }
+          }
+        }
+      }
+    },
+    "food": {
+      "type": "object",
+      "required": [
+        "id", "revision", "names", "category", "role", "kind", "nutritionPer100g", "ingredientsPer100g",
+        "servings", "defaultServing", "portion", "oilPer100g", "isSharedDish", "mealSlotFit", "dietary",
+        "allergens", "allergenReview", "source", "license", "reviewedBy", "reviewedAt", "status"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "names": {
+          "type": "object",
+          "required": ["en", "romanUrdu"],
+          "properties": {
+            "en": { "type": "string", "minLength": 1 },
+            "ur": { "type": "string" },
+            "romanUrdu": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "category": { "type": "string" },
+        "role": { "enum": ["main", "bread", "rice", "side", "protein", "drink", "snack", "fruit", "dessert"] },
+        "kind": { "enum": ["recipe", "ingredient"] },
+        "nutritionPer100g": {
+          "description": "Cooked food, WITHOUT added cooking oil (see oilPer100g).",
+          "$ref": "#/$defs/nutrition"
+        },
+        "ingredientsPer100g": {
+          "description": "Raw ingredient grams in 100 g of cooked food (for shopping lists).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "grams"],
+            "properties": { "id": { "type": "string" }, "grams": { "$ref": "#/$defs/positive" } }
+          }
+        },
+        "servings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "grams"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string", "minLength": 1 },
+              "grams": { "$ref": "#/$defs/positive" },
+              "photoRef": { "type": "string" }
+            }
+          }
+        },
+        "defaultServing": { "type": "string" },
+        "portion": {
+          "description": "Planner and steppers move servings within [min, max] in steps of step.",
+          "type": "object",
+          "required": ["min", "max", "step"],
+          "properties": {
+            "min": { "$ref": "#/$defs/positive" },
+            "max": { "$ref": "#/$defs/positive" },
+            "step": { "$ref": "#/$defs/positive" }
+          }
+        },
+        "oilPer100g": {
+          "description": "Grams of added oil per 100 g cooked dish at each level, or null for no added oil.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "required": ["light", "normal", "rich"],
+              "properties": {
+                "light": { "$ref": "#/$defs/nonNegative" },
+                "normal": { "$ref": "#/$defs/nonNegative" },
+                "rich": { "$ref": "#/$defs/nonNegative" }
+              }
+            }
+          ]
+        },
+        "oilIngredient": { "type": ["string", "null"] },
+        "isSharedDish": { "type": "boolean" },
+        "mealSlotFit": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/slot" } },
+        "dietary": {
+          "type": "object",
+          "required": ["containsMeat", "containsFish", "containsEgg", "containsDairy"],
+          "properties": {
+            "containsMeat": { "type": "boolean" },
+            "containsFish": { "type": "boolean" },
+            "containsEgg": { "type": "boolean" },
+            "containsDairy": { "type": "boolean" }
+          }
+        },
+        "allergens": { "type": "array", "items": { "$ref": "#/$defs/allergen" } },
+        "allergenReview": {
+          "description": "derived = from the ingredient list, not yet checked by a person. Unknown is never valid.",
+          "enum": ["derived", "reviewed"]
+        },
+        "source": { "type": "string", "minLength": 1 },
+        "license": { "type": "string", "minLength": 1 },
+        "reviewedBy": { "type": ["string", "null"] },
+        "reviewedAt": { "type": ["string", "null"] },
+        "status": { "$ref": "#/$defs/status" }
+      }
+    },
+    "combo": {
+      "type": "object",
+      "required": ["id", "slots", "items"],
+      "properties": {
+        "id": { "type": "string" },
+        "slots": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/slot" } },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["foodId", "servings"],
+            "properties": { "foodId": { "type": "string" }, "servings": { "$ref": "#/$defs/positive" } }
+          }
+        }
+      }
+    }
+  }
+}
