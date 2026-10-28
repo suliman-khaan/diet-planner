@@ -65,7 +65,8 @@ class AppTextField extends StatelessWidget {
                     isDense: true,
                     hintText: hintText,
                     hintStyle: AppTypography.body.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                 ),
@@ -79,7 +80,8 @@ class AppTextField extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     icon: Icon(
                       Icons.clear,
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                     onPressed: onClear,
                   ),

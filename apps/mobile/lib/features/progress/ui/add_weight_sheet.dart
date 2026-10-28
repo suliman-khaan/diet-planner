@@ -53,7 +53,8 @@ class _AddWeightSheetState extends State<AddWeightSheet> {
       child: Container(
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         child: SingleChildScrollView(
@@ -68,7 +69,9 @@ class _AddWeightSheetState extends State<AddWeightSheet> {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    color: isDark
+                        ? AppColors.darkBorderStrong
+                        : AppColors.lightBorderStrong,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -103,7 +106,8 @@ class _AddWeightSheetState extends State<AddWeightSheet> {
                 autofocus: false,
                 prefixIcon: Icon(
                   Icons.monitor_weight_outlined,
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color:
+                      isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                 ),
               ),
               const SizedBox(height: 24),

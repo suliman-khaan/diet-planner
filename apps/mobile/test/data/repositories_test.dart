@@ -39,16 +39,19 @@ void main() {
   });
   tearDown(() => db.close());
 
-  DriftPlanRepository plansRepo() => DriftPlanRepository(db, clock, ids, () => 'Asia/Karachi');
+  DriftPlanRepository plansRepo() =>
+      DriftPlanRepository(db, clock, ids, () => 'Asia/Karachi');
 
   DailyPlan makePlan({int seed = 1, LocalDate? date}) {
     final pack = loadBundledPack();
     final r = const Planner().generate(PlanRequest(
       date: date ?? testToday,
-      target: const NutritionTarget(kcal: 1800, proteinG: 90, carbsG: 225, fatG: 60, fibreG: 25),
+      target: const NutritionTarget(
+          kcal: 1800, proteinG: 90, carbsG: 225, fatG: 60, fibreG: 25),
       pack: pack,
       slots: MealSchedule.defaults.normalSlots,
-      filter: const FoodFilter(preferences: DietaryPreferences(), allowDraftData: true),
+      filter: const FoodFilter(
+          preferences: DietaryPreferences(), allowDraftData: true),
       oilLevel: OilLevel.normal,
       seed: seed,
       policyVersion: 'test',
@@ -60,7 +63,8 @@ void main() {
         profile: profile(),
         preferences: const DietaryPreferences(dietType: DietType.vegetarian),
         schedule: MealSchedule.defaults,
-        target: const NutritionTarget(kcal: 1800, proteinG: 90, carbsG: 225, fatG: 60, fibreG: 25),
+        target: const NutritionTarget(
+            kcal: 1800, proteinG: 90, carbsG: 225, fatG: 60, fibreG: 25),
         policyVersion: 'p1',
       );
 
@@ -79,10 +83,14 @@ void main() {
 
     test('a damaged record is reported, never silently reset', () async {
       await DriftProfileRepository(db, clock).save(setup());
-      await db.customStatement("UPDATE profiles SET profile_json = '{not json'");
-      await expectLater(DriftProfileRepository(db, clock).load(), throwsA(isA<StorageCorrupted>()));
-      await db.customStatement("UPDATE profiles SET profile_json = '{\"goal\": \"nope\"}'");
-      await expectLater(DriftProfileRepository(db, clock).load(), throwsA(isA<StorageCorrupted>()));
+      await db
+          .customStatement("UPDATE profiles SET profile_json = '{not json'");
+      await expectLater(DriftProfileRepository(db, clock).load(),
+          throwsA(isA<StorageCorrupted>()));
+      await db.customStatement(
+          "UPDATE profiles SET profile_json = '{\"goal\": \"nope\"}'");
+      await expectLater(DriftProfileRepository(db, clock).load(),
+          throwsA(isA<StorageCorrupted>()));
     });
   });
 
@@ -92,16 +100,21 @@ void main() {
       final plan = makePlan();
       final saved = await repo.savePlan(plan);
       expect(saved.id, isNotEmpty);
-      expect(saved.meals.every((m) => m.id.isNotEmpty && m.items.every((i) => i.id.isNotEmpty)), isTrue);
+      expect(
+          saved.meals.every(
+              (m) => m.id.isNotEmpty && m.items.every((i) => i.id.isNotEmpty)),
+          isTrue);
       final loaded = (await repo.planFor(testToday))!;
       expect(loaded.id, saved.id);
       expect(loaded.meals.map((m) => m.slot), plan.meals.map((m) => m.slot));
       expect(loaded.totals.kcal, closeTo(plan.totals.kcal, 1e-6));
-      expect(loaded.meals.first.items.first.oilLevel, plan.meals.first.items.first.oilLevel);
+      expect(loaded.meals.first.items.first.oilLevel,
+          plan.meals.first.items.first.oilLevel);
       expect(await repo.planFor(testToday.addDays(1)), isNull);
     });
 
-    test('a new plan for the same date replaces the old one (tombstoned)', () async {
+    test('a new plan for the same date replaces the old one (tombstoned)',
+        () async {
       final repo = plansRepo();
       await repo.savePlan(makePlan(seed: 1));
       final second = await repo.savePlan(makePlan(seed: 2));
@@ -111,26 +124,32 @@ void main() {
       expect(allRows, hasLength(2));
     });
 
-    test('re-saving one meal keeps item ids and leaves other meals alone', () async {
+    test('re-saving one meal keeps item ids and leaves other meals alone',
+        () async {
       final repo = plansRepo();
       final saved = await repo.savePlan(makePlan());
       final meal = saved.meals.first;
       final resized = meal.copyWith(items: [
-        for (final i in meal.items) const Planner().resizeItem(loadBundledPack(), i, servings: i.servings),
+        for (final i in meal.items)
+          const Planner()
+              .resizeItem(loadBundledPack(), i, servings: i.servings),
       ]);
       final again = await repo.saveMeal(saved.id, resized);
       expect(again.items.map((i) => i.id), meal.items.map((i) => i.id));
       final loaded = (await repo.planFor(testToday))!;
       expect(loaded.meals, hasLength(saved.meals.length));
       expect(loaded.meals.last.id, saved.meals.last.id);
-      final added = await repo.saveMeal(saved.id, PlannedMeal(
-        slot: MealSlot.snack,
-        minutesOfDay: 11 * 60,
-        comboId: null,
-        items: const [],
-      ));
+      final added = await repo.saveMeal(
+          saved.id,
+          PlannedMeal(
+            slot: MealSlot.snack,
+            minutesOfDay: 11 * 60,
+            comboId: null,
+            items: const [],
+          ));
       expect(added.id, isNotEmpty);
-      expect((await repo.planFor(testToday))!.meals, hasLength(saved.meals.length + 1));
+      expect((await repo.planFor(testToday))!.meals,
+          hasLength(saved.meals.length + 1));
     });
 
     test('plans between dates', () async {
@@ -172,9 +191,12 @@ void main() {
       final read = await repo.entriesFor(testToday);
       expect(read, hasLength(entries.length));
       expect(read.first.planItemId, plan.meals.first.items.first.id);
-      expect(read.first.nutrition.kcal, closeTo(entries.first.nutrition.kcal, 1e-9));
+      expect(read.first.nutrition.kcal,
+          closeTo(entries.first.nutrition.kcal, 1e-9));
       expect(read.first.source, LogSource.planned);
-      expect(await repo.entriesBetween(testToday.addDays(1), testToday.addDays(2)), isEmpty);
+      expect(
+          await repo.entriesBetween(testToday.addDays(1), testToday.addDays(2)),
+          isEmpty);
       await repo.remove([read.first.id]);
       expect(await repo.entriesFor(testToday), hasLength(entries.length - 1));
     });
@@ -183,10 +205,17 @@ void main() {
       final repo = DriftFoodLogRepository(db, clock);
       final plan = await plansRepo().savePlan(makePlan(seed: 1));
       await repo.add(logEntriesForMeal(
-          meal: plan.meals.first, date: testToday, pack: loadBundledPack(), nowUtc: clock.nowUtc(), newId: ids.newId));
-      final before = (await repo.entriesFor(testToday)).map((e) => e.nutrition.kcal).toList();
+          meal: plan.meals.first,
+          date: testToday,
+          pack: loadBundledPack(),
+          nowUtc: clock.nowUtc(),
+          newId: ids.newId));
+      final before = (await repo.entriesFor(testToday))
+          .map((e) => e.nutrition.kcal)
+          .toList();
       await plansRepo().savePlan(makePlan(seed: 7));
-      expect((await repo.entriesFor(testToday)).map((e) => e.nutrition.kcal), before);
+      expect((await repo.entriesFor(testToday)).map((e) => e.nutrition.kcal),
+          before);
     });
 
     test('quick-add entries need no plan item', () async {
@@ -198,7 +227,8 @@ void main() {
           slot: MealSlot.chai,
           source: LogSource.quickAdd,
           label: 'Biscuits',
-          nutrition: const Nutrition(kcal: 150, protein: 0, carbs: 0, fat: 0, fibre: 0),
+          nutrition: const Nutrition(
+              kcal: 150, protein: 0, carbs: 0, fat: 0, fibre: 0),
           loggedAtUtc: clock.nowUtc(),
         ),
       ]);
@@ -242,7 +272,8 @@ void main() {
         onboardingComplete: true,
         analyticsConsent: true,
         consentAsked: true,
-        reminders: const ReminderPreferences(enabled: true, enabledSlots: {MealSlot.dinner}),
+        reminders: const ReminderPreferences(
+            enabled: true, enabledSlots: {MealSlot.dinner}),
         lastReminderTimezone: 'Asia/Karachi',
         lowIntakeCheckDismissedOn: testToday,
       ));
@@ -261,10 +292,16 @@ void main() {
       await DriftProfileRepository(db, clock).save(setup());
       final plan = await plansRepo().savePlan(makePlan());
       await DriftFoodLogRepository(db, clock).add(logEntriesForMeal(
-          meal: plan.meals.first, date: testToday, pack: loadBundledPack(), nowUtc: clock.nowUtc(), newId: ids.newId));
+          meal: plan.meals.first,
+          date: testToday,
+          pack: loadBundledPack(),
+          nowUtc: clock.nowUtc(),
+          newId: ids.newId));
       await DriftWeightRepository(db, clock, ids).add(testToday, 70.5);
-      await DriftShoppingRepository(db, clock, ids).addManualItem(testToday, 'Milk');
-      await DriftSettingsRepository(db).save(const AppSettings(onboardingComplete: true));
+      await DriftShoppingRepository(db, clock, ids)
+          .addManualItem(testToday, 'Milk');
+      await DriftSettingsRepository(db)
+          .save(const AppSettings(onboardingComplete: true));
     }
 
     test('export → wipe → import restores everything', () async {
@@ -279,17 +316,24 @@ void main() {
       await portability.importAll(jsonDecode(text) as Map<String, Object?>);
       final again = await portability.exportAll();
       expect(jsonEncode(again['tables']), jsonEncode(exported['tables']));
-      expect((await DriftProfileRepository(db, clock).load())!.preferences.dietType, DietType.vegetarian);
-      expect((await DriftSettingsRepository(db).load()).onboardingComplete, isTrue);
+      expect(
+          (await DriftProfileRepository(db, clock).load())!
+              .preferences
+              .dietType,
+          DietType.vegetarian);
+      expect((await DriftSettingsRepository(db).load()).onboardingComplete,
+          isTrue);
     });
 
     test('an invalid file changes nothing', () async {
       await seed();
       final portability = DriftDataPortability(db, clock);
       final before = jsonEncode((await portability.exportAll())['tables']);
-      await expectLater(portability.importAll({'format': 'other'}), throwsA(isA<InvalidImportFile>()));
+      await expectLater(portability.importAll({'format': 'other'}),
+          throwsA(isA<InvalidImportFile>()));
       await expectLater(
-          portability.importAll({'format': DriftDataPortability.format, 'formatVersion': 99}),
+          portability.importAll(
+              {'format': DriftDataPortability.format, 'formatVersion': 99}),
           throwsA(isA<InvalidImportFile>()));
       await expectLater(
           portability.importAll({
@@ -320,23 +364,32 @@ void main() {
     setUp(() => dir = Directory.systemTemp.createTempSync('diet_db_'));
     tearDown(() => dir.deleteSync(recursive: true));
 
-    test('data survives the process being killed (close and reopen the file)', () async {
+    test('data survives the process being killed (close and reopen the file)',
+        () async {
       final file = File('${dir.path}/$databaseFileName');
       final first = await openCheckedDatabase(file);
       await DriftWeightRepository(first, clock, ids).add(testToday, 71);
       await first.close();
       final second = await openCheckedDatabase(file);
-      expect((await DriftWeightRepository(second, clock, ids).all()).single.weightKg, 71);
+      expect(
+          (await DriftWeightRepository(second, clock, ids).all())
+              .single
+              .weightKg,
+          71);
       await second.close();
     });
 
     test('a damaged file is reported, not reset', () async {
-      final file = File('${dir.path}/$databaseFileName')..writeAsBytesSync(List.filled(4096, 7));
-      await expectLater(openCheckedDatabase(file), throwsA(isA<StorageCorrupted>()));
-      expect(file.lengthSync(), 4096, reason: 'the damaged file is left untouched');
+      final file = File('${dir.path}/$databaseFileName')
+        ..writeAsBytesSync(List.filled(4096, 7));
+      await expectLater(
+          openCheckedDatabase(file), throwsA(isA<StorageCorrupted>()));
+      expect(file.lengthSync(), 4096,
+          reason: 'the damaged file is left untouched');
     });
 
-    test('migrations: every shipped schema opens with the current code', () async {
+    test('migrations: every shipped schema opens with the current code',
+        () async {
       // Shipped schema versions. Add each released version here with a fixture file.
       const shipped = [1];
       expect(shipped.last, AppDatabase(NativeDatabase.memory()).schemaVersion);
@@ -345,7 +398,8 @@ void main() {
       await DriftWeightRepository(v1, clock, ids).add(testToday, 70);
       await v1.close();
       final reopened = await openCheckedDatabase(file);
-      expect(await DriftWeightRepository(reopened, clock, ids).all(), hasLength(1));
+      expect(await DriftWeightRepository(reopened, clock, ids).all(),
+          hasLength(1));
       expect(await reopened.passesIntegrityCheck(), isTrue);
       await reopened.close();
     });
@@ -370,4 +424,3 @@ void main() {
     });
   });
 }
-

@@ -13,7 +13,12 @@ abstract class HistoryFixtures {
         proteinGrams: 92,
         carbsGrams: 220,
         fatGrams: 58,
-        topDishes: ['Daal chana', '2 tandoori roti', 'Chicken boti', 'Doodh patti'],
+        topDishes: [
+          'Daal chana',
+          '2 tandoori roti',
+          'Chicken boti',
+          'Doodh patti'
+        ],
       ),
       PastDayLogSnapshotViewModel(
         dateTitle: 'Sunday, 26 October',

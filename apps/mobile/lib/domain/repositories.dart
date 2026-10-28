@@ -83,7 +83,8 @@ abstract interface class WeightRepository {
 }
 
 class ManualShoppingItem {
-  const ManualShoppingItem({required this.id, required this.name, required this.purchased});
+  const ManualShoppingItem(
+      {required this.id, required this.name, required this.purchased});
 
   final String id;
   final String name;
@@ -132,11 +133,13 @@ class AppSettings {
       AppSettings(
         onboardingComplete: onboardingComplete ?? this.onboardingComplete,
         analyticsConsent: analyticsConsent ?? this.analyticsConsent,
-        crashReportingConsent: crashReportingConsent ?? this.crashReportingConsent,
+        crashReportingConsent:
+            crashReportingConsent ?? this.crashReportingConsent,
         consentAsked: consentAsked ?? this.consentAsked,
         reminders: reminders ?? this.reminders,
         lastReminderTimezone: lastReminderTimezone ?? this.lastReminderTimezone,
-        lowIntakeCheckDismissedOn: lowIntakeCheckDismissedOn ?? this.lowIntakeCheckDismissedOn,
+        lowIntakeCheckDismissedOn:
+            lowIntakeCheckDismissedOn ?? this.lowIntakeCheckDismissedOn,
       );
 }
 

@@ -12,8 +12,8 @@ final LocalDate testToday = LocalDate(2026, 10, 29);
 FoodPack? _pack;
 
 /// The real bundled Pakistan pack (draft data).
-FoodPack loadBundledPack() =>
-    _pack ??= FoodPackParser.parse(File('assets/packs/pk-core.json').readAsStringSync());
+FoodPack loadBundledPack() => _pack ??=
+    FoodPackParser.parse(File('assets/packs/pk-core.json').readAsStringSync());
 
 UserProfile profile({
   Goal goal = Goal.lose,

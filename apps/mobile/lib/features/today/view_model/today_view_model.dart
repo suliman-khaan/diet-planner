@@ -42,6 +42,15 @@ class NextMealViewModel {
 @immutable
 class TodayViewModel {
   final String dateDisplay;
+
+  /// 'Today', 'Yesterday', 'Tomorrow' or a weekday.
+  final String title;
+
+  /// Dev builds only: the plan uses food data no one has reviewed yet.
+  final bool usesDraftData;
+
+  /// Why automated plans are off (manual-only mode). Shown instead of targets.
+  final String? manualOnlyMessage;
   final bool isRamadanMode;
   final int? ramadanDay;
   final bool isManualOnly;
@@ -76,6 +85,9 @@ class TodayViewModel {
 
   const TodayViewModel({
     required this.dateDisplay,
+    this.title = 'Today',
+    this.usesDraftData = false,
+    this.manualOnlyMessage,
     this.isRamadanMode = false,
     this.ramadanDay,
     this.isManualOnly = false,
@@ -101,6 +113,9 @@ class TodayViewModel {
 
   TodayViewModel copyWith({
     String? dateDisplay,
+    String? title,
+    bool? usesDraftData,
+    String? manualOnlyMessage,
     bool? isRamadanMode,
     int? ramadanDay,
     bool? isManualOnly,
@@ -125,6 +140,9 @@ class TodayViewModel {
   }) {
     return TodayViewModel(
       dateDisplay: dateDisplay ?? this.dateDisplay,
+      title: title ?? this.title,
+      usesDraftData: usesDraftData ?? this.usesDraftData,
+      manualOnlyMessage: manualOnlyMessage ?? this.manualOnlyMessage,
       isRamadanMode: isRamadanMode ?? this.isRamadanMode,
       ramadanDay: ramadanDay ?? this.ramadanDay,
       isManualOnly: isManualOnly ?? this.isManualOnly,

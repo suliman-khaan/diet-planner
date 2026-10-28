@@ -15,12 +15,16 @@ const databaseFileName = 'diet_planner.sqlite';
 /// The file is never deleted or reset without the user choosing to.
 Future<AppDatabase> openAppDatabase() async {
   final dir = await getApplicationDocumentsDirectory();
-  return openCheckedDatabase(File(p.join(dir.path, databaseFileName)), background: true);
+  return openCheckedDatabase(File(p.join(dir.path, databaseFileName)),
+      background: true);
 }
 
 /// Opens [file] and runs SQLite's integrity check before anything else reads it.
-Future<AppDatabase> openCheckedDatabase(File file, {bool background = false}) async {
-  final db = AppDatabase(background ? NativeDatabase.createInBackground(file) : NativeDatabase(file));
+Future<AppDatabase> openCheckedDatabase(File file,
+    {bool background = false}) async {
+  final db = AppDatabase(background
+      ? NativeDatabase.createInBackground(file)
+      : NativeDatabase(file));
   try {
     if (!await db.passesIntegrityCheck()) {
       await db.close();

@@ -22,8 +22,10 @@ class FoodFilter {
   final bool allowDraftData;
 
   ExclusionReason? exclusionReason(Food food) {
-    if (!food.status.isVerified && !allowDraftData) return ExclusionReason.notReviewed;
-    if (preferences.excludedFoodIds.contains(food.id)) return ExclusionReason.excludedFood;
+    if (!food.status.isVerified && !allowDraftData)
+      return ExclusionReason.notReviewed;
+    if (preferences.excludedFoodIds.contains(food.id))
+      return ExclusionReason.excludedFood;
     if (!_fitsDiet(food)) return ExclusionReason.dietType;
     if (preferences.allergies.isNotEmpty) {
       // Unknown allergen status is never treated as safe. Derived (unreviewed) lists are
@@ -31,14 +33,16 @@ class FoodFilter {
       final statusTrusted =
           food.allergenReview == AllergenReview.reviewed || allowDraftData;
       if (!statusTrusted) return ExclusionReason.allergenStatusUnknown;
-      if (food.allergens.any(preferences.allergies.contains)) return ExclusionReason.allergen;
+      if (food.allergens.any(preferences.allergies.contains))
+        return ExclusionReason.allergen;
     }
     final excluded = preferences.excludedIngredientIds;
     if (excluded.isNotEmpty) {
       if (food.ingredients.any((i) => excluded.contains(i.ingredientId))) {
         return ExclusionReason.excludedIngredient;
       }
-      if (food.oilIngredientId != null && excluded.contains(food.oilIngredientId)) {
+      if (food.oilIngredientId != null &&
+          excluded.contains(food.oilIngredientId)) {
         return ExclusionReason.excludedIngredient;
       }
     }
@@ -52,8 +56,12 @@ class FoodFilter {
     return switch (preferences.dietType) {
       DietType.everything => true,
       DietType.pescatarian => !d.containsMeat,
-      DietType.vegetarian => !d.containsMeat && !d.containsFish && !d.containsEgg,
-      DietType.vegan => !d.containsMeat && !d.containsFish && !d.containsEgg && !d.containsDairy,
+      DietType.vegetarian =>
+        !d.containsMeat && !d.containsFish && !d.containsEgg,
+      DietType.vegan => !d.containsMeat &&
+          !d.containsFish &&
+          !d.containsEgg &&
+          !d.containsDairy,
     };
   }
 }

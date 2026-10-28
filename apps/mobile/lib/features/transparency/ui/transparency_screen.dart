@@ -48,7 +48,8 @@ class TransparencyScreen extends StatelessWidget {
                       Text(
                         'Mifflin-St Jeor Equation',
                         style: AppTypography.subheading.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                     ],
@@ -57,7 +58,8 @@ class TransparencyScreen extends StatelessWidget {
                   Text(
                     'We calculate your Basal Metabolic Rate (BMR) from your height, weight, age, and biological sex, then apply an activity multiplier.',
                     style: AppTypography.body.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                 ],
@@ -76,7 +78,8 @@ class TransparencyScreen extends StatelessWidget {
                       Text(
                         'Strict Calorie Floors & Rate Caps',
                         style: AppTypography.subheading.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                     ],
@@ -85,7 +88,8 @@ class TransparencyScreen extends StatelessWidget {
                   Text(
                     'We never generate automated targets below 1,200 kcal/day for women or 1,500 kcal/day for men. Weight-loss rate caps are strictly limited to ≤ 0.75 kg per week for sustainable health.',
                     style: AppTypography.body.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                 ],
@@ -104,7 +108,8 @@ class TransparencyScreen extends StatelessWidget {
                       Text(
                         'TargetPolicy Version',
                         style: AppTypography.subheading.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                     ],
@@ -144,7 +149,8 @@ class GentleCheckInSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
       ),
       padding: AppSpacing.screenPadding,
       child: Column(
@@ -157,12 +163,15 @@ class GentleCheckInSheet extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                  color: isDark
+                      ? AppColors.darkPrimarySoft
+                      : AppColors.lightPrimarySoft,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   Icons.favorite_outline,
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color:
+                      isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                 ),
               ),
               const SizedBox(width: 12),

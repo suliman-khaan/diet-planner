@@ -20,8 +20,10 @@ import 'package:mobile/domain/shopping/shopping.dart';
 import 'helpers.dart';
 
 /// Fixed inputs for tests that need a plan but do not test the planner.
-const _target = NutritionTarget(kcal: 1800, proteinG: 90, carbsG: 225, fatG: 60, fibreG: 25);
-const _filter = FoodFilter(preferences: DietaryPreferences(), allowDraftData: true);
+const _target = NutritionTarget(
+    kcal: 1800, proteinG: 90, carbsG: 225, fatG: 60, fibreG: 25);
+const _filter =
+    FoodFilter(preferences: DietaryPreferences(), allowDraftData: true);
 
 void main() {
   final pack = loadBundledPack();
@@ -40,7 +42,8 @@ void main() {
       expect(d.isWithin(d.addDays(-1), d.addDays(1)), isTrue);
       expect(d.weekday, DateTime.saturday);
       expect(d.atMinutes(21 * 60 + 30), DateTime(2026, 2, 28, 21, 30));
-      expect(LocalDate.fromDateTime(DateTime(2026, 1, 2, 23, 59)), LocalDate(2026, 1, 2));
+      expect(LocalDate.fromDateTime(DateTime(2026, 1, 2, 23, 59)),
+          LocalDate(2026, 1, 2));
       expect({d, LocalDate(2026, 2, 28)}.length, 1);
       expect(() => LocalDate(2026, 2, 30), throwsArgumentError);
       expect(() => LocalDate.parse('2026/02/28'), throwsFormatException);
@@ -56,7 +59,14 @@ void main() {
       expect(Nutrition.fromJson(a.toJson()), a);
       expect(a.hashCode, Nutrition.fromJson(a.toJson()).hashCode);
       expect(a.toString(), contains('100.0 kcal'));
-      expect(() => Nutrition.fromJson(const {'kcal': -1, 'protein': 0, 'carbs': 0, 'fat': 0, 'fibre': 0}),
+      expect(
+          () => Nutrition.fromJson(const {
+                'kcal': -1,
+                'protein': 0,
+                'carbs': 0,
+                'fat': 0,
+                'fibre': 0
+              }),
           throwsFormatException);
     });
 
@@ -92,12 +102,14 @@ void main() {
       expect(pack.foods.length, greaterThanOrEqualTo(50));
       expect(pack.combos, isNotEmpty);
       expect(pack.measures.map((m) => m.id), contains('katori'));
-      expect(pack.reviewedFoodCount, 0, reason: 'nothing is reviewed until the nutritionist signs off');
+      expect(pack.reviewedFoodCount, 0,
+          reason: 'nothing is reviewed until the nutritionist signs off');
       final karahi = pack.food('chicken-karahi')!;
       expect(karahi.nameUr, isNotEmpty);
       expect(karahi.defaultServing.grams, 180);
       expect(karahi.servingById('missing').id, karahi.defaultServingId);
-      expect(karahi.oilProfile!.gramsPer100g(OilLevel.rich), greaterThan(karahi.oilProfile!.light));
+      expect(karahi.oilProfile!.gramsPer100g(OilLevel.rich),
+          greaterThan(karahi.oilProfile!.light));
       expect(karahi.portion.clampAndSnap(10), karahi.portion.max);
       expect(karahi.portion.clampAndSnap(1.2), 1.0);
       expect(pack.ingredient('bread-white')!.isReadyMade, isTrue);
@@ -108,9 +120,11 @@ void main() {
 
     test('rejects malformed or inconsistent packs', () {
       expect(() => FoodPackParser.parse('not json'), throwsFormatException);
-      expect(() => FoodPackParser.parse('{"schemaVersion": 2}'), throwsFormatException);
+      expect(() => FoodPackParser.parse('{"schemaVersion": 2}'),
+          throwsFormatException);
       expect(() => FoodPackParser.parse('[]'), throwsFormatException);
-      const ingredient = '{"id":"a","name":"A","category":"grain","per100g":{"kcal":1,"protein":0,"carbs":0,"fat":0,"fibre":0},"allergens":[]}';
+      const ingredient =
+          '{"id":"a","name":"A","category":"grain","per100g":{"kcal":1,"protein":0,"carbs":0,"fat":0,"fibre":0},"allergens":[]}';
       String food(String extra) =>
           '{"id":"f","revision":1,"names":{"en":"F","romanUrdu":["f"]},"category":"c","role":"main",'
           '"nutritionPer100g":{"kcal":1,"protein":0,"carbs":0,"fat":0,"fibre":0},'
@@ -119,18 +133,28 @@ void main() {
           '"dietary":{},"allergens":[],"allergenReview":"derived","status":"draft","source":"x"$extra}';
       String packWith(String f, {String combos = '[]'}) =>
           '{"schemaVersion":1,"packId":"p","packVersion":"1","status":"draft","ingredients":[$ingredient],"foods":[$f],"combos":$combos}';
-      expect(FoodPackParser.parse(packWith(food(',"ingredientsPer100g":[{"id":"a","grams":50}]'))).foods, hasLength(1));
-      expect(() => FoodPackParser.parse(packWith(food(',"ingredientsPer100g":[{"id":"zzz","grams":50}]'))),
-          throwsFormatException);
-      expect(() => FoodPackParser.parse(packWith(food(',"ingredientsPer100g":[{"id":"a","grams":-1}]'))),
-          throwsFormatException);
       expect(
-          () => FoodPackParser.parse(packWith(food(',"ingredientsPer100g":[{"id":"a","grams":5}]'),
-              combos: '[{"id":"c","slots":["lunch"],"items":[{"foodId":"ghost","servings":1}]}]')),
+          FoodPackParser.parse(packWith(
+                  food(',"ingredientsPer100g":[{"id":"a","grams":50}]')))
+              .foods,
+          hasLength(1));
+      expect(
+          () => FoodPackParser.parse(packWith(
+              food(',"ingredientsPer100g":[{"id":"zzz","grams":50}]'))),
           throwsFormatException);
       expect(
           () => FoodPackParser.parse(
-              packWith(food(',"ingredientsPer100g":[{"id":"a","grams":5}],"oilPer100g":{"light":1,"normal":2,"rich":3},"oilIngredient":"nope"'))),
+              packWith(food(',"ingredientsPer100g":[{"id":"a","grams":-1}]'))),
+          throwsFormatException);
+      expect(
+          () => FoodPackParser.parse(packWith(
+              food(',"ingredientsPer100g":[{"id":"a","grams":5}]'),
+              combos:
+                  '[{"id":"c","slots":["lunch"],"items":[{"foodId":"ghost","servings":1}]}]')),
+          throwsFormatException);
+      expect(
+          () => FoodPackParser.parse(packWith(food(
+              ',"ingredientsPer100g":[{"id":"a","grams":5}],"oilPer100g":{"light":1,"normal":2,"rich":3},"oilIngredient":"nope"'))),
           throwsFormatException);
     });
   });
@@ -185,13 +209,22 @@ void main() {
 
     test('marking a meal eaten snapshots each item', () {
       final meal = plan.meals.first.copyWith(
-        items: [for (final i in plan.meals.first.items) i.copyWith(id: 'item-${i.foodId}')],
+        items: [
+          for (final i in plan.meals.first.items)
+            i.copyWith(id: 'item-${i.foodId}')
+        ],
       );
-      final entries = logEntriesForMeal(meal: meal, date: testToday, pack: pack, nowUtc: DateTime.utc(2026), newId: newId);
+      final entries = logEntriesForMeal(
+          meal: meal,
+          date: testToday,
+          pack: pack,
+          nowUtc: DateTime.utc(2026),
+          newId: newId);
       expect(entries, hasLength(meal.items.length));
       expect(entries.first.source, LogSource.planned);
       expect(entries.first.packVersion, pack.packVersion);
-      expect(Nutrition.sum(entries.map((e) => e.nutrition)).kcal, closeTo(meal.nutrition.kcal, 1e-9));
+      expect(Nutrition.sum(entries.map((e) => e.nutrition)).kcal,
+          closeTo(meal.nutrition.kcal, 1e-9));
       expect(isPlanItemLogged(meal.items.first.id, entries), isTrue);
       expect(isPlanItemLogged('other', entries), isFalse);
     });
@@ -203,15 +236,27 @@ void main() {
       expect(s.mealsPlanned, plan.meals.length);
     });
 
-    test('some meals logged = partial; all = complete; planned meals never assumed eaten', () {
-      final first = logEntriesForMeal(meal: plan.meals.first, date: testToday, pack: pack, nowUtc: DateTime.utc(2026), newId: newId);
+    test(
+        'some meals logged = partial; all = complete; planned meals never assumed eaten',
+        () {
+      final first = logEntriesForMeal(
+          meal: plan.meals.first,
+          date: testToday,
+          pack: pack,
+          nowUtc: DateTime.utc(2026),
+          newId: newId);
       final partial = summarizeDay(testToday, plan, first);
       expect(partial.status, DayLogStatus.partial);
       expect(partial.mealsLogged, 1);
       expect(partial.eaten!.kcal, lessThan(plan.totals.kcal));
       final all = [
         for (final m in plan.meals)
-          ...logEntriesForMeal(meal: m, date: testToday, pack: pack, nowUtc: DateTime.utc(2026), newId: newId),
+          ...logEntriesForMeal(
+              meal: m,
+              date: testToday,
+              pack: pack,
+              nowUtc: DateTime.utc(2026),
+              newId: newId),
       ];
       expect(summarizeDay(testToday, plan, all).status, DayLogStatus.complete);
       final noPlan = summarizeDay(testToday, null, first);
@@ -241,7 +286,9 @@ void main() {
     DaySummary day(int offset, double? kcal, DayLogStatus status) => DaySummary(
           date: testToday.addDays(-offset),
           status: status,
-          eaten: kcal == null ? null : Nutrition(kcal: kcal, protein: 0, carbs: 0, fat: 0, fibre: 0),
+          eaten: kcal == null
+              ? null
+              : Nutrition(kcal: kcal, protein: 0, carbs: 0, fat: 0, fibre: 0),
           mealsLogged: 3,
           mealsPlanned: 3,
         );
@@ -270,16 +317,24 @@ void main() {
             day(3, 500, DayLogStatus.complete),
           ]),
           isFalse);
-      expect(check.shouldCheckIn([day(1, null, DayLogStatus.notLogged)]), isFalse);
+      expect(
+          check.shouldCheckIn([day(1, null, DayLogStatus.notLogged)]), isFalse);
       expect(check.shouldCheckIn(const []), isFalse);
     });
   });
 
   group('Shopping list', () {
-    test('aggregates matching ingredients from recipes and oil, skips water', () {
-      final roti = planner.itemFor(pack, pack.food('roti')!, 2, OilLevel.normal);
-      final paratha = planner.itemFor(pack, pack.food('paratha')!, 1, OilLevel.normal);
-      final meal = PlannedMeal(slot: MealSlot.breakfast, minutesOfDay: 480, comboId: null, items: [roti, paratha]);
+    test('aggregates matching ingredients from recipes and oil, skips water',
+        () {
+      final roti =
+          planner.itemFor(pack, pack.food('roti')!, 2, OilLevel.normal);
+      final paratha =
+          planner.itemFor(pack, pack.food('paratha')!, 1, OilLevel.normal);
+      final meal = PlannedMeal(
+          slot: MealSlot.breakfast,
+          minutesOfDay: 480,
+          comboId: null,
+          items: [roti, paratha]);
       final lines = shoppingLinesFor(pack, [meal]);
       final atta = lines.firstWhere((l) => l.ingredientId == 'atta');
       // 2 rotis × 40 g atta + 1 paratha × 50 g atta.
@@ -290,70 +345,122 @@ void main() {
       expect(oil.amount, closeTo(70 * 11 / 100, 0.01));
     });
 
-    test('scales with portions, keeps units separate and marks ready-made items', () {
-      final chai = planner.itemFor(pack, pack.food('doodh-patti')!, 2, OilLevel.normal);
-      final bread = planner.itemFor(pack, pack.food('bread-slice')!, 2, OilLevel.normal);
+    test(
+        'scales with portions, keeps units separate and marks ready-made items',
+        () {
+      final chai =
+          planner.itemFor(pack, pack.food('doodh-patti')!, 2, OilLevel.normal);
+      final bread =
+          planner.itemFor(pack, pack.food('bread-slice')!, 2, OilLevel.normal);
       final lines = shoppingLinesFor(pack, [
-        PlannedMeal(slot: MealSlot.breakfast, minutesOfDay: 480, comboId: null, items: [chai, bread]),
+        PlannedMeal(
+            slot: MealSlot.breakfast,
+            minutesOfDay: 480,
+            comboId: null,
+            items: [chai, bread]),
       ]);
       final milk = lines.firstWhere((l) => l.ingredientId == 'milk');
       expect(milk.unit, ShoppingUnit.millilitres);
       expect(milk.amount, closeTo(240, 0.5));
-      expect(lines.firstWhere((l) => l.ingredientId == 'bread-white').isReadyMade, isTrue);
+      expect(
+          lines.firstWhere((l) => l.ingredientId == 'bread-white').isReadyMade,
+          isTrue);
       expect(lines.any((l) => l.ingredientId == 'tea-brewed'), isFalse);
     });
   });
 
   group('Reminders', () {
-    final schedule = MealSchedule.defaults.copyWith(ramadanStart: LocalDate(2026, 11, 2), ramadanEnd: LocalDate(2026, 11, 3));
+    final schedule = MealSchedule.defaults.copyWith(
+        ramadanStart: LocalDate(2026, 11, 2),
+        ramadanEnd: LocalDate(2026, 11, 3));
     const prefs = ReminderPreferences(
       enabled: true,
-      enabledSlots: {MealSlot.breakfast, MealSlot.lunch, MealSlot.dinner, MealSlot.sehri, MealSlot.iftar},
+      enabledSlots: {
+        MealSlot.breakfast,
+        MealSlot.lunch,
+        MealSlot.dinner,
+        MealSlot.sehri,
+        MealSlot.iftar
+      },
     );
 
     test('ids are stable per date and slot', () {
-      expect(reminderIdFor(testToday, MealSlot.dinner), 20261029 * 10 + MealSlot.dinner.index);
+      expect(reminderIdFor(testToday, MealSlot.dinner),
+          20261029 * 10 + MealSlot.dinner.index);
       expect(reminderIdFor(testToday, MealSlot.dinner), lessThan(2147483647));
     });
 
-    test('switches to sehri and iftar on Ramadan dates and back afterwards', () {
-      final r = upcomingReminders(schedule: schedule, prefs: prefs, from: testToday, nowMinutes: 0, days: 7);
-      final nov2 = r.where((o) => o.date == LocalDate(2026, 11, 2)).map((o) => o.slot).toSet();
+    test('switches to sehri and iftar on Ramadan dates and back afterwards',
+        () {
+      final r = upcomingReminders(
+          schedule: schedule,
+          prefs: prefs,
+          from: testToday,
+          nowMinutes: 0,
+          days: 7);
+      final nov2 = r
+          .where((o) => o.date == LocalDate(2026, 11, 2))
+          .map((o) => o.slot)
+          .toSet();
       expect(nov2, {MealSlot.sehri, MealSlot.iftar, MealSlot.dinner});
-      final nov4 = r.where((o) => o.date == LocalDate(2026, 11, 4)).map((o) => o.slot).toSet();
+      final nov4 = r
+          .where((o) => o.date == LocalDate(2026, 11, 4))
+          .map((o) => o.slot)
+          .toSet();
       expect(nov4, {MealSlot.breakfast, MealSlot.lunch, MealSlot.dinner});
-      expect(r.map((o) => o.id).toSet().length, r.length, reason: 'no duplicates');
+      expect(r.map((o) => o.id).toSet().length, r.length,
+          reason: 'no duplicates');
       expect(schedule.ramadanDay(LocalDate(2026, 11, 3)), 2);
       expect(schedule.ramadanDay(testToday), isNull);
     });
 
-    test('skips logged meals, past times today, quiet hours (except sehri) and disabled reminders', () {
+    test(
+        'skips logged meals, past times today, quiet hours (except sehri) and disabled reminders',
+        () {
       final r = upcomingReminders(
         schedule: schedule,
-        prefs: prefs.copyWith(quietStartMinutes: 21 * 60, quietEndMinutes: 6 * 60),
+        prefs:
+            prefs.copyWith(quietStartMinutes: 21 * 60, quietEndMinutes: 6 * 60),
         from: testToday,
         nowMinutes: 9 * 60,
         days: 5,
-        loggedSlots: {testToday: {MealSlot.lunch}},
+        loggedSlots: {
+          testToday: {MealSlot.lunch}
+        },
       );
       final today = r.where((o) => o.date == testToday).map((o) => o.slot);
-      expect(today, isEmpty, reason: 'breakfast past, lunch logged, dinner in quiet hours');
-      final ramadan = r.where((o) => o.date == LocalDate(2026, 11, 2)).map((o) => o.slot).toSet();
+      expect(today, isEmpty,
+          reason: 'breakfast past, lunch logged, dinner in quiet hours');
+      final ramadan = r
+          .where((o) => o.date == LocalDate(2026, 11, 2))
+          .map((o) => o.slot)
+          .toSet();
       expect(ramadan, contains(MealSlot.sehri));
       expect(ramadan, isNot(contains(MealSlot.dinner)));
       expect(
           upcomingReminders(
-              schedule: schedule, prefs: const ReminderPreferences(), from: testToday, nowMinutes: 0),
+              schedule: schedule,
+              prefs: const ReminderPreferences(),
+              from: testToday,
+              nowMinutes: 0),
           isEmpty);
     });
 
     test('quiet hours work across midnight and can be off', () {
-      const p = ReminderPreferences(quietStartMinutes: 23 * 60, quietEndMinutes: 7 * 60);
+      const p = ReminderPreferences(
+          quietStartMinutes: 23 * 60, quietEndMinutes: 7 * 60);
       expect(p.isQuiet(23 * 60 + 30), isTrue);
       expect(p.isQuiet(6 * 60), isTrue);
       expect(p.isQuiet(12 * 60), isFalse);
-      expect(const ReminderPreferences(quietStartMinutes: 600, quietEndMinutes: 600).isQuiet(600), isFalse);
-      expect(const ReminderPreferences(quietStartMinutes: 60, quietEndMinutes: 120).isQuiet(90), isTrue);
+      expect(
+          const ReminderPreferences(
+                  quietStartMinutes: 600, quietEndMinutes: 600)
+              .isQuiet(600),
+          isFalse);
+      expect(
+          const ReminderPreferences(quietStartMinutes: 60, quietEndMinutes: 120)
+              .isQuiet(90),
+          isTrue);
       final back = ReminderPreferences.fromJson(prefs.toJson());
       expect(back.enabledSlots, prefs.enabledSlots);
       expect(back.enabled, isTrue);
@@ -362,7 +469,8 @@ void main() {
 
   group('Schedules, preferences and settings', () {
     test('schedule slots are time-ordered and survive JSON', () {
-      final s = MealSchedule.defaults.copyWith(ramadanStart: testToday, ramadanEnd: testToday.addDays(29));
+      final s = MealSchedule.defaults
+          .copyWith(ramadanStart: testToday, ramadanEnd: testToday.addDays(29));
       expect(s.slotsFor(testToday).first.slot, MealSlot.sehri);
       expect(s.slotsFor(testToday.addDays(40)).first.slot, MealSlot.breakfast);
       final back = MealSchedule.fromJson(s.toJson());
@@ -411,4 +519,3 @@ void main() {
     });
   });
 }
-

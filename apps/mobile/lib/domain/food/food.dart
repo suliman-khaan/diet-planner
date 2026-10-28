@@ -64,7 +64,8 @@ class PortionRule {
 
 /// Grams of cooking oil per 100 g of cooked dish at each level.
 class OilProfile {
-  const OilProfile({required this.light, required this.normal, required this.rich});
+  const OilProfile(
+      {required this.light, required this.normal, required this.rich});
 
   final double light;
   final double normal;
@@ -92,7 +93,8 @@ class DietaryFlags {
 }
 
 class IngredientShare {
-  const IngredientShare({required this.ingredientId, required this.gramsPer100g});
+  const IngredientShare(
+      {required this.ingredientId, required this.gramsPer100g});
 
   final String ingredientId;
 
@@ -149,10 +151,11 @@ class Food {
   final ContentStatus status;
   final String source;
 
-  Serving get defaultServing => servings.firstWhere((s) => s.id == defaultServingId);
+  Serving get defaultServing =>
+      servings.firstWhere((s) => s.id == defaultServingId);
 
-  Serving servingById(String servingId) =>
-      servings.firstWhere((s) => s.id == servingId, orElse: () => defaultServing);
+  Serving servingById(String servingId) => servings
+      .firstWhere((s) => s.id == servingId, orElse: () => defaultServing);
 
   bool get hasOil => oilProfile != null && oilIngredientId != null;
 }

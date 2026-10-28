@@ -46,7 +46,8 @@ class DietPlannerPrototypeApp extends StatefulWidget {
   const DietPlannerPrototypeApp({super.key});
 
   @override
-  State<DietPlannerPrototypeApp> createState() => _DietPlannerPrototypeAppState();
+  State<DietPlannerPrototypeApp> createState() =>
+      _DietPlannerPrototypeAppState();
 }
 
 class _DietPlannerPrototypeAppState extends State<DietPlannerPrototypeApp> {
@@ -56,7 +57,8 @@ class _DietPlannerPrototypeAppState extends State<DietPlannerPrototypeApp> {
     setState(() {
       final isCurrentlyDark = _themeMode == ThemeMode.dark ||
           (_themeMode == ThemeMode.system &&
-              WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark);
+              WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+                  Brightness.dark);
       _themeMode = isCurrentlyDark ? ThemeMode.light : ThemeMode.dark;
     });
   }
@@ -108,7 +110,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
   void _filterFoods() {
     var results = FoodsFixtures.allCatalogueFoods;
     if (_foodsSelectedCategory != 'All') {
-      results = results.where((f) => f.category == _foodsSelectedCategory).toList();
+      results =
+          results.where((f) => f.category == _foodsSelectedCategory).toList();
     }
     if (_foodsSearchQuery.trim().isNotEmpty) {
       final q = _foodsSearchQuery.trim().toLowerCase();
@@ -131,7 +134,10 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
   void _recalculateTarget() {
     final isMale = _onboardingVm.sex == BiologicalSex.male;
     final age = 2026 - _onboardingVm.birthYear;
-    final bmr = (10 * _onboardingVm.weightKg) + (6.25 * _onboardingVm.heightCm) - (5 * age) + (isMale ? 5 : -161);
+    final bmr = (10 * _onboardingVm.weightKg) +
+        (6.25 * _onboardingVm.heightCm) -
+        (5 * age) +
+        (isMale ? 5 : -161);
 
     double activityMult;
     switch (_onboardingVm.activityLevel) {
@@ -177,19 +183,26 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
     setState(() {
       switch (_onboardingVm.currentStep) {
         case OnboardingStep.welcome:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.goal, currentStepIndex: 2);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.goal, currentStepIndex: 2);
         case OnboardingStep.goal:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.aboutYou, currentStepIndex: 3);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.aboutYou, currentStepIndex: 3);
         case OnboardingStep.aboutYou:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.activity, currentStepIndex: 4);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.activity, currentStepIndex: 4);
         case OnboardingStep.activity:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.eligibility, currentStepIndex: 5);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.eligibility, currentStepIndex: 5);
         case OnboardingStep.eligibility:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.dietary, currentStepIndex: 6);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.dietary, currentStepIndex: 6);
         case OnboardingStep.dietary:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.cookingRichness, currentStepIndex: 7);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.cookingRichness, currentStepIndex: 7);
         case OnboardingStep.cookingRichness:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.targetSummary, currentStepIndex: 8);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.targetSummary, currentStepIndex: 8);
         case OnboardingStep.targetSummary:
           _isOnboarding = false;
         default:
@@ -202,19 +215,26 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
     setState(() {
       switch (_onboardingVm.currentStep) {
         case OnboardingStep.goal:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.welcome, currentStepIndex: 1);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.welcome, currentStepIndex: 1);
         case OnboardingStep.aboutYou:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.goal, currentStepIndex: 2);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.goal, currentStepIndex: 2);
         case OnboardingStep.activity:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.aboutYou, currentStepIndex: 3);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.aboutYou, currentStepIndex: 3);
         case OnboardingStep.eligibility:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.activity, currentStepIndex: 4);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.activity, currentStepIndex: 4);
         case OnboardingStep.dietary:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.eligibility, currentStepIndex: 5);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.eligibility, currentStepIndex: 5);
         case OnboardingStep.cookingRichness:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.dietary, currentStepIndex: 6);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.dietary, currentStepIndex: 6);
         case OnboardingStep.targetSummary:
-          _onboardingVm = _onboardingVm.copyWith(currentStep: OnboardingStep.cookingRichness, currentStepIndex: 7);
+          _onboardingVm = _onboardingVm.copyWith(
+              currentStep: OnboardingStep.cookingRichness, currentStepIndex: 7);
         default:
           break;
       }
@@ -286,7 +306,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                     onFoodSelected: (food) {
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Added ${food.englishName} to dinner')),
+                        SnackBar(
+                            content:
+                                Text('Added ${food.englishName} to dinner')),
                       );
                     },
                   ),
@@ -310,7 +332,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
       builder: (ctx) => Container(
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         child: SingleChildScrollView(
@@ -324,7 +347,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    color: isDark
+                        ? AppColors.darkBorderStrong
+                        : AppColors.lightBorderStrong,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -349,13 +374,17 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    _buildProfileRow('Sex & Age', 'Male · 28 years old', isDark),
+                    _buildProfileRow(
+                        'Sex & Age', 'Male · 28 years old', isDark),
                     const Divider(height: 16),
-                    _buildProfileRow('Height & Weight', '175 cm · 78.4 kg (BMI 25.6)', isDark),
+                    _buildProfileRow('Height & Weight',
+                        '175 cm · 78.4 kg (BMI 25.6)', isDark),
                     const Divider(height: 16),
-                    _buildProfileRow('Activity Level', 'Moderate (3–5 workouts/week)', isDark),
+                    _buildProfileRow('Activity Level',
+                        'Moderate (3–5 workouts/week)', isDark),
                     const Divider(height: 16),
-                    _buildProfileRow('Daily Calorie Target', '1,850 kcal/day (400 deficit)', isDark),
+                    _buildProfileRow('Daily Calorie Target',
+                        '1,850 kcal/day (400 deficit)', isDark),
                   ],
                 ),
               ),
@@ -417,7 +446,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         builder: (ctx, setSheetState) => Container(
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppRadii.card)),
           ),
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           child: Column(
@@ -430,7 +460,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    color: isDark
+                        ? AppColors.darkBorderStrong
+                        : AppColors.lightBorderStrong,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -493,7 +525,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         builder: (ctx, setSheetState) => Container(
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppRadii.card)),
           ),
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           child: Column(
@@ -506,7 +539,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    color: isDark
+                        ? AppColors.darkBorderStrong
+                        : AppColors.lightBorderStrong,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -535,16 +570,24 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
               ),
               const SizedBox(height: 16),
               AppCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Column(
                   children: [
-                    _buildSwitchItem('Vegetarian only', 'Excludes meat, chicken, fish', false, isDark),
+                    _buildSwitchItem('Vegetarian only',
+                        'Excludes meat, chicken, fish', false, isDark),
                     const Divider(height: 1),
-                    _buildSwitchItem('Nut allergy', 'Excludes peanuts, almonds, pistachios', true, isDark),
+                    _buildSwitchItem('Nut allergy',
+                        'Excludes peanuts, almonds, pistachios', true, isDark),
                     const Divider(height: 1),
-                    _buildSwitchItem('Lactose intolerant', 'Excludes whole milk, doodh patti, lassi', false, isDark),
+                    _buildSwitchItem(
+                        'Lactose intolerant',
+                        'Excludes whole milk, doodh patti, lassi',
+                        false,
+                        isDark),
                     const Divider(height: 1),
-                    _buildSwitchItem('Gluten sensitive', 'Excludes wheat roti, parathas, naan', false, isDark),
+                    _buildSwitchItem('Gluten sensitive',
+                        'Excludes wheat roti, parathas, naan', false, isDark),
                   ],
                 ),
               ),
@@ -554,7 +597,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                 onPressed: () {
                   Navigator.of(ctx).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Allergies and exclusions saved.')),
+                    const SnackBar(
+                        content: Text('Allergies and exclusions saved.')),
                   );
                 },
               ),
@@ -565,7 +609,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
     );
   }
 
-  Widget _buildSwitchItem(String title, String subtitle, bool initial, bool isDark) {
+  Widget _buildSwitchItem(
+      String title, String subtitle, bool initial, bool isDark) {
     return StatefulBuilder(
       builder: (ctx, setItemState) {
         return SwitchListTile(
@@ -599,7 +644,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
       builder: (ctx) => Container(
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         child: Column(
@@ -612,7 +658,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                  color: isDark
+                      ? AppColors.darkBorderStrong
+                      : AppColors.lightBorderStrong,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -639,9 +687,11 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.check, color: AppColors.lightPrimary),
+                    leading:
+                        const Icon(Icons.check, color: AppColors.lightPrimary),
                     title: const Text('English (Default)'),
-                    subtitle: const Text('Full interface and food catalogue in English'),
+                    subtitle: const Text(
+                        'Full interface and food catalogue in English'),
                     onTap: () => Navigator.of(ctx).pop(),
                   ),
                   const Divider(height: 1),
@@ -649,11 +699,14 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                     contentPadding: EdgeInsets.zero,
                     leading: const SizedBox(width: 24),
                     title: const Text('اردو (Urdu)'),
-                    subtitle: const Text('Coming in next update (Nastaliq translation in review)'),
+                    subtitle: const Text(
+                        'Coming in next update (Nastaliq translation in review)'),
                     onTap: () {
                       Navigator.of(ctx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Urdu localization is in review and coming in v0.2.0')),
+                        const SnackBar(
+                            content: Text(
+                                'Urdu localization is in review and coming in v0.2.0')),
                       );
                     },
                   ),
@@ -695,7 +748,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
               _recalculateTarget();
             });
           },
-          onRichnessChanged: (r) => setState(() => _onboardingVm = _onboardingVm.copyWith(cookingRichness: r)),
+          onRichnessChanged: (r) => setState(
+              () => _onboardingVm = _onboardingVm.copyWith(cookingRichness: r)),
           onSexChanged: (s) {
             setState(() {
               _onboardingVm = _onboardingVm.copyWith(sex: s);
@@ -720,7 +774,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
               _recalculateTarget();
             });
           },
-          onDietTypeChanged: (d) => setState(() => _onboardingVm = _onboardingVm.copyWith(dietType: d)),
+          onDietTypeChanged: (d) => setState(
+              () => _onboardingVm = _onboardingVm.copyWith(dietType: d)),
           onAllergyToggled: (allergy) {
             setState(() {
               final list = List<String>.from(_onboardingVm.allergies);
@@ -740,8 +795,10 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
               if (_onboardingVm.recommendedCalories != null) {
                 _todayVm = _todayVm.copyWith(
                   targetKcal: _onboardingVm.recommendedCalories!,
-                  proteinTarget: _onboardingVm.recommendedProtein ?? _todayVm.proteinTarget,
-                  carbsTarget: _onboardingVm.recommendedCarbs ?? _todayVm.carbsTarget,
+                  proteinTarget: _onboardingVm.recommendedProtein ??
+                      _todayVm.proteinTarget,
+                  carbsTarget:
+                      _onboardingVm.recommendedCarbs ?? _todayVm.carbsTarget,
                   fatTarget: _onboardingVm.recommendedFat ?? _todayVm.fatTarget,
                 );
               }
@@ -770,7 +827,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
             if (_currentTab == AppTab.today)
               IconButton(
                 icon: const Icon(Icons.mosque),
-                tooltip: _todayVm.isRamadanMode ? 'Switch to Normal Mode' : 'Switch to Ramadan Mode',
+                tooltip: _todayVm.isRamadanMode
+                    ? 'Switch to Normal Mode'
+                    : 'Switch to Ramadan Mode',
                 onPressed: () {
                   setState(() {
                     _todayVm = _todayVm.isRamadanMode
@@ -789,7 +848,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
               tooltip: 'Dev Screen Gallery',
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ScreenGalleryScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const ScreenGalleryScreen()),
                 );
               },
             ),
@@ -856,7 +916,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                 food: food,
                 onAddToMeal: (servings) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Added $servings serving(s) of ${food.englishName}')),
+                    SnackBar(
+                        content: Text(
+                            'Added $servings serving(s) of ${food.englishName}')),
                   );
                 },
               ),
@@ -877,7 +939,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
           vm: _progressVm,
           onRangeToggled: (isMonth) {
             setState(() {
-              _progressVm = isMonth ? ProgressFixtures.standardMonth : ProgressFixtures.standardWeek;
+              _progressVm = isMonth
+                  ? ProgressFixtures.standardMonth
+                  : ProgressFixtures.standardWeek;
             });
           },
           onAddWeightTap: () {
@@ -889,7 +953,8 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
                 onWeightSaved: (newWeight) {
                   setState(() {
                     final updatedTrend = [
-                      ..._progressVm.weightTrend.take(_progressVm.weightTrend.length - 1),
+                      ..._progressVm.weightTrend
+                          .take(_progressVm.weightTrend.length - 1),
                       WeightPointViewModel(
                         dateLabel: 'Today',
                         weightKg: newWeight,
@@ -911,12 +976,16 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         return SettingsScreen(
           onOpenHistory: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const HistoryScreen(vm: HistoryFixtures.standard)),
+              MaterialPageRoute(
+                  builder: (_) =>
+                      const HistoryScreen(vm: HistoryFixtures.standard)),
             );
           },
           onOpenShopping: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ShoppingScreen(vm: ShoppingFixtures.standard)),
+              MaterialPageRoute(
+                  builder: (_) =>
+                      const ShoppingScreen(vm: ShoppingFixtures.standard)),
             );
           },
           onOpenReminders: () {

@@ -69,7 +69,8 @@ class TargetPolicyConfig {
   final double fatShare;
   final double fibreGramsPer1000Kcal;
 
-  double floorFor(Sex sex) => sex == Sex.male ? calorieFloorMale : calorieFloorFemale;
+  double floorFor(Sex sex) =>
+      sex == Sex.male ? calorieFloorMale : calorieFloorFemale;
 }
 
 class NutritionTarget {
@@ -95,7 +96,8 @@ class NutritionTarget {
         'fibreG': fibreG,
       };
 
-  factory NutritionTarget.fromJson(Map<String, Object?> json) => NutritionTarget(
+  factory NutritionTarget.fromJson(Map<String, Object?> json) =>
+      NutritionTarget(
         kcal: (json['kcal']! as num).toDouble(),
         proteinG: (json['proteinG']! as num).toDouble(),
         carbsG: (json['carbsG']! as num).toDouble(),
@@ -168,7 +170,10 @@ class TargetPolicy {
 
   TargetResult compute(UserProfile p, LocalDate today) {
     final age = p.ageIn(today);
-    final resting = 10 * p.weightKg + 6.25 * p.heightCm - 5 * age + (p.sex == Sex.male ? 5 : -161);
+    final resting = 10 * p.weightKg +
+        6.25 * p.heightCm -
+        5 * age +
+        (p.sex == Sex.male ? 5 : -161);
     final factor = config.activityFactors[p.activity]!;
     final maintenance = resting * factor;
 
@@ -176,11 +181,13 @@ class TargetPolicy {
     var rateCapApplied = false;
     switch (p.goal) {
       case Goal.lose:
-        final cap = _min(config.maxLossKgPerWeek, config.maxLossFractionOfBodyWeightPerWeek * p.weightKg);
+        final cap = _min(config.maxLossKgPerWeek,
+            config.maxLossFractionOfBodyWeightPerWeek * p.weightKg);
         weeklyChange = -_min(config.defaultLossKgPerWeek, cap);
         rateCapApplied = config.defaultLossKgPerWeek > cap;
       case Goal.gain:
-        weeklyChange = _min(config.defaultGainKgPerWeek, config.maxGainKgPerWeek);
+        weeklyChange =
+            _min(config.defaultGainKgPerWeek, config.maxGainKgPerWeek);
         rateCapApplied = config.defaultGainKgPerWeek > config.maxGainKgPerWeek;
       case Goal.maintain:
         weeklyChange = 0;

@@ -5,7 +5,6 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_buttons.dart';
 import '../../../core/widgets/app_card.dart';
-import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/macro_bars.dart';
 import '../../../core/widgets/segmented_controls.dart';
 import '../view_model/onboarding_view_model.dart';
@@ -50,7 +49,8 @@ class OnboardingScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       body: SafeArea(
         child: Padding(
           padding: AppSpacing.screenPadding,
@@ -58,7 +58,8 @@ class OnboardingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Header with back button and multi-step progress bar
-              if (vm.currentStep != OnboardingStep.welcome) _buildHeader(context),
+              if (vm.currentStep != OnboardingStep.welcome)
+                _buildHeader(context),
               const SizedBox(height: 16),
               // Step content
               Expanded(
@@ -77,7 +78,9 @@ class OnboardingScreen extends StatelessWidget {
                     child: Text(
                       'Skip directly to today\'s meals →',
                       style: AppTypography.captionStrong.copyWith(
-                        color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                        color: isDark
+                            ? AppColors.darkPrimary
+                            : AppColors.lightPrimary,
                       ),
                     ),
                   ),
@@ -125,7 +128,9 @@ class OnboardingScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isDone
                         ? primary
-                        : (isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong),
+                        : (isDark
+                            ? AppColors.darkBorderStrong
+                            : AppColors.lightBorderStrong),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -184,7 +189,8 @@ class OnboardingScreen extends StatelessWidget {
           width: 64,
           height: 64,
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+            color:
+                isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Icon(
@@ -258,18 +264,24 @@ class OnboardingScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        _buildGoalOption(context, WeightGoal.loseWeight, 'Gradual weight loss', 'Healthy deficit with full nutritional variety'),
+        _buildGoalOption(context, WeightGoal.loseWeight, 'Gradual weight loss',
+            'Healthy deficit with full nutritional variety'),
         const SizedBox(height: 12),
-        _buildGoalOption(context, WeightGoal.maintain, 'Maintain current weight', 'Balance energy intake and keep portions consistent'),
+        _buildGoalOption(
+            context,
+            WeightGoal.maintain,
+            'Maintain current weight',
+            'Balance energy intake and keep portions consistent'),
         const SizedBox(height: 12),
-        _buildGoalOption(context, WeightGoal.gainWeight, 'Gradual weight gain', 'Nutrient-rich meals for steady healthy progress'),
+        _buildGoalOption(context, WeightGoal.gainWeight, 'Gradual weight gain',
+            'Nutrient-rich meals for steady healthy progress'),
       ],
     );
   }
 
-  Widget _buildGoalOption(BuildContext context, WeightGoal goal, String title, String subtitle) {
+  Widget _buildGoalOption(
+      BuildContext context, WeightGoal goal, String title, String subtitle) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isSelected = vm.goal == goal;
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return AppCard(
@@ -346,18 +358,21 @@ class OnboardingScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        _buildActivityOption(context, ActivityLevel.sedentary, 'Sedentary', 'Desk job, mostly sitting'),
+        _buildActivityOption(context, ActivityLevel.sedentary, 'Sedentary',
+            'Desk job, mostly sitting'),
         const SizedBox(height: 10),
-        _buildActivityOption(context, ActivityLevel.lightlyActive, 'Lightly Active', 'Standing, walking around office / home'),
+        _buildActivityOption(context, ActivityLevel.lightlyActive,
+            'Lightly Active', 'Standing, walking around office / home'),
         const SizedBox(height: 10),
-        _buildActivityOption(context, ActivityLevel.moderatelyActive, 'Moderately Active', 'Daily manual tasks, gym or active walking'),
+        _buildActivityOption(context, ActivityLevel.moderatelyActive,
+            'Moderately Active', 'Daily manual tasks, gym or active walking'),
       ],
     );
   }
 
-  Widget _buildActivityOption(BuildContext context, ActivityLevel level, String title, String subtitle) {
+  Widget _buildActivityOption(BuildContext context, ActivityLevel level,
+      String title, String subtitle) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isSelected = vm.activityLevel == level;
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return AppCard(
@@ -463,14 +478,24 @@ class OnboardingScreen extends StatelessWidget {
                   ChoiceChip(
                     label: const Text('Everything (Halal)'),
                     selected: vm.dietType == DietType.everything,
-                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                    selectedColor: isDark
+                        ? AppColors.darkPrimarySoft
+                        : AppColors.lightPrimarySoft,
                     side: BorderSide(
-                      color: vm.dietType == DietType.everything ? primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      color: vm.dietType == DietType.everything
+                          ? primary
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                       width: vm.dietType == DietType.everything ? 1.5 : 1,
                     ),
                     labelStyle: TextStyle(
-                      color: vm.dietType == DietType.everything ? primary : (isDark ? AppColors.darkInk : AppColors.lightInk),
-                      fontWeight: vm.dietType == DietType.everything ? FontWeight.w600 : FontWeight.w400,
+                      color: vm.dietType == DietType.everything
+                          ? primary
+                          : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                      fontWeight: vm.dietType == DietType.everything
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     onSelected: (val) {
                       if (val) onDietTypeChanged?.call(DietType.everything);
@@ -479,14 +504,24 @@ class OnboardingScreen extends StatelessWidget {
                   ChoiceChip(
                     label: const Text('Vegetarian'),
                     selected: vm.dietType == DietType.vegetarian,
-                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                    selectedColor: isDark
+                        ? AppColors.darkPrimarySoft
+                        : AppColors.lightPrimarySoft,
                     side: BorderSide(
-                      color: vm.dietType == DietType.vegetarian ? primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      color: vm.dietType == DietType.vegetarian
+                          ? primary
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                       width: vm.dietType == DietType.vegetarian ? 1.5 : 1,
                     ),
                     labelStyle: TextStyle(
-                      color: vm.dietType == DietType.vegetarian ? primary : (isDark ? AppColors.darkInk : AppColors.lightInk),
-                      fontWeight: vm.dietType == DietType.vegetarian ? FontWeight.w600 : FontWeight.w400,
+                      color: vm.dietType == DietType.vegetarian
+                          ? primary
+                          : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                      fontWeight: vm.dietType == DietType.vegetarian
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     onSelected: (val) {
                       if (val) onDietTypeChanged?.call(DietType.vegetarian);
@@ -495,14 +530,24 @@ class OnboardingScreen extends StatelessWidget {
                   ChoiceChip(
                     label: const Text('Vegan'),
                     selected: vm.dietType == DietType.vegan,
-                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                    selectedColor: isDark
+                        ? AppColors.darkPrimarySoft
+                        : AppColors.lightPrimarySoft,
                     side: BorderSide(
-                      color: vm.dietType == DietType.vegan ? primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      color: vm.dietType == DietType.vegan
+                          ? primary
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                       width: vm.dietType == DietType.vegan ? 1.5 : 1,
                     ),
                     labelStyle: TextStyle(
-                      color: vm.dietType == DietType.vegan ? primary : (isDark ? AppColors.darkInk : AppColors.lightInk),
-                      fontWeight: vm.dietType == DietType.vegan ? FontWeight.w600 : FontWeight.w400,
+                      color: vm.dietType == DietType.vegan
+                          ? primary
+                          : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                      fontWeight: vm.dietType == DietType.vegan
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     onSelected: (val) {
                       if (val) onDietTypeChanged?.call(DietType.vegan);
@@ -511,7 +556,8 @@ class OnboardingScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              Text('Allergies & Sensitivities', style: AppTypography.bodyStrong),
+              Text('Allergies & Sensitivities',
+                  style: AppTypography.bodyStrong),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
@@ -520,45 +566,75 @@ class OnboardingScreen extends StatelessWidget {
                   FilterChip(
                     label: const Text('Gluten Sensitive'),
                     selected: vm.allergies.contains('gluten'),
-                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                    selectedColor: isDark
+                        ? AppColors.darkPrimarySoft
+                        : AppColors.lightPrimarySoft,
                     checkmarkColor: primary,
                     side: BorderSide(
-                      color: vm.allergies.contains('gluten') ? primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      color: vm.allergies.contains('gluten')
+                          ? primary
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                       width: vm.allergies.contains('gluten') ? 1.5 : 1,
                     ),
                     labelStyle: TextStyle(
-                      color: vm.allergies.contains('gluten') ? primary : (isDark ? AppColors.darkInk : AppColors.lightInk),
-                      fontWeight: vm.allergies.contains('gluten') ? FontWeight.w600 : FontWeight.w400,
+                      color: vm.allergies.contains('gluten')
+                          ? primary
+                          : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                      fontWeight: vm.allergies.contains('gluten')
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     onSelected: (_) => onAllergyToggled?.call('gluten'),
                   ),
                   FilterChip(
                     label: const Text('Dairy / Lactose Free'),
                     selected: vm.allergies.contains('dairy'),
-                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                    selectedColor: isDark
+                        ? AppColors.darkPrimarySoft
+                        : AppColors.lightPrimarySoft,
                     checkmarkColor: primary,
                     side: BorderSide(
-                      color: vm.allergies.contains('dairy') ? primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      color: vm.allergies.contains('dairy')
+                          ? primary
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                       width: vm.allergies.contains('dairy') ? 1.5 : 1,
                     ),
                     labelStyle: TextStyle(
-                      color: vm.allergies.contains('dairy') ? primary : (isDark ? AppColors.darkInk : AppColors.lightInk),
-                      fontWeight: vm.allergies.contains('dairy') ? FontWeight.w600 : FontWeight.w400,
+                      color: vm.allergies.contains('dairy')
+                          ? primary
+                          : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                      fontWeight: vm.allergies.contains('dairy')
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     onSelected: (_) => onAllergyToggled?.call('dairy'),
                   ),
                   FilterChip(
                     label: const Text('Tree Nuts & Peanuts'),
                     selected: vm.allergies.contains('nuts'),
-                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                    selectedColor: isDark
+                        ? AppColors.darkPrimarySoft
+                        : AppColors.lightPrimarySoft,
                     checkmarkColor: primary,
                     side: BorderSide(
-                      color: vm.allergies.contains('nuts') ? primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      color: vm.allergies.contains('nuts')
+                          ? primary
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                       width: vm.allergies.contains('nuts') ? 1.5 : 1,
                     ),
                     labelStyle: TextStyle(
-                      color: vm.allergies.contains('nuts') ? primary : (isDark ? AppColors.darkInk : AppColors.lightInk),
-                      fontWeight: vm.allergies.contains('nuts') ? FontWeight.w600 : FontWeight.w400,
+                      color: vm.allergies.contains('nuts')
+                          ? primary
+                          : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                      fontWeight: vm.allergies.contains('nuts')
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                     onSelected: (_) => onAllergyToggled?.call('nuts'),
                   ),
@@ -575,7 +651,8 @@ class OnboardingScreen extends StatelessWidget {
                     child: Text(
                       'Cross-contact notice: commercial spice mixes and restaurant food may contain allergen traces.',
                       style: AppTypography.micro.copyWith(
-                        color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                        color:
+                            isDark ? AppColors.darkMuted : AppColors.lightMuted,
                       ),
                     ),
                   ),
@@ -679,11 +756,15 @@ class OnboardingScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected
-              ? (isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft)
+              ? (isDark
+                  ? AppColors.darkPrimarySoft
+                  : AppColors.lightPrimarySoft)
               : (isDark ? AppColors.darkSurface : AppColors.lightSurface),
           borderRadius: AppRadii.cardRadius,
           border: Border.all(
-            color: isSelected ? primary : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            color: isSelected
+                ? primary
+                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -708,13 +789,15 @@ class OnboardingScreen extends StatelessWidget {
                       Text(
                         title,
                         style: AppTypography.heading.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                       if (badgeText != null) ...[
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: primary,
                             borderRadius: AppRadii.chipRadius,
@@ -734,7 +817,8 @@ class OnboardingScreen extends StatelessWidget {
                   Text(
                     description,
                     style: AppTypography.body.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -797,7 +881,8 @@ class OnboardingScreen extends StatelessWidget {
                   Text(
                     'kcal / day',
                     style: AppTypography.body.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                 ],
@@ -891,7 +976,8 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
   @override
   void didUpdateWidget(covariant _AboutYouStepWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!_weightFocusNode.hasFocus && oldWidget.vm.weightKg != widget.vm.weightKg) {
+    if (!_weightFocusNode.hasFocus &&
+        oldWidget.vm.weightKg != widget.vm.weightKg) {
       final newText = widget.vm.weightKg % 1 == 0
           ? widget.vm.weightKg.round().toString()
           : widget.vm.weightKg.toStringAsFixed(1);
@@ -909,9 +995,12 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
   }
 
   void _adjustWeight(double delta) {
-    final current = double.tryParse(_weightController.text.trim()) ?? widget.vm.weightKg;
+    final current =
+        double.tryParse(_weightController.text.trim()) ?? widget.vm.weightKg;
     final updated = (current + delta).clamp(30.0, 250.0);
-    final formatted = updated % 1 == 0 ? updated.round().toString() : updated.toStringAsFixed(1);
+    final formatted = updated % 1 == 0
+        ? updated.round().toString()
+        : updated.toStringAsFixed(1);
     _weightController.text = formatted;
     widget.onWeightChanged?.call(updated);
   }
@@ -955,13 +1044,15 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                       ChoiceChip(
                         label: const Text('Female'),
                         selected: widget.vm.sex == BiologicalSex.female,
-                        onSelected: (_) => widget.onSexChanged?.call(BiologicalSex.female),
+                        onSelected: (_) =>
+                            widget.onSexChanged?.call(BiologicalSex.female),
                       ),
                       const SizedBox(width: 8),
                       ChoiceChip(
                         label: const Text('Male'),
                         selected: widget.vm.sex == BiologicalSex.male,
-                        onSelected: (_) => widget.onSexChanged?.call(BiologicalSex.male),
+                        onSelected: (_) =>
+                            widget.onSexChanged?.call(BiologicalSex.male),
                       ),
                     ],
                   ),
@@ -991,15 +1082,20 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                           Text(
                             'Tap to scroll ft & in',
                             style: AppTypography.micro.copyWith(
-                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                              color: isDark
+                                  ? AppColors.darkMuted
+                                  : AppColors.lightMuted,
                             ),
                           ),
                         ],
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                          color: isDark
+                              ? AppColors.darkPrimarySoft
+                              : AppColors.lightPrimarySoft,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: primary.withValues(alpha: 0.5),
@@ -1011,7 +1107,8 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                           children: [
                             Text(
                               '$feet ft $inches in (${widget.vm.heightCm.round()} cm)',
-                              style: AppTypography.bodyStrong.copyWith(color: primary),
+                              style: AppTypography.bodyStrong
+                                  .copyWith(color: primary),
                             ),
                             const SizedBox(width: 4),
                             Icon(Icons.unfold_more, size: 18, color: primary),
@@ -1035,7 +1132,9 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                       Text(
                         'Type in kg or use +/-',
                         style: AppTypography.micro.copyWith(
-                          color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                          color: isDark
+                              ? AppColors.darkMuted
+                              : AppColors.lightMuted,
                         ),
                       ),
                     ],
@@ -1047,7 +1146,8 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                         color: primary,
                         iconSize: 26,
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                        constraints:
+                            const BoxConstraints(minWidth: 36, minHeight: 36),
                         onPressed: () => _adjustWeight(-1.0),
                         tooltip: 'Decrease 1 kg',
                       ),
@@ -1058,25 +1158,34 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                         child: TextField(
                           controller: _weightController,
                           focusNode: _weightFocusNode,
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
                           textAlign: TextAlign.center,
                           style: AppTypography.heading.copyWith(
-                            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                            color:
+                                isDark ? AppColors.darkInk : AppColors.lightInk,
                             fontSize: 15,
                           ),
                           decoration: InputDecoration(
                             suffixText: 'kg',
                             suffixStyle: AppTypography.captionStrong.copyWith(
-                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                              color: isDark
+                                  ? AppColors.darkMuted
+                                  : AppColors.lightMuted,
                             ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 8),
                             isDense: true,
                             filled: true,
-                            fillColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                            fillColor: isDark
+                                ? AppColors.darkSurface
+                                : AppColors.lightSurface,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide(
-                                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                                color: isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -1089,16 +1198,20 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                           ),
                           onChanged: (val) {
                             final parsed = double.tryParse(val.trim());
-                            if (parsed != null && parsed >= 30 && parsed <= 250) {
+                            if (parsed != null &&
+                                parsed >= 30 &&
+                                parsed <= 250) {
                               widget.onWeightChanged?.call(parsed);
                             }
                           },
                           onEditingComplete: () {
-                            final parsed = double.tryParse(_weightController.text.trim());
+                            final parsed =
+                                double.tryParse(_weightController.text.trim());
                             if (parsed == null || parsed < 30 || parsed > 250) {
-                              _weightController.text = widget.vm.weightKg % 1 == 0
-                                  ? widget.vm.weightKg.round().toString()
-                                  : widget.vm.weightKg.toStringAsFixed(1);
+                              _weightController.text =
+                                  widget.vm.weightKg % 1 == 0
+                                      ? widget.vm.weightKg.round().toString()
+                                      : widget.vm.weightKg.toStringAsFixed(1);
                             }
                             _weightFocusNode.unfocus();
                           },
@@ -1110,7 +1223,8 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                         color: primary,
                         iconSize: 26,
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                        constraints:
+                            const BoxConstraints(minWidth: 36, minHeight: 36),
                         onPressed: () => _adjustWeight(1.0),
                         tooltip: 'Increase 1 kg',
                       ),
@@ -1137,8 +1251,10 @@ void _showHeightPickerSheet({
   int selectedFeet = OnboardingScreen.getFeetFromCm(currentCm);
   int selectedInches = OnboardingScreen.getInchesFromCm(currentCm);
 
-  final feetController = FixedExtentScrollController(initialItem: (selectedFeet - 4).clamp(0, 3));
-  final inchesController = FixedExtentScrollController(initialItem: selectedInches.clamp(0, 11));
+  final feetController =
+      FixedExtentScrollController(initialItem: (selectedFeet - 4).clamp(0, 3));
+  final inchesController =
+      FixedExtentScrollController(initialItem: selectedInches.clamp(0, 11));
 
   showModalBottomSheet(
     context: context,
@@ -1147,12 +1263,14 @@ void _showHeightPickerSheet({
     builder: (ctx) {
       return StatefulBuilder(
         builder: (ctx, setSheetState) {
-          final computedCm = OnboardingScreen.getCmFromFeetInches(selectedFeet, selectedInches);
+          final computedCm = OnboardingScreen.getCmFromFeetInches(
+              selectedFeet, selectedInches);
 
           return Container(
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(AppRadii.card)),
             ),
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
             child: Column(
@@ -1165,7 +1283,9 @@ void _showHeightPickerSheet({
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                      color: isDark
+                          ? AppColors.darkBorderStrong
+                          : AppColors.lightBorderStrong,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -1203,7 +1323,9 @@ void _showHeightPickerSheet({
                           child: Text(
                             'Feet (ft)',
                             style: AppTypography.captionStrong.copyWith(
-                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                              color: isDark
+                                  ? AppColors.darkMuted
+                                  : AppColors.lightMuted,
                             ),
                           ),
                         ),
@@ -1214,7 +1336,9 @@ void _showHeightPickerSheet({
                           child: Text(
                             'Inches (in)',
                             style: AppTypography.captionStrong.copyWith(
-                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                              color: isDark
+                                  ? AppColors.darkMuted
+                                  : AppColors.lightMuted,
                             ),
                           ),
                         ),
@@ -1234,7 +1358,9 @@ void _showHeightPickerSheet({
                         height: 44,
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                          color: isDark
+                              ? AppColors.darkPrimarySoft
+                              : AppColors.lightPrimarySoft,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: primary.withValues(alpha: 0.5),
@@ -1266,11 +1392,20 @@ void _showHeightPickerSheet({
                                   return Center(
                                     child: Text(
                                       '$ft ft',
-                                      style: (isSel ? AppTypography.heading : AppTypography.body).copyWith(
+                                      style: (isSel
+                                              ? AppTypography.heading
+                                              : AppTypography.body)
+                                          .copyWith(
                                         color: isSel
-                                            ? (isDark ? AppColors.darkInk : AppColors.lightInk)
-                                            : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
-                                        fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
+                                            ? (isDark
+                                                ? AppColors.darkInk
+                                                : AppColors.lightInk)
+                                            : (isDark
+                                                ? AppColors.darkMuted
+                                                : AppColors.lightMuted),
+                                        fontWeight: isSel
+                                            ? FontWeight.w700
+                                            : FontWeight.w400,
                                       ),
                                     ),
                                   );
@@ -1283,7 +1418,9 @@ void _showHeightPickerSheet({
                             width: 1,
                             height: 100,
                             margin: const EdgeInsets.symmetric(horizontal: 8),
-                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
                           ),
                           // Inches Wheel
                           Expanded(
@@ -1305,11 +1442,20 @@ void _showHeightPickerSheet({
                                   return Center(
                                     child: Text(
                                       '$index in',
-                                      style: (isSel ? AppTypography.heading : AppTypography.body).copyWith(
+                                      style: (isSel
+                                              ? AppTypography.heading
+                                              : AppTypography.body)
+                                          .copyWith(
                                         color: isSel
-                                            ? (isDark ? AppColors.darkInk : AppColors.lightInk)
-                                            : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
-                                        fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
+                                            ? (isDark
+                                                ? AppColors.darkInk
+                                                : AppColors.lightInk)
+                                            : (isDark
+                                                ? AppColors.darkMuted
+                                                : AppColors.lightMuted),
+                                        fontWeight: isSel
+                                            ? FontWeight.w700
+                                            : FontWeight.w400,
                                       ),
                                     ),
                                   );
@@ -1326,7 +1472,8 @@ void _showHeightPickerSheet({
                 PrimaryButton(
                   label: 'Set Height',
                   onPressed: () {
-                    final cm = OnboardingScreen.getCmFromFeetInches(selectedFeet, selectedInches);
+                    final cm = OnboardingScreen.getCmFromFeetInches(
+                        selectedFeet, selectedInches);
                     onConfirmed(cm);
                     Navigator.of(ctx).pop();
                   },

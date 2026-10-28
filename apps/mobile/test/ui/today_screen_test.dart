@@ -6,7 +6,8 @@ import 'package:mobile/fixtures/today_fixtures.dart';
 
 void main() {
   group('TodayScreen Widget Tests', () {
-    testWidgets('renders standard mode with calories and next meal', (tester) async {
+    testWidgets('renders standard mode with calories and next meal',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light,
@@ -30,7 +31,8 @@ void main() {
       expect(find.text('Lunch'), findsOneWidget);
     });
 
-    testWidgets('renders Ramadan mode with nocturnal styling and Sehri/Iftar', (tester) async {
+    testWidgets('renders Ramadan mode with nocturnal styling and Sehri/Iftar',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
@@ -73,7 +75,8 @@ void main() {
         ),
       );
 
-      expect(find.text('Could not load your plan for today. Please retry.'), findsOneWidget);
+      expect(find.text('Could not load your plan for today. Please retry.'),
+          findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
 
       await tester.tap(find.text('Try again'));

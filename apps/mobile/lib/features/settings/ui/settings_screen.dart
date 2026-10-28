@@ -43,11 +43,23 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Column(
               children: [
-                _buildTile(context, icon: Icons.history, title: 'Past days & history', subtitle: 'Immutable daily nutrition snapshots', onTap: onOpenHistory),
+                _buildTile(context,
+                    icon: Icons.history,
+                    title: 'Past days & history',
+                    subtitle: 'Immutable daily nutrition snapshots',
+                    onTap: onOpenHistory),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.shopping_basket_outlined, title: 'Shopping list', subtitle: 'Aggregated planned ingredients', onTap: onOpenShopping),
+                _buildTile(context,
+                    icon: Icons.shopping_basket_outlined,
+                    title: 'Shopping list',
+                    subtitle: 'Aggregated planned ingredients',
+                    onTap: onOpenShopping),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.notifications_none, title: 'Meal reminders', subtitle: 'Logging alerts with Ramadan shift', onTap: onOpenReminders),
+                _buildTile(context,
+                    icon: Icons.notifications_none,
+                    title: 'Meal reminders',
+                    subtitle: 'Logging alerts with Ramadan shift',
+                    onTap: onOpenReminders),
               ],
             ),
           ),
@@ -97,9 +109,17 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Column(
               children: [
-                _buildTile(context, icon: Icons.calculate_outlined, title: 'How we calculate this', subtitle: 'Formulas, safety floors, rate caps', onTap: onOpenTransparency),
+                _buildTile(context,
+                    icon: Icons.calculate_outlined,
+                    title: 'How we calculate this',
+                    subtitle: 'Formulas, safety floors, rate caps',
+                    onTap: onOpenTransparency),
                 const Divider(height: 1),
-                _buildTile(context, icon: Icons.shield_outlined, title: 'Privacy & data ownership', subtitle: 'Export, import, delete all', onTap: onOpenPrivacy),
+                _buildTile(context,
+                    icon: Icons.shield_outlined,
+                    title: 'Privacy & data ownership',
+                    subtitle: 'Export, import, delete all',
+                    onTap: onOpenPrivacy),
               ],
             ),
           ),
@@ -143,7 +163,8 @@ class SettingsScreen extends StatelessWidget {
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary),
+      leading: Icon(icon,
+          color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary),
       title: Text(
         title,
         style: AppTypography.bodyStrong.copyWith(

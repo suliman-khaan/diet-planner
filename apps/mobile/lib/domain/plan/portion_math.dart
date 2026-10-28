@@ -6,7 +6,8 @@ import '../food/food.dart';
 ///
 /// Food nutrition excludes added oil; oil is added once here from the food's oil profile.
 /// Recipe ingredients are never added on top of the cooked food (no double-counting).
-Nutrition portionNutrition(FoodPack pack, Food food, double grams, OilLevel? oilLevel) {
+Nutrition portionNutrition(
+    FoodPack pack, Food food, double grams, OilLevel? oilLevel) {
   final base = food.nutritionPer100g.forGrams(grams);
   final oilGrams = oilGramsFor(food, grams, oilLevel);
   if (oilGrams == 0) return base;
@@ -17,9 +18,11 @@ Nutrition portionNutrition(FoodPack pack, Food food, double grams, OilLevel? oil
 /// Grams of added cooking oil in [grams] of cooked [food].
 double oilGramsFor(Food food, double grams, OilLevel? oilLevel) {
   final profile = food.oilProfile;
-  if (profile == null || oilLevel == null || food.oilIngredientId == null) return 0;
+  if (profile == null || oilLevel == null || food.oilIngredientId == null)
+    return 0;
   return profile.gramsPer100g(oilLevel) * grams / 100;
 }
 
 /// The oil level to store on a plan item: null for foods with no added oil.
-OilLevel? oilLevelFor(Food food, OilLevel preferred) => food.hasOil ? preferred : null;
+OilLevel? oilLevelFor(Food food, OilLevel preferred) =>
+    food.hasOil ? preferred : null;

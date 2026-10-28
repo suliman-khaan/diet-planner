@@ -16,26 +16,32 @@ abstract final class FoodPackParser {
     if (root['schemaVersion'] != supportedSchemaVersion) {
       throw const FormatException('Unsupported food pack schema version');
     }
-    final ingredients = _list(root['ingredients'], 'ingredients').map(_ingredient).toList();
+    final ingredients =
+        _list(root['ingredients'], 'ingredients').map(_ingredient).toList();
     final ingredientIds = {for (final i in ingredients) i.id};
     final foods = _list(root['foods'], 'foods').map(_food).toList();
     final foodIds = <String>{};
     for (final f in foods) {
-      if (!foodIds.add(f.id)) throw FormatException('Duplicate food id ${f.id}');
+      if (!foodIds.add(f.id))
+        throw FormatException('Duplicate food id ${f.id}');
       for (final part in f.ingredients) {
         if (!ingredientIds.contains(part.ingredientId)) {
-          throw FormatException('Food ${f.id} references unknown ingredient ${part.ingredientId}');
+          throw FormatException(
+              'Food ${f.id} references unknown ingredient ${part.ingredientId}');
         }
       }
-      if (f.oilIngredientId != null && !ingredientIds.contains(f.oilIngredientId)) {
-        throw FormatException('Food ${f.id} references unknown oil ${f.oilIngredientId}');
+      if (f.oilIngredientId != null &&
+          !ingredientIds.contains(f.oilIngredientId)) {
+        throw FormatException(
+            'Food ${f.id} references unknown oil ${f.oilIngredientId}');
       }
     }
     final combos = _list(root['combos'], 'combos').map(_combo).toList();
     for (final c in combos) {
       for (final item in c.items) {
         if (!foodIds.contains(item.foodId)) {
-          throw FormatException('Combo ${c.id} references unknown food ${item.foodId}');
+          throw FormatException(
+              'Combo ${c.id} references unknown food ${item.foodId}');
         }
       }
     }
@@ -73,11 +79,15 @@ abstract final class FoodPackParser {
     final servings = _list(m['servings'], 'food.servings').map((s) {
       final sm = _map(s, 'serving');
       final grams = _positive(sm['grams'], 'serving.grams');
-      return Serving(id: _string(sm['id'], 'serving.id'), label: _string(sm['label'], 'serving.label'), grams: grams);
+      return Serving(
+          id: _string(sm['id'], 'serving.id'),
+          label: _string(sm['label'], 'serving.label'),
+          grams: grams);
     }).toList();
     final defaultServing = _string(m['defaultServing'], 'food.defaultServing');
     if (!servings.any((s) => s.id == defaultServing)) {
-      throw FormatException('Food $id: default serving $defaultServing missing');
+      throw FormatException(
+          'Food $id: default serving $defaultServing missing');
     }
     final portion = _map(m['portion'], 'food.portion');
     final rule = PortionRule(
@@ -85,7 +95,8 @@ abstract final class FoodPackParser {
       max: _positive(portion['max'], 'portion.max'),
       step: _positive(portion['step'], 'portion.step'),
     );
-    if (rule.max < rule.min) throw FormatException('Food $id: invalid portion rule');
+    if (rule.max < rule.min)
+      throw FormatException('Food $id: invalid portion rule');
 
     OilProfile? oil;
     if (m['oilPer100g'] != null) {
@@ -104,11 +115,15 @@ abstract final class FoodPackParser {
       revision: _int(m['revision'], 'food.revision'),
       nameEn: _string(names['en'], 'names.en'),
       nameUr: names['ur'] is String ? names['ur']! as String : null,
-      romanUrduAliases: _list(names['romanUrdu'], 'names.romanUrdu').map((a) => _string(a, 'alias')).toList(),
+      romanUrduAliases: _list(names['romanUrdu'], 'names.romanUrdu')
+          .map((a) => _string(a, 'alias'))
+          .toList(),
       category: _string(m['category'], 'food.category'),
       role: _string(m['role'], 'food.role'),
-      nutritionPer100g: Nutrition.fromJson(_map(m['nutritionPer100g'], 'food.nutritionPer100g')),
-      ingredients: _list(m['ingredientsPer100g'], 'food.ingredientsPer100g').map((p) {
+      nutritionPer100g: Nutrition.fromJson(
+          _map(m['nutritionPer100g'], 'food.nutritionPer100g')),
+      ingredients:
+          _list(m['ingredientsPer100g'], 'food.ingredientsPer100g').map((p) {
         final pm = _map(p, 'ingredientShare');
         return IngredientShare(
           ingredientId: _string(pm['id'], 'ingredientShare.id'),
@@ -119,9 +134,12 @@ abstract final class FoodPackParser {
       defaultServingId: defaultServing,
       portion: rule,
       oilProfile: oil,
-      oilIngredientId: m['oilIngredient'] is String ? m['oilIngredient']! as String : null,
+      oilIngredientId:
+          m['oilIngredient'] is String ? m['oilIngredient']! as String : null,
       isSharedDish: m['isSharedDish'] == true,
-      mealSlotFit: _list(m['mealSlotFit'], 'food.mealSlotFit').map((s) => MealSlot.fromName(_string(s, 'slot'))).toSet(),
+      mealSlotFit: _list(m['mealSlotFit'], 'food.mealSlotFit')
+          .map((s) => MealSlot.fromName(_string(s, 'slot')))
+          .toSet(),
       dietary: DietaryFlags(
         containsMeat: dietary['containsMeat'] == true,
         containsFish: dietary['containsFish'] == true,
@@ -132,7 +150,8 @@ abstract final class FoodPackParser {
       allergenReview: switch (review) {
         'reviewed' => AllergenReview.reviewed,
         'derived' => AllergenReview.derived,
-        _ => throw FormatException('Food $id: unknown allergen review status $review'),
+        _ => throw FormatException(
+            'Food $id: unknown allergen review status $review'),
       },
       status: switch (_string(m['status'], 'food.status')) {
         'draft' => ContentStatus.draft,
@@ -148,7 +167,9 @@ abstract final class FoodPackParser {
     final m = _map(raw, 'combo');
     return Combo(
       id: _string(m['id'], 'combo.id'),
-      slots: _list(m['slots'], 'combo.slots').map((s) => MealSlot.fromName(_string(s, 'slot'))).toSet(),
+      slots: _list(m['slots'], 'combo.slots')
+          .map((s) => MealSlot.fromName(_string(s, 'slot')))
+          .toSet(),
       items: _list(m['items'], 'combo.items').map((i) {
         final im = _map(i, 'comboItem');
         return ComboItem(
@@ -165,13 +186,15 @@ abstract final class FoodPackParser {
       id: _string(m['id'], 'measure.id'),
       label: _string(m['label'], 'measure.label'),
       labelUr: m['ur'] is String ? m['ur']! as String : '',
-      description: m['description'] is String ? m['description']! as String : '',
+      description:
+          m['description'] is String ? m['description']! as String : '',
       grams: m['grams'] is num ? (m['grams']! as num).toDouble() : null,
       ml: m['ml'] is num ? (m['ml']! as num).toDouble() : null,
     );
   }
 
-  static Set<Allergen> _allergens(Object? raw) => _list(raw, 'allergens').map((a) {
+  static Set<Allergen> _allergens(Object? raw) =>
+      _list(raw, 'allergens').map((a) {
         final name = _string(a, 'allergen');
         return Allergen.values.firstWhere((x) => x.name == name,
             orElse: () => throw FormatException('Unknown allergen $name'));
@@ -179,7 +202,8 @@ abstract final class FoodPackParser {
 
   static Map<String, Object?> _map(Object? v, String what) {
     if (v is Map<String, Object?>) return v;
-    if (v is Map<Object?, Object?>) return v.map((k, val) => MapEntry(k.toString(), val));
+    if (v is Map<Object?, Object?>)
+      return v.map((k, val) => MapEntry(k.toString(), val));
     throw FormatException('Expected object for $what');
   }
 

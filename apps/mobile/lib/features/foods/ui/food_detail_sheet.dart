@@ -37,7 +37,8 @@ class _FoodDetailSheetState extends State<FoodDetailSheet> {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
       ),
       padding: AppSpacing.screenPadding,
       child: SingleChildScrollView(
@@ -55,13 +56,16 @@ class _FoodDetailSheetState extends State<FoodDetailSheet> {
                       Text(
                         food.englishName,
                         style: AppTypography.heading.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                       Text(
                         food.urduName,
                         style: AppTypography.urduSubtitle.copyWith(
-                          color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                          color: isDark
+                              ? AppColors.darkMuted
+                              : AppColors.lightMuted,
                         ),
                       ),
                     ],
@@ -92,7 +96,8 @@ class _FoodDetailSheetState extends State<FoodDetailSheet> {
                       Text(
                         'Portion servings',
                         style: AppTypography.bodyStrong.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                       PortionStepper(
@@ -113,13 +118,17 @@ class _FoodDetailSheetState extends State<FoodDetailSheet> {
                       Text(
                         'Total Calories',
                         style: AppTypography.captionStrong.copyWith(
-                          color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                          color: isDark
+                              ? AppColors.darkMuted
+                              : AppColors.lightMuted,
                         ),
                       ),
                       Text(
                         '$totalKcal kcal',
                         style: AppTypography.heading.copyWith(
-                          color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                          color: isDark
+                              ? AppColors.darkPrimary
+                              : AppColors.lightPrimary,
                         ),
                       ),
                     ],
@@ -167,26 +176,45 @@ class _FoodDetailSheetState extends State<FoodDetailSheet> {
                 ],
               ),
             ),
-            if (food.allergens.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              AppCard(
-                padding: const EdgeInsets.all(14),
-                child: Row(
-                  children: [
-                    const Icon(Icons.warning_amber_rounded, size: 20, color: Colors.amber),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Allergens: ${food.allergens.join(', ')}',
-                        style: AppTypography.captionStrong.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+            const SizedBox(height: 16),
+            AppCard(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline,
+                      size: 20,
+                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          food.allergens.isEmpty
+                              ? 'Allergens: none listed in the recipe'
+                              : 'Allergens: ${food.allergens.join(', ')}',
+                          style: AppTypography.captionStrong.copyWith(
+                            color:
+                                isDark ? AppColors.darkInk : AppColors.lightInk,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${food.isReviewed ? '' : 'This allergen list has not been reviewed yet. '}'
+                          'Ingredient lists cannot rule out cross-contact in kitchens, spice mixes or restaurants.',
+                          style: AppTypography.caption.copyWith(
+                            color: isDark
+                                ? AppColors.darkMuted
+                                : AppColors.lightMuted,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
             const SizedBox(height: 20),
             PrimaryButton(
               label: 'Add to meal ($totalKcal kcal)',

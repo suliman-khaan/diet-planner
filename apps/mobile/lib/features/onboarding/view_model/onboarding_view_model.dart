@@ -15,8 +15,11 @@ enum OnboardingStep {
 }
 
 enum WeightGoal { loseWeight, maintain, gainWeight }
+
 enum BiologicalSex { female, male }
+
 enum ActivityLevel { sedentary, lightlyActive, moderatelyActive, veryActive }
+
 enum DietType { everything, vegetarian, vegan, pescatarian }
 
 @immutable
@@ -38,7 +41,7 @@ class OnboardingViewModel {
   final List<String> allergies;
   final int mealSlotsCount;
   final OilLevel cookingRichness;
-  
+
   // Target summary result
   final num? recommendedCalories;
   final num? recommendedProtein;
@@ -108,7 +111,8 @@ class OnboardingViewModel {
       heightCm: heightCm ?? this.heightCm,
       weightKg: weightKg ?? this.weightKg,
       activityLevel: activityLevel ?? this.activityLevel,
-      isEligibleForAutoPlan: isEligibleForAutoPlan ?? this.isEligibleForAutoPlan,
+      isEligibleForAutoPlan:
+          isEligibleForAutoPlan ?? this.isEligibleForAutoPlan,
       eligibilityNotice: eligibilityNotice ?? this.eligibilityNotice,
       dietType: dietType ?? this.dietType,
       allergies: allergies ?? this.allergies,

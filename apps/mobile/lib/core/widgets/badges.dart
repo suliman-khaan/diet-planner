@@ -13,7 +13,9 @@ class EstimateBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+        color: isDark
+            ? AppColors.darkSurfaceSecondary
+            : AppColors.lightSurfaceSecondary,
         borderRadius: AppRadii.chipRadius,
       ),
       child: Text(
@@ -45,14 +47,17 @@ class FamilyPotBadge extends StatelessWidget {
           Icon(
             Icons.soup_kitchen_outlined,
             size: 14,
-            color: isDark ? AppColors.familyPotDarkText : AppColors.familyPotText,
+            color:
+                isDark ? AppColors.familyPotDarkText : AppColors.familyPotText,
           ),
           const SizedBox(width: 4),
           Text(
             'Family pot',
             style: AppTypography.micro.copyWith(
               fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.familyPotDarkText : AppColors.familyPotText,
+              color: isDark
+                  ? AppColors.familyPotDarkText
+                  : AppColors.familyPotText,
             ),
           ),
         ],
@@ -82,7 +87,8 @@ class MealStatusIndicator extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+            color:
+                isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
             shape: BoxShape.circle,
           ),
           child: Icon(

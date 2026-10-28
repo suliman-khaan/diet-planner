@@ -27,14 +27,16 @@ const List<HouseholdMeasureGuide> defaultMeasureGuides = [
   HouseholdMeasureGuide(
     title: 'Katori (Standard Bowl)',
     urduName: 'کٹوری',
-    description: 'Traditional metal or ceramic curry bowl. Level portion of salan or daal.',
+    description:
+        'Traditional metal or ceramic curry bowl. Level portion of salan or daal.',
     typicalWeight: '~180 g (cooked)',
     icon: Icons.soup_kitchen_outlined,
   ),
   HouseholdMeasureGuide(
     title: 'Pyala (Large Bowl)',
     urduName: 'پیالہ',
-    description: 'Larger serving bowl typically used for nihari, paya, or haleem.',
+    description:
+        'Larger serving bowl typically used for nihari, paya, or haleem.',
     typicalWeight: '~250–300 g',
     icon: Icons.rice_bowl_outlined,
   ),
@@ -77,7 +79,8 @@ class _PortionPickerSheetState extends State<PortionPickerSheet> {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
       ),
       padding: AppSpacing.screenPadding,
       child: SingleChildScrollView(
@@ -108,7 +111,8 @@ class _PortionPickerSheetState extends State<PortionPickerSheet> {
               ),
             ),
             const SizedBox(height: 16),
-            ...defaultMeasureGuides.map((guide) => _buildGuideCard(context, guide)),
+            ...defaultMeasureGuides
+                .map((guide) => _buildGuideCard(context, guide)),
             const SizedBox(height: 16),
             _buildCalibrationCard(context),
             const SizedBox(height: 20),
@@ -139,7 +143,9 @@ class _PortionPickerSheetState extends State<PortionPickerSheet> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+                color: isDark
+                    ? AppColors.darkSurfaceSecondary
+                    : AppColors.lightSurfaceSecondary,
                 borderRadius: BorderRadius.circular(AppRadii.control),
               ),
               child: Icon(
@@ -158,13 +164,16 @@ class _PortionPickerSheetState extends State<PortionPickerSheet> {
                       Text(
                         guide.title,
                         style: AppTypography.bodyStrong.copyWith(
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                       Text(
                         guide.urduName,
                         style: AppTypography.urduSubtitle.copyWith(
-                          color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                          color: isDark
+                              ? AppColors.darkMuted
+                              : AppColors.lightMuted,
                         ),
                       ),
                     ],
@@ -173,14 +182,17 @@ class _PortionPickerSheetState extends State<PortionPickerSheet> {
                   Text(
                     guide.description,
                     style: AppTypography.caption.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     guide.typicalWeight,
                     style: AppTypography.captionStrong.copyWith(
-                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                      color: isDark
+                          ? AppColors.darkPrimary
+                          : AppColors.lightPrimary,
                     ),
                   ),
                 ],

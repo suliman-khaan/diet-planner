@@ -38,18 +38,25 @@ class EligibilityChecker {
     // With only a birth year, the user may not have had their birthday yet this year.
     // Treat the lower possible age as the real one so a 17-year-old is never let through.
     final minimumPossibleAge = p.ageIn(today) - 1;
-    if (minimumPossibleAge < config.minAgeForAutoPlans) reasons.add(ManualOnlyReason.underAge);
-    if (p.conditions.contains(HealthCondition.pregnant)) reasons.add(ManualOnlyReason.pregnant);
-    if (p.conditions.contains(HealthCondition.breastfeeding)) reasons.add(ManualOnlyReason.breastfeeding);
+    if (minimumPossibleAge < config.minAgeForAutoPlans)
+      reasons.add(ManualOnlyReason.underAge);
+    if (p.conditions.contains(HealthCondition.pregnant))
+      reasons.add(ManualOnlyReason.pregnant);
+    if (p.conditions.contains(HealthCondition.breastfeeding))
+      reasons.add(ManualOnlyReason.breastfeeding);
     if (p.conditions.any((c) =>
-        c == HealthCondition.diabetes || c == HealthCondition.kidneyDisease || c == HealthCondition.otherMedicalDiet)) {
+        c == HealthCondition.diabetes ||
+        c == HealthCondition.kidneyDisease ||
+        c == HealthCondition.otherMedicalDiet)) {
       reasons.add(ManualOnlyReason.medicalCondition);
     }
     if (reasons.isNotEmpty) return ManualOnly(reasons);
-    if (p.goal == Goal.lose && p.bmi < config.minBmiForLoss) return MaintenanceOnly(bmi: p.bmi);
+    if (p.goal == Goal.lose && p.bmi < config.minBmiForLoss)
+      return MaintenanceOnly(bmi: p.bmi);
     return const EligibleForPlans();
   }
 
   /// The goal actually used for targets after the eligibility downgrade.
-  Goal effectiveGoal(UserProfile p, Eligibility e) => e is MaintenanceOnly ? Goal.maintain : p.goal;
+  Goal effectiveGoal(UserProfile p, Eligibility e) =>
+      e is MaintenanceOnly ? Goal.maintain : p.goal;
 }

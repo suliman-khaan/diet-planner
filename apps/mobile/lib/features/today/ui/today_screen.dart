@@ -19,6 +19,11 @@ class TodayScreen extends StatelessWidget {
   final ValueChanged<String>? onMealLogTap;
   final VoidCallback? onRetry;
   final VoidCallback? onGeneratePlan;
+  final VoidCallback? onPreviousDay;
+  final VoidCallback? onNextDay;
+
+  /// Log food that is not in the plan (search or quick-add).
+  final VoidCallback? onAddFood;
 
   const TodayScreen({
     super.key,
@@ -30,6 +35,9 @@ class TodayScreen extends StatelessWidget {
     this.onMealLogTap,
     this.onRetry,
     this.onGeneratePlan,
+    this.onPreviousDay,
+    this.onNextDay,
+    this.onAddFood,
   });
 
   @override
@@ -53,6 +61,18 @@ class TodayScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context),
+          if (vm.usesDraftData) ...[
+            const SizedBox(height: 12),
+            _buildNotice(
+              context,
+              icon: Icons.science_outlined,
+              text: 'Development build: food values are draft data and have not been reviewed.',
+            ),
+          ],
+          if (vm.manualOnlyMessage != null) ...[
+            const SizedBox(height: 12),
+            _buildNotice(context, icon: Icons.info_outline, text: vm.manualOnlyMessage!),
+          ],
           const SizedBox(height: 16),
           _buildCalorieCard(context),
           const SizedBox(height: 16),
@@ -61,6 +81,16 @@ class TodayScreen extends StatelessWidget {
             const SizedBox(height: 20),
           ],
           _buildMealsSection(context),
+          if (onAddFood != null) ...[
+            const SizedBox(height: 8),
+            Center(
+              child: TextButton.icon(
+                onPressed: onAddFood,
+                icon: const Icon(Icons.add),
+                label: const Text('Log other food'),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -73,25 +103,39 @@ class TodayScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              vm.dateDisplay,
-              style: AppTypography.caption.copyWith(
-                fontWeight: FontWeight.w500,
-                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+        if (onPreviousDay != null)
+          IconButton(
+            tooltip: 'Previous day',
+            icon: const Icon(Icons.chevron_left),
+            onPressed: onPreviousDay,
+          ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                vm.dateDisplay,
+                style: AppTypography.caption.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              'Today',
-              style: AppTypography.titleLarge.copyWith(
-                color: isDark ? AppColors.darkInk : AppColors.lightInk,
+              const SizedBox(height: 2),
+              Text(
+                vm.title,
+                style: AppTypography.titleLarge.copyWith(
+                  color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        if (onNextDay != null)
+          IconButton(
+            tooltip: 'Next day',
+            icon: const Icon(Icons.chevron_right),
+            onPressed: onNextDay,
+          ),
         if (vm.isRamadanMode)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -171,40 +215,43 @@ class TodayScreen extends StatelessWidget {
               const EstimateBadge(),
             ],
           ),
-          const SizedBox(height: 12),
-          CalorieSplitBar(
-            eatenKcal: vm.eatenKcal,
-            plannedKcal: vm.plannedKcal,
-            targetKcal: vm.targetKcal,
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: _buildMetricTile(
-                  context,
-                  colorDot: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-                  label: 'Eaten',
-                  value: vm.eatenKcal.round().toString(),
+          // Manual-only mode has no automated target, so no target numbers are shown.
+          if (vm.targetKcal > 0) ...[
+            const SizedBox(height: 12),
+            CalorieSplitBar(
+              eatenKcal: vm.eatenKcal,
+              plannedKcal: vm.plannedKcal,
+              targetKcal: vm.targetKcal,
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildMetricTile(
+                    context,
+                    colorDot: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                    label: 'Eaten',
+                    value: vm.eatenKcal.round().toString(),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: _buildMetricTile(
-                  context,
-                  colorDot: AppColors.plannedFill,
-                  label: 'Still planned',
-                  value: vm.plannedKcal.round().toString(),
+                Expanded(
+                  child: _buildMetricTile(
+                    context,
+                    colorDot: AppColors.plannedFill,
+                    label: 'Still planned',
+                    value: vm.plannedKcal.round().toString(),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: _buildMetricTile(
-                  context,
-                  label: 'Daily target',
-                  value: '~${vm.targetKcal.round()}',
+                Expanded(
+                  child: _buildMetricTile(
+                    context,
+                    label: 'Daily target',
+                    value: '~${vm.targetKcal.round()}',
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
           const SizedBox(height: 14),
           const Divider(),
           const SizedBox(height: 10),
@@ -246,6 +293,24 @@ class TodayScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotice(BuildContext context, {required IconData icon, required String text}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+    return AppCard(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: muted),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(text, style: AppTypography.caption.copyWith(color: muted)),
           ),
         ],
       ),

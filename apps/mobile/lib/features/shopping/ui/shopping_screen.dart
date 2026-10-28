@@ -12,11 +12,19 @@ class ShoppingScreen extends StatelessWidget {
   final ValueChanged<String>? onItemToggled;
   final VoidCallback? onClearCompleted;
 
+  /// Opens an input for an item the user wants to add themselves.
+  final VoidCallback? onAddItem;
+
+  /// Explains what the list covers, e.g. "Raw ingredients for your portions today".
+  final String? note;
+
   const ShoppingScreen({
     super.key,
     required this.vm,
     this.onItemToggled,
     this.onClearCompleted,
+    this.onAddItem,
+    this.note,
   });
 
   @override
@@ -24,7 +32,8 @@ class ShoppingScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
         title: Text(
           'Shopping List',
@@ -39,13 +48,21 @@ class ShoppingScreen extends StatelessWidget {
               child: Text(
                 'Clear checked',
                 style: AppTypography.captionStrong.copyWith(
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color:
+                      isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                 ),
               ),
             ),
         ],
       ),
       body: _buildContent(context),
+      floatingActionButton: onAddItem == null
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: onAddItem,
+              icon: const Icon(Icons.add),
+              label: const Text('Add item'),
+            ),
     );
   }
 
@@ -53,10 +70,13 @@ class ShoppingScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (vm.items.isEmpty) {
-      return const EmptyStateWidget(
+      return EmptyStateWidget(
         icon: Icons.shopping_basket_outlined,
         title: 'Your shopping list is clear',
-        message: 'Plan meals for the week to automatically generate your ingredient shopping list.',
+        message: note ??
+            'Plan meals for the week to automatically generate your ingredient shopping list.',
+        actionLabel: onAddItem == null ? null : 'Add item',
+        onAction: onAddItem,
       );
     }
 
@@ -70,23 +90,35 @@ class ShoppingScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (note != null) ...[
+            Text(
+              note!,
+              style: AppTypography.caption.copyWith(
+                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
           ...categories.entries.map((entry) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 4, bottom: 8),
+                  padding:
+                      const EdgeInsetsDirectional.only(start: 4, bottom: 8),
                   child: Text(
                     entry.key.toUpperCase(),
                     style: AppTypography.micro.copyWith(
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.8,
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                 ),
                 AppCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Column(
                     children: List.generate(entry.value.length, (index) {
                       final item = entry.value[index];
@@ -97,20 +129,30 @@ class ShoppingScreen extends StatelessWidget {
                           CheckboxListTile(
                             contentPadding: EdgeInsets.zero,
                             value: item.isPurchased,
-                            activeColor: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                            activeColor: isDark
+                                ? AppColors.darkPrimary
+                                : AppColors.lightPrimary,
                             title: Text(
                               item.name,
                               style: AppTypography.bodyStrong.copyWith(
-                                decoration: item.isPurchased ? TextDecoration.lineThrough : null,
+                                decoration: item.isPurchased
+                                    ? TextDecoration.lineThrough
+                                    : null,
                                 color: item.isPurchased
-                                    ? (isDark ? AppColors.darkMuted : AppColors.lightMuted)
-                                    : (isDark ? AppColors.darkInk : AppColors.lightInk),
+                                    ? (isDark
+                                        ? AppColors.darkMuted
+                                        : AppColors.lightMuted)
+                                    : (isDark
+                                        ? AppColors.darkInk
+                                        : AppColors.lightInk),
                               ),
                             ),
                             subtitle: Text(
                               item.amount,
                               style: AppTypography.caption.copyWith(
-                                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                                color: isDark
+                                    ? AppColors.darkMuted
+                                    : AppColors.lightMuted,
                               ),
                             ),
                             onChanged: (_) => onItemToggled?.call(item.id),
@@ -125,6 +167,8 @@ class ShoppingScreen extends StatelessWidget {
               ],
             );
           }),
+          // Room for the floating button.
+          const SizedBox(height: 72),
         ],
       ),
     );

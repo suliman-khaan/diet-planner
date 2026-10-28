@@ -7,10 +7,13 @@ class FoodSearch {
   FoodSearch(this.foods)
       : _index = [
           for (final f in foods)
-            _Entry(f, {
-              _normalise(f.nameEn),
-              for (final a in f.romanUrduAliases) _normalise(a),
-            }, f.nameUr ?? ''),
+            _Entry(
+                f,
+                {
+                  _normalise(f.nameEn),
+                  for (final a in f.romanUrduAliases) _normalise(a),
+                },
+                f.nameUr ?? ''),
         ];
 
   final List<Food> foods;
@@ -18,10 +21,12 @@ class FoodSearch {
 
   /// Best matches first. An empty query returns all foods in [category] alphabetically.
   List<Food> search(String query, {String? category}) {
-    final inCategory = _index.where((e) => category == null || e.food.category == category);
+    final inCategory =
+        _index.where((e) => category == null || e.food.category == category);
     final q = _normalise(query);
     if (query.trim().isEmpty) {
-      return inCategory.map((e) => e.food).toList()..sort((a, b) => a.nameEn.compareTo(b.nameEn));
+      return inCategory.map((e) => e.food).toList()
+        ..sort((a, b) => a.nameEn.compareTo(b.nameEn));
     }
     final scored = <(Food, int)>[];
     for (final e in inCategory) {
@@ -72,7 +77,8 @@ class _Entry {
       if (k.startsWith(q)) best = best < 85 ? 85 : best;
       if (k.contains(q)) best = best < 70 ? 70 : best;
       final kTokens = k.split(' ');
-      final allTokensMatch = qTokens.every((qt) => kTokens.any((kt) => _close(qt, kt)));
+      final allTokensMatch =
+          qTokens.every((qt) => kTokens.any((kt) => _close(qt, kt)));
       if (allTokensMatch) best = best < 60 ? 60 : best;
     }
     return best;
@@ -81,7 +87,8 @@ class _Entry {
   static bool _close(String q, String k) {
     if (k.startsWith(q)) return true;
     if (q.length < 4) return false;
-    return _editDistanceAtMostOne(q, k.length > q.length ? k.substring(0, q.length) : k) ||
+    return _editDistanceAtMostOne(
+            q, k.length > q.length ? k.substring(0, q.length) : k) ||
         _editDistanceAtMostOne(q, k);
   }
 

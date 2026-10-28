@@ -23,7 +23,8 @@ class HistoryScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
         title: Text(
           'Past Days & History',
@@ -56,7 +57,8 @@ class HistoryScreen extends StatelessWidget {
       return const EmptyStateWidget(
         icon: Icons.history,
         title: 'No historical days yet',
-        message: 'As you log your daily meals, permanent nutrition snapshots will be archived here.',
+        message:
+            'As you log your daily meals, permanent nutrition snapshots will be archived here.',
       );
     }
 
@@ -115,7 +117,9 @@ class HistoryScreen extends StatelessWidget {
                       TextSpan(
                         text: '/ ~${day.targetCalories.round()} kcal',
                         style: AppTypography.caption.copyWith(
-                          color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                          color: isDark
+                              ? AppColors.darkMuted
+                              : AppColors.lightMuted,
                         ),
                       ),
                     ],
@@ -124,7 +128,8 @@ class HistoryScreen extends StatelessWidget {
                 Text(
                   '${day.mealsLogged} of ${day.totalMeals} meals logged',
                   style: AppTypography.captionStrong.copyWith(
-                    color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                    color:
+                        isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                   ),
                 ),
               ],

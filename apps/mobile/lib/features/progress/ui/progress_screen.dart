@@ -72,7 +72,9 @@ class ProgressScreen extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+        color: isDark
+            ? AppColors.darkSurfaceSecondary
+            : AppColors.lightSurfaceSecondary,
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(3),
@@ -156,7 +158,8 @@ class ProgressScreen extends StatelessWidget {
                   Text(
                     'Weight',
                     style: AppTypography.caption.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                   Row(
@@ -166,7 +169,8 @@ class ProgressScreen extends StatelessWidget {
                         vm.currentWeightKg.toStringAsFixed(1),
                         style: AppTypography.numberLarge.copyWith(
                           fontSize: 30,
-                          color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                          color:
+                              isDark ? AppColors.darkInk : AppColors.lightInk,
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -175,7 +179,9 @@ class ProgressScreen extends StatelessWidget {
                         child: Text(
                           'kg',
                           style: AppTypography.subheading.copyWith(
-                            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                            color: isDark
+                                ? AppColors.darkMuted
+                                : AppColors.lightMuted,
                           ),
                         ),
                       ),
@@ -184,7 +190,9 @@ class ProgressScreen extends StatelessWidget {
                   Text(
                     vm.weightChangeSubtitle,
                     style: AppTypography.captionStrong.copyWith(
-                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                      color: isDark
+                          ? AppColors.darkPrimary
+                          : AppColors.lightPrimary,
                     ),
                   ),
                 ],
@@ -199,7 +207,8 @@ class ProgressScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadii.control),
                     ),
                   ),
-                  onPressed: onAddWeightTap ?? () => _openAddWeightSheet(context),
+                  onPressed:
+                      onAddWeightTap ?? () => _openAddWeightSheet(context),
                   child: const Text('Add weight'),
                 ),
               ),
@@ -214,7 +223,8 @@ class ProgressScreen extends StatelessWidget {
               painter: _WeightLineChartPainter(
                 points: vm.weightTrend,
                 lineColor: primary,
-                gridColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                gridColor:
+                    isDark ? AppColors.darkBorder : AppColors.lightBorder,
                 labelColor: isDark ? AppColors.darkMuted : AppColors.lightMuted,
                 isDark: isDark,
               ),
@@ -270,11 +280,14 @@ class ProgressScreen extends StatelessWidget {
             height: 130,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final barMaxHeight = (constraints.maxHeight - 26).clamp(40.0, 110.0);
+                final barMaxHeight =
+                    (constraints.maxHeight - 26).clamp(40.0, 110.0);
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: vm.weekEating.map((day) {
-                    final barHeight = (barMaxHeight * day.percentageOfTarget.clamp(0.12, 1.0)).clamp(14.0, barMaxHeight);
+                    final barHeight =
+                        (barMaxHeight * day.percentageOfTarget.clamp(0.12, 1.0))
+                            .clamp(14.0, barMaxHeight);
                     return Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -286,14 +299,21 @@ class ProgressScreen extends StatelessWidget {
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 color: day.status == EatingLogStatus.fullyLogged
-                                    ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
-                                    : (day.status == EatingLogStatus.partlyLogged
-                                        ? (isDark ? const Color(0xFF43735E) : AppColors.plannedFill)
+                                    ? (isDark
+                                        ? AppColors.darkPrimary
+                                        : AppColors.lightPrimary)
+                                    : (day.status ==
+                                            EatingLogStatus.partlyLogged
+                                        ? (isDark
+                                            ? const Color(0xFF43735E)
+                                            : AppColors.plannedFill)
                                         : Colors.transparent),
                                 borderRadius: BorderRadius.circular(8),
                                 border: day.status == EatingLogStatus.notLogged
                                     ? Border.all(
-                                        color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
+                                        color: isDark
+                                            ? AppColors.darkBorderStrong
+                                            : AppColors.plannedDash,
                                         width: 2,
                                       )
                                     : null,
@@ -304,7 +324,9 @@ class ProgressScreen extends StatelessWidget {
                               day.dayLabel,
                               style: AppTypography.micro.copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                                color: isDark
+                                    ? AppColors.darkMuted
+                                    : AppColors.lightMuted,
                               ),
                             ),
                           ],
@@ -362,7 +384,9 @@ class ProgressScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
             border: isDashed
                 ? Border.all(
-                    color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
+                    color: isDark
+                        ? AppColors.darkBorderStrong
+                        : AppColors.plannedDash,
                     width: 1.5,
                   )
                 : null,
@@ -407,11 +431,13 @@ class ProgressScreen extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${vm.daysLoggedThisWeek} ',
-                        style: TextStyle(fontWeight: FontWeight.w800, color: inkColor),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, color: inkColor),
                       ),
                       TextSpan(
                         text: 'of ${vm.totalDaysInPeriod}',
-                        style: AppTypography.captionStrong.copyWith(color: mutedColor),
+                        style: AppTypography.captionStrong
+                            .copyWith(color: mutedColor),
                       ),
                     ],
                   ),
@@ -441,11 +467,13 @@ class ProgressScreen extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${vm.averageProteinGrams.round()} ',
-                        style: TextStyle(fontWeight: FontWeight.w800, color: inkColor),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w800, color: inkColor),
                       ),
                       TextSpan(
                         text: 'g / day',
-                        style: AppTypography.captionStrong.copyWith(color: mutedColor),
+                        style: AppTypography.captionStrong
+                            .copyWith(color: mutedColor),
                       ),
                     ],
                   ),
@@ -501,7 +529,8 @@ class _WeightLineChartPainter extends CustomPainter {
         )..layout(maxWidth: size.width);
         textPainter.paint(
           canvas,
-          Offset((size.width - textPainter.width) / 2, (size.height - textPainter.height) / 2),
+          Offset((size.width - textPainter.width) / 2,
+              (size.height - textPainter.height) / 2),
         );
         return;
       }
@@ -556,7 +585,8 @@ class _WeightLineChartPainter extends CustomPainter {
           text: textSpan,
           textDirection: TextDirection.ltr,
         )..layout();
-        textPainter.paint(canvas, Offset(chartWidth + 6, y - textPainter.height / 2));
+        textPainter.paint(
+            canvas, Offset(chartWidth + 6, y - textPainter.height / 2));
       }
 
       // Map each data point to canvas pixel coordinate
@@ -601,7 +631,8 @@ class _WeightLineChartPainter extends CustomPainter {
             lineColor.withValues(alpha: isDark ? 0.35 : 0.20),
             lineColor.withValues(alpha: 0.0),
           ],
-        ).createShader(Rect.fromLTWH(0, topPadding, chartWidth, chartHeight + bottomPadding));
+        ).createShader(Rect.fromLTWH(
+            0, topPadding, chartWidth, chartHeight + bottomPadding));
 
       canvas.drawPath(fillPath, fillPaint);
 

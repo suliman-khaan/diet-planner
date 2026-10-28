@@ -6,7 +6,8 @@ import 'package:mobile/fixtures/meal_fixtures.dart';
 
 void main() {
   group('MealDetailScreen Widget Tests', () {
-    testWidgets('renders family pot dish with steppers and oil selector', (tester) async {
+    testWidgets('renders family pot dish with steppers and oil selector',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light,

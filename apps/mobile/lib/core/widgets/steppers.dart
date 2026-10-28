@@ -28,7 +28,9 @@ class PortionStepper extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+        color: isDark
+            ? AppColors.darkSurfaceSecondary
+            : AppColors.lightSurfaceSecondary,
         borderRadius: const BorderRadius.all(Radius.circular(AppRadii.control)),
       ),
       padding: const EdgeInsets.all(2),

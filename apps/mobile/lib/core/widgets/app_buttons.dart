@@ -27,8 +27,10 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-          foregroundColor: isDark ? AppColors.darkOnPrimary : AppColors.lightOnPrimary,
+          backgroundColor:
+              isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+          foregroundColor:
+              isDark ? AppColors.darkOnPrimary : AppColors.lightOnPrimary,
           shape: const RoundedRectangleBorder(
             borderRadius: AppRadii.buttonRadius,
           ),
@@ -41,7 +43,9 @@ class PrimaryButton extends StatelessWidget {
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  color: isDark ? AppColors.darkOnPrimary : AppColors.lightOnPrimary,
+                  color: isDark
+                      ? AppColors.darkOnPrimary
+                      : AppColors.lightOnPrimary,
                 ),
               )
             : Row(
@@ -54,7 +58,9 @@ class PrimaryButton extends StatelessWidget {
                   Text(
                     label,
                     style: AppTypography.bodyStrong.copyWith(
-                      color: isDark ? AppColors.darkOnPrimary : AppColors.lightOnPrimary,
+                      color: isDark
+                          ? AppColors.darkOnPrimary
+                          : AppColors.lightOnPrimary,
                     ),
                   ),
                 ],
@@ -100,7 +106,8 @@ class SecondaryButton extends StatelessWidget {
               leadingIcon!,
               const SizedBox(width: 8),
             ],
-            Text(label, style: AppTypography.bodyStrong.copyWith(color: primary)),
+            Text(label,
+                style: AppTypography.bodyStrong.copyWith(color: primary)),
           ],
         ),
       ),

@@ -40,10 +40,14 @@ class _RemindersScreenState extends State<RemindersScreen> {
   void initState() {
     super.initState();
     _slots = [
-      const ReminderSlotItem(slotName: 'Breakfast', time: '8:00 am', isEnabled: true),
-      const ReminderSlotItem(slotName: 'Lunch', time: '1:30 pm', isEnabled: true),
-      const ReminderSlotItem(slotName: 'Evening Chai', time: '5:30 pm', isEnabled: true),
-      const ReminderSlotItem(slotName: 'Dinner', time: '9:00 pm', isEnabled: true),
+      const ReminderSlotItem(
+          slotName: 'Breakfast', time: '8:00 am', isEnabled: true),
+      const ReminderSlotItem(
+          slotName: 'Lunch', time: '1:30 pm', isEnabled: true),
+      const ReminderSlotItem(
+          slotName: 'Evening Chai', time: '5:30 pm', isEnabled: true),
+      const ReminderSlotItem(
+          slotName: 'Dinner', time: '9:00 pm', isEnabled: true),
     ];
   }
 
@@ -53,7 +57,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
         title: Text(
           'Meal Reminders',
@@ -87,13 +92,16 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         Text(
                           'Follow Ramadan timings',
                           style: AppTypography.bodyStrong.copyWith(
-                            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                            color:
+                                isDark ? AppColors.darkInk : AppColors.lightInk,
                           ),
                         ),
                         Text(
                           'Switches automatically to Sehri and Iftar alert times during Ramadan.',
                           style: AppTypography.caption.copyWith(
-                            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                            color: isDark
+                                ? AppColors.darkMuted
+                                : AppColors.lightMuted,
                           ),
                         ),
                       ],
@@ -131,13 +139,16 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         title: Text(
                           slot.slotName,
                           style: AppTypography.bodyStrong.copyWith(
-                            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                            color:
+                                isDark ? AppColors.darkInk : AppColors.lightInk,
                           ),
                         ),
                         subtitle: Text(
                           slot.time,
                           style: AppTypography.caption.copyWith(
-                            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                            color: isDark
+                                ? AppColors.darkMuted
+                                : AppColors.lightMuted,
                           ),
                         ),
                         trailing: Switch(
@@ -172,7 +183,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     child: Text(
                       'Android battery optimization may occasionally delay notifications by a few minutes depending on OS sleep state.',
                       style: AppTypography.caption.copyWith(
-                        color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                        color:
+                            isDark ? AppColors.darkMuted : AppColors.lightMuted,
                       ),
                     ),
                   ),

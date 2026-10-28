@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
 
 /// Typography scale tokens as specified in design/spec.md.
 abstract class AppTypography {
@@ -96,6 +95,7 @@ abstract class AppTypography {
     fontFamily: fontUrdu,
     fontSize: 13,
     fontWeight: FontWeight.w500,
-    height: 1.90, // Generous line height prevents diacritic clipping in Nastaliq
+    height:
+        1.90, // Generous line height prevents diacritic clipping in Nastaliq
   );
 }

@@ -7,7 +7,8 @@ import '../../../core/widgets/app_text_field.dart';
 
 /// Quick Add sheet for direct manual calorie and macro logging.
 class QuickAddSheet extends StatefulWidget {
-  final void Function(String label, num calories, String slot)? onQuickAddSubmitted;
+  final void Function(String label, num calories, String slot)?
+      onQuickAddSubmitted;
 
   const QuickAddSheet({
     super.key,
@@ -37,7 +38,9 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
       return;
     }
 
-    final label = _labelController.text.trim().isEmpty ? 'Quick add' : _labelController.text.trim();
+    final label = _labelController.text.trim().isEmpty
+        ? 'Quick add'
+        : _labelController.text.trim();
     widget.onQuickAddSubmitted?.call(label, kcal, _selectedSlot);
     Navigator.of(context).pop();
   }
@@ -63,7 +66,8 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
         ),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         child: SingleChildScrollView(
@@ -78,7 +82,9 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    color: isDark
+                        ? AppColors.darkBorderStrong
+                        : AppColors.lightBorderStrong,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -113,7 +119,8 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 autofocus: false,
                 prefixIcon: Icon(
                   Icons.local_fire_department_outlined,
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color:
+                      isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -140,13 +147,18 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                 runSpacing: 8,
                 children: _slots.map((slot) {
                   final isSelected = slot == _selectedSlot;
-                  final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+                  final primary =
+                      isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
                   return ChoiceChip(
                     label: Text(slot),
                     selected: isSelected,
-                    selectedColor: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
-                    backgroundColor: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+                    selectedColor: isDark
+                        ? AppColors.darkPrimarySoft
+                        : AppColors.lightPrimarySoft,
+                    backgroundColor: isDark
+                        ? AppColors.darkSurfaceSecondary
+                        : AppColors.lightSurfaceSecondary,
                     labelStyle: AppTypography.captionStrong.copyWith(
                       color: isSelected
                           ? primary

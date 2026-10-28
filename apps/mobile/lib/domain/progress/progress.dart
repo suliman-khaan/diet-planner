@@ -2,7 +2,8 @@ import '../common/local_date.dart';
 import '../log/food_log.dart';
 
 class WeightEntry {
-  const WeightEntry({required this.id, required this.date, required this.weightKg});
+  const WeightEntry(
+      {required this.id, required this.date, required this.weightKg});
 
   final String id;
   final LocalDate date;
@@ -10,7 +11,11 @@ class WeightEntry {
 }
 
 class WeightTrend {
-  const WeightTrend({required this.points, required this.latest, required this.changeKg, required this.spanDays});
+  const WeightTrend(
+      {required this.points,
+      required this.latest,
+      required this.changeKg,
+      required this.spanDays});
 
   /// Oldest first, one point per day (the last entry of that day).
   final List<WeightEntry> points;
@@ -21,17 +26,21 @@ class WeightTrend {
   final int spanDays;
 }
 
-WeightTrend weightTrend(List<WeightEntry> entries, LocalDate from, LocalDate to) {
+WeightTrend weightTrend(
+    List<WeightEntry> entries, LocalDate from, LocalDate to) {
   final inRange = entries.where((e) => e.date.isWithin(from, to)).toList()
     ..sort((a, b) => a.date.compareTo(b.date));
   final byDay = <LocalDate, WeightEntry>{for (final e in inRange) e.date: e};
-  final points = byDay.values.toList()..sort((a, b) => a.date.compareTo(b.date));
+  final points = byDay.values.toList()
+    ..sort((a, b) => a.date.compareTo(b.date));
   final latest = points.isEmpty ? null : points.last;
   return WeightTrend(
     points: points,
     latest: latest,
-    changeKg: points.length < 2 ? null : points.last.weightKg - points.first.weightKg,
-    spanDays: points.length < 2 ? 0 : points.last.date.daysSince(points.first.date),
+    changeKg:
+        points.length < 2 ? null : points.last.weightKg - points.first.weightKg,
+    spanDays:
+        points.length < 2 ? 0 : points.last.date.daysSince(points.first.date),
   );
 }
 
@@ -49,7 +58,9 @@ class LowIntakeCheck {
     final sorted = [...summaries]..sort((a, b) => b.date.compareTo(a.date));
     var run = 0;
     for (final s in sorted) {
-      if (s.status == DayLogStatus.complete && s.eaten != null && s.eaten!.kcal < thresholdKcal) {
+      if (s.status == DayLogStatus.complete &&
+          s.eaten != null &&
+          s.eaten!.kcal < thresholdKcal) {
         run++;
         if (run >= consecutiveDays) return true;
       } else {

@@ -31,7 +31,8 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        backgroundColor:
+            isDark ? AppColors.darkSurface : AppColors.lightSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.card),
         ),
@@ -56,9 +57,12 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                   height: 46,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: isDark ? AppColors.darkInk : AppColors.lightInk,
+                      foregroundColor:
+                          isDark ? AppColors.darkInk : AppColors.lightInk,
                       side: BorderSide(
-                        color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                        color: isDark
+                            ? AppColors.darkBorderStrong
+                            : AppColors.lightBorderStrong,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppRadii.control),
@@ -123,14 +127,17 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                         Text(
                           'Your health data is 100% on-device',
                           style: AppTypography.bodyStrong.copyWith(
-                            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                            color:
+                                isDark ? AppColors.darkInk : AppColors.lightInk,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Your weight, height, age, allergies, and daily food logs are stored in a local SQLite database on your device and are never sent to external servers.',
                           style: AppTypography.caption.copyWith(
-                            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                            color: isDark
+                                ? AppColors.darkMuted
+                                : AppColors.lightMuted,
                           ),
                         ),
                       ],
@@ -167,7 +174,8 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                   ),
                 ),
                 value: _crashDiagnosticsConsent,
-                onChanged: (val) => setState(() => _crashDiagnosticsConsent = val),
+                onChanged: (val) =>
+                    setState(() => _crashDiagnosticsConsent = val),
               ),
             ),
             const SizedBox(height: 20),
@@ -188,7 +196,8 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(Icons.file_download_outlined, color: primary),
                     title: const Text('Export all data (JSON)'),
-                    subtitle: const Text('Save your entire food and weight history'),
+                    subtitle:
+                        const Text('Save your entire food and weight history'),
                     onTap: widget.onExportData,
                   ),
                   const Divider(height: 1),
@@ -196,7 +205,8 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(Icons.file_upload_outlined, color: primary),
                     title: const Text('Import data backup'),
-                    subtitle: const Text('Restore from an existing JSON backup'),
+                    subtitle:
+                        const Text('Restore from an existing JSON backup'),
                     onTap: widget.onImportData,
                   ),
                 ],

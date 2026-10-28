@@ -10,7 +10,8 @@ abstract class MealFixtures {
     totalCalories: 620,
     mainDishId: 'karahi-01',
     mainDishName: 'Chicken karahi',
-    mainDishDescription: 'Your portion from the dish cooked for everyone · about 180 g',
+    mainDishDescription:
+        'Your portion from the dish cooked for everyone · about 180 g',
     mainDishCalories: 340,
     mainDishKatoriCount: 1,
     oilRichness: OilLevel.normal,
@@ -41,7 +42,8 @@ abstract class MealFixtures {
     totalCalories: 620,
     mainDishId: 'karahi-01',
     mainDishName: 'Chicken karahi',
-    mainDishDescription: 'Your portion from the dish cooked for everyone · about 180 g',
+    mainDishDescription:
+        'Your portion from the dish cooked for everyone · about 180 g',
     mainDishCalories: 340,
     mainDishKatoriCount: 1,
     oilRichness: OilLevel.normal,

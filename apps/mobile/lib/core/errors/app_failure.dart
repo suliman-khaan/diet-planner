@@ -38,7 +38,10 @@ class PlatformServiceFailure extends AppFailure {
 sealed class Result<T> {
   const Result();
 
-  R when<R>({required R Function(T value) ok, required R Function(AppFailure failure) err}) => switch (this) {
+  R when<R>(
+          {required R Function(T value) ok,
+          required R Function(AppFailure failure) err}) =>
+      switch (this) {
         Ok<T>(:final value) => ok(value),
         Err<T>(:final failure) => err(failure),
       };

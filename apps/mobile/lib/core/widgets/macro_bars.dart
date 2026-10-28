@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_radii.dart';
-import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
 /// Single nutrient bar showing label, current / target numbers, and progress track.
@@ -22,7 +20,8 @@ class NutrientBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final progress = targetGrams > 0 ? (currentGrams / targetGrams).clamp(0.0, 1.0) : 0.0;
+    final progress =
+        targetGrams > 0 ? (currentGrams / targetGrams).clamp(0.0, 1.0) : 0.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +63,9 @@ class NutrientBar extends StatelessWidget {
               height: 4,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+                color: isDark
+                    ? AppColors.darkSurfaceSecondary
+                    : AppColors.lightSurfaceSecondary,
                 borderRadius: BorderRadius.circular(2),
               ),
               alignment: Alignment.centerLeft,
@@ -115,7 +116,9 @@ class CalorieSplitBar extends StatelessWidget {
           height: 12,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+            color: isDark
+                ? AppColors.darkSurfaceSecondary
+                : AppColors.lightSurfaceSecondary,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Stack(
@@ -134,7 +137,8 @@ class CalorieSplitBar extends StatelessWidget {
                 width: eatenW,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color:
+                      isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),

@@ -11,7 +11,13 @@ enum ActivityLevel { sedentary, light, moderate, veryActive }
 enum DietType { everything, vegetarian, vegan, pescatarian }
 
 /// Conditions that route a user to manual logging only (blueprint §3, safety rule 1).
-enum HealthCondition { pregnant, breastfeeding, diabetes, kidneyDisease, otherMedicalDiet }
+enum HealthCondition {
+  pregnant,
+  breastfeeding,
+  diabetes,
+  kidneyDisease,
+  otherMedicalDiet
+}
 
 class UserProfile {
   const UserProfile({
@@ -81,7 +87,8 @@ class UserProfile {
         conditions: ((json['conditions'] as List<Object?>?) ?? const [])
             .map((c) => HealthCondition.values.byName(c! as String))
             .toSet(),
-        cookingRichness: OilLevel.values.byName(json['cookingRichness']! as String),
+        cookingRichness:
+            OilLevel.values.byName(json['cookingRichness']! as String),
       );
 }
 
@@ -94,17 +101,26 @@ abstract final class ProfileLimits {
   static const int oldestBirthYearOffset = 100;
 }
 
-enum ProfileFieldError { heightOutOfRange, weightOutOfRange, birthYearOutOfRange }
+enum ProfileFieldError {
+  heightOutOfRange,
+  weightOutOfRange,
+  birthYearOutOfRange
+}
 
 Set<ProfileFieldError> validateProfile(UserProfile p, LocalDate today) {
   final errors = <ProfileFieldError>{};
-  if (!p.heightCm.isFinite || p.heightCm < ProfileLimits.minHeightCm || p.heightCm > ProfileLimits.maxHeightCm) {
+  if (!p.heightCm.isFinite ||
+      p.heightCm < ProfileLimits.minHeightCm ||
+      p.heightCm > ProfileLimits.maxHeightCm) {
     errors.add(ProfileFieldError.heightOutOfRange);
   }
-  if (!p.weightKg.isFinite || p.weightKg < ProfileLimits.minWeightKg || p.weightKg > ProfileLimits.maxWeightKg) {
+  if (!p.weightKg.isFinite ||
+      p.weightKg < ProfileLimits.minWeightKg ||
+      p.weightKg > ProfileLimits.maxWeightKg) {
     errors.add(ProfileFieldError.weightOutOfRange);
   }
-  if (p.birthYear > today.year || p.birthYear < today.year - ProfileLimits.oldestBirthYearOffset) {
+  if (p.birthYear > today.year ||
+      p.birthYear < today.year - ProfileLimits.oldestBirthYearOffset) {
     errors.add(ProfileFieldError.birthYearOutOfRange);
   }
   return errors;
@@ -133,7 +149,8 @@ class DietaryPreferences {
       DietaryPreferences(
         dietType: dietType ?? this.dietType,
         allergies: allergies ?? this.allergies,
-        excludedIngredientIds: excludedIngredientIds ?? this.excludedIngredientIds,
+        excludedIngredientIds:
+            excludedIngredientIds ?? this.excludedIngredientIds,
         excludedFoodIds: excludedFoodIds ?? this.excludedFoodIds,
       );
 
@@ -144,15 +161,18 @@ class DietaryPreferences {
         'excludedFoodIds': excludedFoodIds.toList()..sort(),
       };
 
-  factory DietaryPreferences.fromJson(Map<String, Object?> json) => DietaryPreferences(
+  factory DietaryPreferences.fromJson(Map<String, Object?> json) =>
+      DietaryPreferences(
         dietType: DietType.values.byName(json['dietType']! as String),
-        allergies: _strings(json['allergies']).map(Allergen.values.byName).toSet(),
+        allergies:
+            _strings(json['allergies']).map(Allergen.values.byName).toSet(),
         excludedIngredientIds: _strings(json['excludedIngredientIds']).toSet(),
         excludedFoodIds: _strings(json['excludedFoodIds']).toSet(),
       );
 }
 
-List<String> _strings(Object? v) => ((v as List<Object?>?) ?? const []).map((e) => e! as String).toList();
+List<String> _strings(Object? v) =>
+    ((v as List<Object?>?) ?? const []).map((e) => e! as String).toList();
 
 class SlotTime {
   const SlotTime(this.slot, this.minutesOfDay);
@@ -164,8 +184,8 @@ class SlotTime {
 
   Map<String, Object?> toJson() => {'slot': slot.name, 'minutes': minutesOfDay};
 
-  factory SlotTime.fromJson(Map<String, Object?> json) =>
-      SlotTime(MealSlot.fromName(json['slot']! as String), json['minutes']! as int);
+  factory SlotTime.fromJson(Map<String, Object?> json) => SlotTime(
+      MealSlot.fromName(json['slot']! as String), json['minutes']! as int);
 }
 
 /// Meal times. Ramadan mode replaces breakfast and lunch with sehri and iftar on the chosen dates.
@@ -200,7 +220,9 @@ class MealSchedule {
   final LocalDate? ramadanEnd;
 
   bool isRamadan(LocalDate date) =>
-      ramadanStart != null && ramadanEnd != null && date.isWithin(ramadanStart!, ramadanEnd!);
+      ramadanStart != null &&
+      ramadanEnd != null &&
+      date.isWithin(ramadanStart!, ramadanEnd!);
 
   /// Slots for [date], ordered by time.
   List<SlotTime> slotsFor(LocalDate date) {
@@ -210,7 +232,8 @@ class MealSchedule {
   }
 
   /// Day number within Ramadan (1-based), or null outside Ramadan.
-  int? ramadanDay(LocalDate date) => isRamadan(date) ? date.daysSince(ramadanStart!) + 1 : null;
+  int? ramadanDay(LocalDate date) =>
+      isRamadan(date) ? date.daysSince(ramadanStart!) + 1 : null;
 
   MealSchedule copyWith({
     List<SlotTime>? normalSlots,
@@ -235,7 +258,8 @@ class MealSchedule {
 
   factory MealSchedule.fromJson(Map<String, Object?> json) {
     List<SlotTime> slots(Object? v) => ((v as List<Object?>?) ?? const [])
-        .map((e) => SlotTime.fromJson((e! as Map<Object?, Object?>).cast<String, Object?>()))
+        .map((e) => SlotTime.fromJson(
+            (e! as Map<Object?, Object?>).cast<String, Object?>()))
         .toList();
     final start = json['ramadanStart'] as String?;
     final end = json['ramadanEnd'] as String?;

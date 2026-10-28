@@ -40,7 +40,8 @@ class MealDetailScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       body: SafeArea(
         child: Padding(
           padding: AppSpacing.screenPadding,
@@ -67,7 +68,9 @@ class MealDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               PrimaryButton(
-                label: vm.isEaten ? 'Mark as planned' : 'Mark ${vm.slotTitle.toLowerCase()} as eaten',
+                label: vm.isEaten
+                    ? 'Mark as planned'
+                    : 'Mark ${vm.slotTitle.toLowerCase()} as eaten',
                 onPressed: onToggleEaten,
               ),
             ],
@@ -161,7 +164,8 @@ class MealDetailScreen extends StatelessWidget {
                     Text(
                       vm.mainDishDescription,
                       style: AppTypography.caption.copyWith(
-                        color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                        color:
+                            isDark ? AppColors.darkMuted : AppColors.lightMuted,
                       ),
                     ),
                   ],
@@ -251,13 +255,17 @@ class MealDetailScreen extends StatelessWidget {
                           Text(
                             item.name,
                             style: AppTypography.bodyStrong.copyWith(
-                              color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                              color: isDark
+                                  ? AppColors.darkInk
+                                  : AppColors.lightInk,
                             ),
                           ),
                           Text(
                             '${item.portionDescription} · ${item.calories.round()} kcal',
                             style: AppTypography.caption.copyWith(
-                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                              color: isDark
+                                  ? AppColors.darkMuted
+                                  : AppColors.lightMuted,
                             ),
                           ),
                         ],
@@ -267,7 +275,8 @@ class MealDetailScreen extends StatelessWidget {
                       PortionStepper(
                         value: item.count,
                         itemName: item.name,
-                        onChanged: (val) => onSideCountChanged?.call(item.id, val),
+                        onChanged: (val) =>
+                            onSideCountChanged?.call(item.id, val),
                       )
                     else
                       SizedBox(
@@ -277,7 +286,9 @@ class MealDetailScreen extends StatelessWidget {
                           icon: Icon(
                             Icons.close,
                             size: 20,
-                            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                            color: isDark
+                                ? AppColors.darkMuted
+                                : AppColors.lightMuted,
                           ),
                           onPressed: () => onRemoveSideItem?.call(item.id),
                         ),
@@ -306,7 +317,9 @@ class MealDetailScreen extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: primary,
                 side: BorderSide(
-                  color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                  color: isDark
+                      ? AppColors.darkBorderStrong
+                      : AppColors.lightBorderStrong,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadii.control),
@@ -326,7 +339,9 @@ class MealDetailScreen extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: primary,
                 side: BorderSide(
-                  color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                  color: isDark
+                      ? AppColors.darkBorderStrong
+                      : AppColors.lightBorderStrong,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadii.control),

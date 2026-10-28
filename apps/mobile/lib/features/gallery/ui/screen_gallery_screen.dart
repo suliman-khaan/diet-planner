@@ -40,7 +40,8 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
         title: const Text('Dev Screen Gallery'),
       ),
@@ -51,32 +52,38 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
           _buildGalleryTile(
             title: 'Welcome Screen',
             subtitle: 'Local privacy pledge, start action',
-            onTap: () => _openScreen(context, const OnboardingScreen(vm: OnboardingFixtures.welcome)),
+            onTap: () => _openScreen(context,
+                const OnboardingScreen(vm: OnboardingFixtures.welcome)),
           ),
           _buildGalleryTile(
             title: 'Goal Selection',
             subtitle: 'Healthy deficit/maintenance options',
-            onTap: () => _openScreen(context, const OnboardingScreen(vm: OnboardingFixtures.goal)),
+            onTap: () => _openScreen(
+                context, const OnboardingScreen(vm: OnboardingFixtures.goal)),
           ),
           _buildGalleryTile(
             title: 'Cooking Richness Step',
             subtitle: 'Light, Normal, Rich oil radio cards',
-            onTap: () => _openScreen(context, const OnboardingScreen(vm: OnboardingFixtures.cookingRichness)),
+            onTap: () => _openScreen(context,
+                const OnboardingScreen(vm: OnboardingFixtures.cookingRichness)),
           ),
           _buildGalleryTile(
             title: 'Target Summary Result',
             subtitle: 'Mifflin-St Jeor daily calories & macros',
-            onTap: () => _openScreen(context, const OnboardingScreen(vm: OnboardingFixtures.targetSummary)),
+            onTap: () => _openScreen(context,
+                const OnboardingScreen(vm: OnboardingFixtures.targetSummary)),
           ),
           _buildGalleryTile(
             title: 'Onboarding · Loading State',
             subtitle: 'Generating plan spinner',
-            onTap: () => _openScreen(context, const OnboardingScreen(vm: OnboardingFixtures.loading)),
+            onTap: () => _openScreen(context,
+                const OnboardingScreen(vm: OnboardingFixtures.loading)),
           ),
           _buildGalleryTile(
             title: 'Onboarding · Error State',
             subtitle: 'Inline error notification',
-            onTap: () => _openScreen(context, const OnboardingScreen(vm: OnboardingFixtures.error)),
+            onTap: () => _openScreen(
+                context, const OnboardingScreen(vm: OnboardingFixtures.error)),
           ),
           const SizedBox(height: 24),
           _buildSectionHeader('TODAY SCREEN (U-07)'),
@@ -148,12 +155,14 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
           _buildGalleryTile(
             title: 'Meal Detail · Planned',
             subtitle: 'Family pot portion, oil selector, sides',
-            onTap: () => _openScreen(context, const MealDetailScreen(vm: MealFixtures.dinnerSuccess)),
+            onTap: () => _openScreen(context,
+                const MealDetailScreen(vm: MealFixtures.dinnerSuccess)),
           ),
           _buildGalleryTile(
             title: 'Meal Detail · Eaten',
             subtitle: 'Checked eaten state with undo option',
-            onTap: () => _openScreen(context, const MealDetailScreen(vm: MealFixtures.dinnerEaten)),
+            onTap: () => _openScreen(
+                context, const MealDetailScreen(vm: MealFixtures.dinnerEaten)),
           ),
           _buildGalleryTile(
             title: 'Portion Size Guide Sheet (U-09)',
@@ -191,7 +200,8 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
             subtitle: 'Nutritional breakdown, allergens & portion stepper',
             onTap: () => _showModal(
               context,
-              FoodDetailSheet(food: FoodsFixtures.standardSearch.searchResults.first),
+              FoodDetailSheet(
+                  food: FoodsFixtures.standardSearch.searchResults.first),
             ),
           ),
           _buildGalleryTile(
@@ -216,14 +226,16 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
           _buildGalleryTile(
             title: 'History Screen (U-12)',
             subtitle: 'Immutable past day logs & snapshot archives',
-            onTap: () => _openScreen(context, const HistoryScreen(vm: HistoryFixtures.standard)),
+            onTap: () => _openScreen(
+                context, const HistoryScreen(vm: HistoryFixtures.standard)),
           ),
           const SizedBox(height: 24),
           _buildSectionHeader('SHOPPING & REMINDERS (U-14 & U-15)'),
           _buildGalleryTile(
             title: 'Shopping List Screen (U-14)',
             subtitle: 'Aggregated planned grocery items by category',
-            onTap: () => _openScreen(context, const ShoppingScreen(vm: ShoppingFixtures.standard)),
+            onTap: () => _openScreen(
+                context, const ShoppingScreen(vm: ShoppingFixtures.standard)),
           ),
           _buildGalleryTile(
             title: 'Reminders Screen (U-15)',
@@ -241,11 +253,16 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
                 currentTab: AppTab.more,
                 onTabChanged: (_) {},
                 body: SettingsScreen(
-                  onOpenPrivacy: () => _openScreen(context, const PrivacyScreen()),
-                  onOpenTransparency: () => _openScreen(context, const TransparencyScreen()),
-                  onOpenReminders: () => _openScreen(context, const RemindersScreen()),
-                  onOpenShopping: () => _openScreen(context, const ShoppingScreen(vm: ShoppingFixtures.standard)),
-                  onOpenHistory: () => _openScreen(context, const HistoryScreen(vm: HistoryFixtures.standard)),
+                  onOpenPrivacy: () =>
+                      _openScreen(context, const PrivacyScreen()),
+                  onOpenTransparency: () =>
+                      _openScreen(context, const TransparencyScreen()),
+                  onOpenReminders: () =>
+                      _openScreen(context, const RemindersScreen()),
+                  onOpenShopping: () => _openScreen(context,
+                      const ShoppingScreen(vm: ShoppingFixtures.standard)),
+                  onOpenHistory: () => _openScreen(context,
+                      const HistoryScreen(vm: HistoryFixtures.standard)),
                 ),
               ),
             ),

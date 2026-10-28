@@ -20,7 +20,8 @@ class ReminderPreferences {
   bool isQuiet(int minutesOfDay) {
     if (quietStartMinutes == quietEndMinutes) return false;
     if (quietStartMinutes < quietEndMinutes) {
-      return minutesOfDay >= quietStartMinutes && minutesOfDay < quietEndMinutes;
+      return minutesOfDay >= quietStartMinutes &&
+          minutesOfDay < quietEndMinutes;
     }
     return minutesOfDay >= quietStartMinutes || minutesOfDay < quietEndMinutes;
   }
@@ -45,7 +46,8 @@ class ReminderPreferences {
         'quietEnd': quietEndMinutes,
       };
 
-  factory ReminderPreferences.fromJson(Map<String, Object?> json) => ReminderPreferences(
+  factory ReminderPreferences.fromJson(Map<String, Object?> json) =>
+      ReminderPreferences(
         enabled: json['enabled'] == true,
         enabledSlots: ((json['slots'] as List<Object?>?) ?? const [])
             .map((s) => MealSlot.fromName(s! as String))
@@ -56,7 +58,11 @@ class ReminderPreferences {
 }
 
 class ReminderOccurrence {
-  const ReminderOccurrence({required this.id, required this.date, required this.slot, required this.minutesOfDay});
+  const ReminderOccurrence(
+      {required this.id,
+      required this.date,
+      required this.slot,
+      required this.minutesOfDay});
 
   /// Stable per date and slot, so rescheduling replaces instead of duplicating.
   final int id;
@@ -66,7 +72,8 @@ class ReminderOccurrence {
 }
 
 /// Reminder id for a date and slot: yyyymmdd × 10 + slot index. Fits in a 32-bit int.
-int reminderIdFor(LocalDate date, MealSlot slot) => date.yyyymmdd * 10 + slot.index;
+int reminderIdFor(LocalDate date, MealSlot slot) =>
+    date.yyyymmdd * 10 + slot.index;
 
 /// Upcoming reminders for [days] days starting at [from]. Pure; the platform service turns
 /// these into notifications.

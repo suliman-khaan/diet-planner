@@ -106,10 +106,12 @@ class Planner {
 
   PlanResult generate(PlanRequest r) {
     if (r.slots.isEmpty) return const PlanFailure(NoPlanReason.noSlots);
-    if (!r.pack.foods.any(r.filter.allows)) return const PlanFailure(NoPlanReason.noAllowedFoods);
+    if (!r.pack.foods.any(r.filter.allows))
+      return const PlanFailure(NoPlanReason.noAllowedFoods);
 
     final rng = SeededRandom(r.seed ^ r.date.yyyymmdd);
-    final slots = [...r.slots]..sort((a, b) => a.minutesOfDay.compareTo(b.minutesOfDay));
+    final slots = [...r.slots]
+      ..sort((a, b) => a.minutesOfDay.compareTo(b.minutesOfDay));
     final shares = [for (final s in slots) config.slotShares[s.slot] ?? 0.1];
 
     final meals = <PlannedMeal>[];
@@ -119,9 +121,11 @@ class Planner {
       // Spread whatever is left of the target over the remaining slots, so rounding in
       // earlier meals is corrected by later ones.
       final remainingShare = shares.sublist(i).fold<double>(0, (a, b) => a + b);
-      final slotKcal = (r.target.kcal - plannedKcal) * shares[i] / remainingShare;
+      final slotKcal =
+          (r.target.kcal - plannedKcal) * shares[i] / remainingShare;
       final meal = _bestMeal(r, slots[i], slotKcal, rng, usedToday, const {});
-      if (meal == null) return PlanFailure(NoPlanReason.noOptionsForSlot, slot: slots[i].slot);
+      if (meal == null)
+        return PlanFailure(NoPlanReason.noOptionsForSlot, slot: slots[i].slot);
       meals.add(meal);
       plannedKcal += meal.nutrition.kcal;
       usedToday.addAll(_mainFoodIds(r.pack, meal));
@@ -134,7 +138,8 @@ class Planner {
       policyVersion: r.policyVersion,
       packVersion: r.pack.packVersion,
       seed: r.seed,
-      usesDraftData: meals.any((m) => m.items.any((i) => !r.pack.food(i.foodId)!.status.isVerified)),
+      usesDraftData: meals.any(
+          (m) => m.items.any((i) => !r.pack.food(i.foodId)!.status.isVerified)),
     );
     return PlanSuccess(plan, _warnings(plan));
   }
@@ -149,16 +154,20 @@ class Planner {
     Set<String> avoidComboIds = const {},
     Set<String> otherMainFoodIds = const {},
   }) {
-    final rng = SeededRandom(r.seed ^ r.date.yyyymmdd ^ SeededRandom.hashString('${slot.slot.name}#$attempt'));
+    final rng = SeededRandom(r.seed ^
+        r.date.yyyymmdd ^
+        SeededRandom.hashString('${slot.slot.name}#$attempt'));
     return _bestMeal(r, slot, slotKcal, rng, otherMainFoodIds, avoidComboIds);
   }
 
   /// Recomputes a plan item's nutrition after the user changes servings or oil level.
-  PlanItem resizeItem(FoodPack pack, PlanItem item, {double? servings, OilLevel? oilLevel}) {
+  PlanItem resizeItem(FoodPack pack, PlanItem item,
+      {double? servings, OilLevel? oilLevel}) {
     final food = pack.food(item.foodId)!;
     final s = servings ?? item.servings;
     final grams = s * food.servingById(item.servingId).grams;
-    final oil = food.hasOil ? (oilLevel ?? item.oilLevel ?? OilLevel.normal) : null;
+    final oil =
+        food.hasOil ? (oilLevel ?? item.oilLevel ?? OilLevel.normal) : null;
     return PlanItem(
       id: item.id,
       foodId: item.foodId,
@@ -173,7 +182,8 @@ class Planner {
   }
 
   /// A plan item for [food] at [servings] of its default serving.
-  PlanItem itemFor(FoodPack pack, Food food, double servings, OilLevel oilLevel) {
+  PlanItem itemFor(
+      FoodPack pack, Food food, double servings, OilLevel oilLevel) {
     final serving = food.defaultServing;
     final grams = servings * serving.grams;
     final oil = oilLevelFor(food, oilLevel);
@@ -190,7 +200,8 @@ class Planner {
   }
 
   Set<PlanWarning> _warnings(DailyPlan plan) => {
-        if (plan.deviation.abs() > config.tolerance) PlanWarning.outsideTolerance,
+        if (plan.deviation.abs() > config.tolerance)
+          PlanWarning.outsideTolerance,
         if (plan.usesDraftData) PlanWarning.usesDraftData,
       };
 
@@ -210,18 +221,26 @@ class Planner {
             }))
         .toList();
     if (candidates.isEmpty) return null;
-    final withoutAvoided = candidates.where((c) => !avoidComboIds.contains(c.id)).toList();
+    final withoutAvoided =
+        candidates.where((c) => !avoidComboIds.contains(c.id)).toList();
     if (withoutAvoided.isNotEmpty) candidates = withoutAvoided;
 
     PlannedMeal? best;
     var bestScore = double.infinity;
     for (final combo in candidates) {
       final items = _fit(r, combo, slotKcal);
-      final meal = PlannedMeal(slot: slot.slot, minutesOfDay: slot.minutesOfDay, comboId: combo.id, items: items);
+      final meal = PlannedMeal(
+          slot: slot.slot,
+          minutesOfDay: slot.minutesOfDay,
+          comboId: combo.id,
+          items: items);
       final mains = _mainFoodIds(r.pack, meal);
-      var score = slotKcal <= 0 ? 0.0 : (meal.nutrition.kcal - slotKcal).abs() / slotKcal;
+      var score = slotKcal <= 0
+          ? 0.0
+          : (meal.nutrition.kcal - slotKcal).abs() / slotKcal;
       if (mains.any(usedToday.contains)) score += config.sameDayRepeatPenalty;
-      if (mains.any(r.recentFoodIds.contains)) score += config.recentRepeatPenalty;
+      if (mains.any(r.recentFoodIds.contains))
+        score += config.recentRepeatPenalty;
       // Jitter is drawn for every candidate in a fixed order, so results stay deterministic.
       score += rng.nextDouble() * config.jitter;
       if (score < bestScore) {
@@ -236,9 +255,16 @@ class Planner {
   /// step that brings the meal closest to [targetKcal]. Stops when no step helps.
   List<PlanItem> _fit(PlanRequest r, Combo combo, double targetKcal) {
     final foods = [for (final i in combo.items) r.pack.food(i.foodId)!];
-    final servings = [for (var i = 0; i < foods.length; i++) foods[i].portion.clampAndSnap(combo.items[i].servings)];
-    double kcalOf(int i, double s) =>
-        portionNutrition(r.pack, foods[i], s * foods[i].defaultServing.grams, oilLevelFor(foods[i], r.oilLevel)).kcal;
+    final servings = [
+      for (var i = 0; i < foods.length; i++)
+        foods[i].portion.clampAndSnap(combo.items[i].servings)
+    ];
+    double kcalOf(int i, double s) => portionNutrition(
+            r.pack,
+            foods[i],
+            s * foods[i].defaultServing.grams,
+            oilLevelFor(foods[i], r.oilLevel))
+        .kcal;
 
     var total = 0.0;
     for (var i = 0; i < foods.length; i++) {
@@ -268,7 +294,10 @@ class Planner {
       servings[bestIndex] = bestServings;
       total = bestTotal;
     }
-    return [for (var i = 0; i < foods.length; i++) itemFor(r.pack, foods[i], servings[i], r.oilLevel)];
+    return [
+      for (var i = 0; i < foods.length; i++)
+        itemFor(r.pack, foods[i], servings[i], r.oilLevel)
+    ];
   }
 
   static Set<String> _mainFoodIds(FoodPack pack, PlannedMeal meal) => {

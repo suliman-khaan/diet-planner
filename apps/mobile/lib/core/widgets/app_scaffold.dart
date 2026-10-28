@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
-import '../theme/app_radii.dart';
 import '../theme/app_typography.dart';
 import 'state_widgets.dart';
 
@@ -26,7 +25,8 @@ class AppScaffold extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -92,7 +92,8 @@ class AppScaffold extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isSelected = tab == currentTab;
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
-    final primarySoft = isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft;
+    final primarySoft =
+        isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft;
     final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
 
     return Expanded(

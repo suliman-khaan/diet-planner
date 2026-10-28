@@ -9,13 +9,15 @@ class LocalDate implements Comparable<LocalDate> {
     }
   }
 
-  factory LocalDate.fromDateTime(DateTime dt) => LocalDate(dt.year, dt.month, dt.day);
+  factory LocalDate.fromDateTime(DateTime dt) =>
+      LocalDate(dt.year, dt.month, dt.day);
 
   /// Parses `yyyy-mm-dd`.
   factory LocalDate.parse(String iso) {
     final parts = iso.split('-');
     if (parts.length != 3) throw FormatException('Invalid date: $iso');
-    return LocalDate(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
+    return LocalDate(
+        int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
   }
 
   final int year;
@@ -24,7 +26,8 @@ class LocalDate implements Comparable<LocalDate> {
 
   DateTime get _utc => DateTime.utc(year, month, day);
 
-  LocalDate addDays(int days) => LocalDate.fromDateTime(_utc.add(Duration(days: days)));
+  LocalDate addDays(int days) =>
+      LocalDate.fromDateTime(_utc.add(Duration(days: days)));
 
   int daysSince(LocalDate other) => _utc.difference(other._utc).inDays;
 
@@ -35,7 +38,8 @@ class LocalDate implements Comparable<LocalDate> {
   bool isAfter(LocalDate other) => compareTo(other) > 0;
 
   /// Inclusive range check.
-  bool isWithin(LocalDate start, LocalDate end) => !isBefore(start) && !isAfter(end);
+  bool isWithin(LocalDate start, LocalDate end) =>
+      !isBefore(start) && !isAfter(end);
 
   /// Local wall-clock time on this date.
   DateTime atMinutes(int minutesOfDay) =>
@@ -50,7 +54,8 @@ class LocalDate implements Comparable<LocalDate> {
   int compareTo(LocalDate other) => yyyymmdd.compareTo(other.yyyymmdd);
 
   @override
-  bool operator ==(Object other) => other is LocalDate && other.yyyymmdd == yyyymmdd;
+  bool operator ==(Object other) =>
+      other is LocalDate && other.yyyymmdd == yyyymmdd;
 
   @override
   int get hashCode => yyyymmdd;

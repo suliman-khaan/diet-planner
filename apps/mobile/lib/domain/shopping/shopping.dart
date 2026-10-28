@@ -30,7 +30,8 @@ class ShoppingLine {
 /// planned grams, plus cooking oil at the chosen level. Water and brewed tea are skipped.
 /// All amounts are grams or millilitres of the same ingredient, so they always add up;
 /// different units are kept as separate lines.
-List<ShoppingLine> shoppingLinesFor(FoodPack pack, Iterable<PlannedMeal> meals) {
+List<ShoppingLine> shoppingLinesFor(
+    FoodPack pack, Iterable<PlannedMeal> meals) {
   final totals = <(String, ShoppingUnit), double>{};
   void add(String ingredientId, double grams) {
     if (_skipped.contains(ingredientId) || grams <= 0) return;
@@ -72,5 +73,6 @@ List<ShoppingLine> shoppingLinesFor(FoodPack pack, Iterable<PlannedMeal> meals) 
 const _skipped = {'water', 'tea-brewed'};
 const _liquids = {'milk', 'lemon-juice'};
 
-ShoppingUnit _unitFor(String ingredientId) =>
-    _liquids.contains(ingredientId) ? ShoppingUnit.millilitres : ShoppingUnit.grams;
+ShoppingUnit _unitFor(String ingredientId) => _liquids.contains(ingredientId)
+    ? ShoppingUnit.millilitres
+    : ShoppingUnit.grams;

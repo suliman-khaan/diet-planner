@@ -23,7 +23,8 @@ void main() {
     });
 
     test('male formula adds 5 instead of subtracting 161', () {
-      final r = policy.compute(profile(goal: Goal.maintain, sex: Sex.male), testToday);
+      final r = policy.compute(
+          profile(goal: Goal.maintain, sex: Sex.male), testToday);
       expect(r.explanation.restingKcal, closeTo(1582.5, 0.01));
     });
 
@@ -43,8 +44,10 @@ void main() {
     test('loss never exceeds the absolute weekly cap', () {
       for (final p in generatedProfiles(300)) {
         final r = policy.compute(p.copyWith(goal: Goal.lose), testToday);
-        expect(-r.explanation.weeklyChangeKg, lessThanOrEqualTo(config.maxLossKgPerWeek));
-        expect(-r.explanation.weeklyChangeKg, lessThanOrEqualTo(p.weightKg * 0.01 + 1e-9));
+        expect(-r.explanation.weeklyChangeKg,
+            lessThanOrEqualTo(config.maxLossKgPerWeek));
+        expect(-r.explanation.weeklyChangeKg,
+            lessThanOrEqualTo(p.weightKg * 0.01 + 1e-9));
       }
     });
 
@@ -77,7 +80,11 @@ void main() {
 
     test('never below the calorie floor (women)', () {
       final r = policy.compute(
-        profile(heightCm: 150, weightKg: 48, birthYear: 1960, activity: ActivityLevel.sedentary),
+        profile(
+            heightCm: 150,
+            weightKg: 48,
+            birthYear: 1960,
+            activity: ActivityLevel.sedentary),
         testToday,
       );
       expect(r.target.kcal, config.calorieFloorFemale);
@@ -86,7 +93,12 @@ void main() {
 
     test('never below the calorie floor (men)', () {
       final r = policy.compute(
-        profile(sex: Sex.male, heightCm: 158, weightKg: 52, birthYear: 1958, activity: ActivityLevel.sedentary),
+        profile(
+            sex: Sex.male,
+            heightCm: 158,
+            weightKg: 52,
+            birthYear: 1958,
+            activity: ActivityLevel.sedentary),
         testToday,
       );
       expect(r.target.kcal, config.calorieFloorMale);
@@ -95,7 +107,8 @@ void main() {
     test('property: no generated profile gets a target below its floor', () {
       for (final p in generatedProfiles(1000, seed: 7)) {
         final r = policy.compute(p, testToday);
-        expect(r.target.kcal, greaterThanOrEqualTo(config.floorFor(p.sex)), reason: '${p.toJson()}');
+        expect(r.target.kcal, greaterThanOrEqualTo(config.floorFor(p.sex)),
+            reason: '${p.toJson()}');
       }
     });
 
@@ -116,13 +129,17 @@ void main() {
       expect(checker.check(profile(), testToday), isA<EligibleForPlans>());
     });
 
-    test('under 18 gets manual mode, including the birthday ambiguity at 18', () {
-      final seventeen = checker.check(profile(birthYear: testToday.year - 17), testToday);
+    test('under 18 gets manual mode, including the birthday ambiguity at 18',
+        () {
+      final seventeen =
+          checker.check(profile(birthYear: testToday.year - 17), testToday);
       expect(seventeen, isA<ManualOnly>());
       expect((seventeen as ManualOnly).reasons, {ManualOnlyReason.underAge});
       // Born 18 years ago by year, but may still be 17 today.
-      expect(checker.check(profile(birthYear: testToday.year - 18), testToday), isA<ManualOnly>());
-      expect(checker.check(profile(birthYear: testToday.year - 19), testToday), isA<EligibleForPlans>());
+      expect(checker.check(profile(birthYear: testToday.year - 18), testToday),
+          isA<ManualOnly>());
+      expect(checker.check(profile(birthYear: testToday.year - 19), testToday),
+          isA<EligibleForPlans>());
     });
 
     test('pregnancy, breastfeeding and medical diets get manual mode', () {
@@ -139,8 +156,14 @@ void main() {
         ManualOnlyReason.breastfeeding,
         ManualOnlyReason.medicalCondition,
       });
-      expect(checker.check(profile(conditions: {HealthCondition.kidneyDisease}), testToday), isA<ManualOnly>());
-      expect(checker.check(profile(conditions: {HealthCondition.otherMedicalDiet}), testToday), isA<ManualOnly>());
+      expect(
+          checker.check(
+              profile(conditions: {HealthCondition.kidneyDisease}), testToday),
+          isA<ManualOnly>());
+      expect(
+          checker.check(profile(conditions: {HealthCondition.otherMedicalDiet}),
+              testToday),
+          isA<ManualOnly>());
     });
 
     test('BMI below 18.5 with a loss goal gets maintenance only', () {
@@ -150,18 +173,24 @@ void main() {
       expect((r as MaintenanceOnly).bmi, closeTo(17.63, 0.01));
       expect(checker.effectiveGoal(thin, r), Goal.maintain);
       // Same person wanting to maintain or gain is fine.
-      expect(checker.check(thin.copyWith(goal: Goal.gain), testToday), isA<EligibleForPlans>());
-      expect(checker.effectiveGoal(profile(), const EligibleForPlans()), Goal.lose);
+      expect(checker.check(thin.copyWith(goal: Goal.gain), testToday),
+          isA<EligibleForPlans>());
+      expect(checker.effectiveGoal(profile(), const EligibleForPlans()),
+          Goal.lose);
     });
   });
 
   group('Profile validation', () {
     test('accepts normal values and flags out-of-range fields', () {
       expect(validateProfile(profile(), testToday), isEmpty);
-      expect(validateProfile(profile(heightCm: 90), testToday), {ProfileFieldError.heightOutOfRange});
-      expect(validateProfile(profile(weightKg: 400), testToday), {ProfileFieldError.weightOutOfRange});
-      expect(validateProfile(profile(birthYear: 2030), testToday), {ProfileFieldError.birthYearOutOfRange});
-      expect(validateProfile(profile(birthYear: 1900), testToday), {ProfileFieldError.birthYearOutOfRange});
+      expect(validateProfile(profile(heightCm: 90), testToday),
+          {ProfileFieldError.heightOutOfRange});
+      expect(validateProfile(profile(weightKg: 400), testToday),
+          {ProfileFieldError.weightOutOfRange});
+      expect(validateProfile(profile(birthYear: 2030), testToday),
+          {ProfileFieldError.birthYearOutOfRange});
+      expect(validateProfile(profile(birthYear: 1900), testToday),
+          {ProfileFieldError.birthYearOutOfRange});
     });
 
     test('profile and preferences survive JSON round trips', () {

@@ -64,7 +64,8 @@ class PlannedMeal {
 
   Nutrition get nutrition => Nutrition.sum(items.map((i) => i.nutrition));
 
-  PlannedMeal copyWith({String? id, List<PlanItem>? items, String? comboId}) => PlannedMeal(
+  PlannedMeal copyWith({String? id, List<PlanItem>? items, String? comboId}) =>
+      PlannedMeal(
         id: id ?? this.id,
         slot: slot,
         minutesOfDay: minutesOfDay,
@@ -99,7 +100,8 @@ class DailyPlan {
   Nutrition get totals => Nutrition.sum(meals.map((m) => m.nutrition));
 
   /// Fractional deviation from target, e.g. 0.04 = 4 % over.
-  double get deviation => targetKcal == 0 ? 0 : (totals.kcal - targetKcal) / targetKcal;
+  double get deviation =>
+      targetKcal == 0 ? 0 : (totals.kcal - targetKcal) / targetKcal;
 
   DailyPlan copyWith({String? id, List<PlannedMeal>? meals}) => DailyPlan(
         id: id ?? this.id,

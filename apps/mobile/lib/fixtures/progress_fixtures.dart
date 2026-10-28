@@ -17,13 +17,41 @@ abstract class ProgressFixtures {
       WeightPointViewModel(dateLabel: '28 Oct', weightKg: 78.4),
     ],
     weekEating: [
-      DayEatingBarViewModel(dayLabel: 'W', percentageOfTarget: 0.82, calories: 1810, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'T', percentageOfTarget: 0.90, calories: 1850, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'F', percentageOfTarget: 0.15, calories: 420, status: EatingLogStatus.notLogged),
-      DayEatingBarViewModel(dayLabel: 'S', percentageOfTarget: 0.76, calories: 1650, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'S', percentageOfTarget: 0.48, calories: 1100, status: EatingLogStatus.partlyLogged),
-      DayEatingBarViewModel(dayLabel: 'M', percentageOfTarget: 0.95, calories: 1890, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'T', percentageOfTarget: 0.60, calories: 1350, status: EatingLogStatus.partlyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'W',
+          percentageOfTarget: 0.82,
+          calories: 1810,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'T',
+          percentageOfTarget: 0.90,
+          calories: 1850,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'F',
+          percentageOfTarget: 0.15,
+          calories: 420,
+          status: EatingLogStatus.notLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'S',
+          percentageOfTarget: 0.76,
+          calories: 1650,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'S',
+          percentageOfTarget: 0.48,
+          calories: 1100,
+          status: EatingLogStatus.partlyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'M',
+          percentageOfTarget: 0.95,
+          calories: 1890,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'T',
+          percentageOfTarget: 0.60,
+          calories: 1350,
+          status: EatingLogStatus.partlyLogged),
     ],
   );
 
@@ -42,13 +70,41 @@ abstract class ProgressFixtures {
       WeightPointViewModel(dateLabel: 'Today', weightKg: 78.4),
     ],
     weekEating: [
-      DayEatingBarViewModel(dayLabel: 'M', percentageOfTarget: 0.95, calories: 1890, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'T', percentageOfTarget: 0.90, calories: 1850, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'W', percentageOfTarget: 0.82, calories: 1810, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'T', percentageOfTarget: 0.76, calories: 1650, status: EatingLogStatus.fullyLogged),
-      DayEatingBarViewModel(dayLabel: 'F', percentageOfTarget: 0.15, calories: 420, status: EatingLogStatus.notLogged),
-      DayEatingBarViewModel(dayLabel: 'S', percentageOfTarget: 0.60, calories: 1350, status: EatingLogStatus.partlyLogged),
-      DayEatingBarViewModel(dayLabel: 'S', percentageOfTarget: 0.88, calories: 1780, status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'M',
+          percentageOfTarget: 0.95,
+          calories: 1890,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'T',
+          percentageOfTarget: 0.90,
+          calories: 1850,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'W',
+          percentageOfTarget: 0.82,
+          calories: 1810,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'T',
+          percentageOfTarget: 0.76,
+          calories: 1650,
+          status: EatingLogStatus.fullyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'F',
+          percentageOfTarget: 0.15,
+          calories: 420,
+          status: EatingLogStatus.notLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'S',
+          percentageOfTarget: 0.60,
+          calories: 1350,
+          status: EatingLogStatus.partlyLogged),
+      DayEatingBarViewModel(
+          dayLabel: 'S',
+          percentageOfTarget: 0.88,
+          calories: 1780,
+          status: EatingLogStatus.fullyLogged),
     ],
   );
 

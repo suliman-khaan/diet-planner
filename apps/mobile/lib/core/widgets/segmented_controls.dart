@@ -23,7 +23,9 @@ class OilLevelSelector extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+        color: isDark
+            ? AppColors.darkSurfaceSecondary
+            : AppColors.lightSurfaceSecondary,
         borderRadius: const BorderRadius.all(Radius.circular(AppRadii.control)),
       ),
       child: Row(
@@ -48,13 +50,16 @@ class OilLevelSelector extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: isCurrent
-                        ? (isDark ? AppColors.darkSurface : AppColors.lightSurface)
+                        ? (isDark
+                            ? AppColors.darkSurface
+                            : AppColors.lightSurface)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: isCurrent
                         ? [
                             BoxShadow(
-                              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                              color:
+                                  Colors.black.withOpacity(isDark ? 0.3 : 0.08),
                               blurRadius: 3,
                               offset: const Offset(0, 1),
                             )
@@ -65,8 +70,12 @@ class OilLevelSelector extends StatelessWidget {
                     title,
                     style: AppTypography.captionStrong.copyWith(
                       color: isCurrent
-                          ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
-                          : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
+                          ? (isDark
+                              ? AppColors.darkPrimary
+                              : AppColors.lightPrimary)
+                          : (isDark
+                              ? AppColors.darkMuted
+                              : AppColors.lightMuted),
                     ),
                   ),
                 ),

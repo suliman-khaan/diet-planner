@@ -81,7 +81,8 @@ class _FoodsScreenState extends State<FoodsScreen> {
           AppTextField(
             controller: _searchController,
             hintText: 'Search foods (e.g. roti, biryani, daal)',
-            helperText: 'Type in English or Roman Urdu. Spelling does not need to be exact.',
+            helperText:
+                'Type in English or Roman Urdu. Spelling does not need to be exact.',
             prefixIcon: Icon(
               Icons.search,
               color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
@@ -112,7 +113,8 @@ class _FoodsScreenState extends State<FoodsScreen> {
               child: Text(
                 'Can\'t find a food? Tell us',
                 style: AppTypography.captionStrong.copyWith(
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color:
+                      isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                 ),
               ),
             ),
@@ -142,14 +144,18 @@ class _FoodsScreenState extends State<FoodsScreen> {
                     ? Colors.white
                     : (isDark ? AppColors.darkInk : AppColors.lightInk),
               ),
-              backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-              selectedColor: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+              backgroundColor:
+                  isDark ? AppColors.darkSurface : AppColors.lightSurface,
+              selectedColor:
+                  isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadii.chipRadius,
                 side: BorderSide(
                   color: isSelected
                       ? Colors.transparent
-                      : (isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong),
+                      : (isDark
+                          ? AppColors.darkBorderStrong
+                          : AppColors.lightBorderStrong),
                 ),
               ),
               onSelected: (_) => widget.onCategorySelected?.call(cat),
@@ -175,7 +181,8 @@ class _FoodsScreenState extends State<FoodsScreen> {
               InkWell(
                 onTap: () => widget.onFoodSelected?.call(item),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   child: Row(
                     children: [
                       Container(
@@ -189,7 +196,9 @@ class _FoodsScreenState extends State<FoodsScreen> {
                         ),
                         child: Icon(
                           _getCategoryIcon(item.category),
-                          color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                          color: isDark
+                              ? AppColors.darkPrimary
+                              : AppColors.lightPrimary,
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -200,14 +209,18 @@ class _FoodsScreenState extends State<FoodsScreen> {
                             Text(
                               item.englishName,
                               style: AppTypography.bodyStrong.copyWith(
-                                color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                                color: isDark
+                                    ? AppColors.darkInk
+                                    : AppColors.lightInk,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               '${item.urduName} · ${item.standardServing}',
                               style: AppTypography.caption.copyWith(
-                                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                                color: isDark
+                                    ? AppColors.darkMuted
+                                    : AppColors.lightMuted,
                               ),
                             ),
                           ],
@@ -220,7 +233,9 @@ class _FoodsScreenState extends State<FoodsScreen> {
                           Text(
                             '~${item.calories.round()} kcal',
                             style: AppTypography.captionStrong.copyWith(
-                              color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                              color: isDark
+                                  ? AppColors.darkInk
+                                  : AppColors.lightInk,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -267,7 +282,8 @@ class _FoodsScreenState extends State<FoodsScreen> {
   Widget _buildEmptyState(BuildContext context) {
     return const EmptyStateWidget(
       title: 'No foods match your search',
-      message: 'Try searching in English or Roman Urdu (e.g. roti, daal, chawal), or browse by category above.',
+      message:
+          'Try searching in English or Roman Urdu (e.g. roti, daal, chawal), or browse by category above.',
       icon: Icons.search_off_rounded,
     );
   }

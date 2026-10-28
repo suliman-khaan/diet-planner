@@ -23,7 +23,8 @@ class AppCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg = backgroundColor ?? (isDark ? AppColors.darkSurface : AppColors.lightSurface);
+    final bg = backgroundColor ??
+        (isDark ? AppColors.darkSurface : AppColors.lightSurface);
     final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
     final textColor = isDark ? AppColors.darkInk : AppColors.lightInk;
 
@@ -105,7 +106,9 @@ class MealListRow extends StatelessWidget {
                       TextSpan(
                         text: ' · $time · $statusLabel',
                         style: AppTypography.caption.copyWith(
-                          color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                          color: isDark
+                              ? AppColors.darkMuted
+                              : AppColors.lightMuted,
                         ),
                       ),
                     ],

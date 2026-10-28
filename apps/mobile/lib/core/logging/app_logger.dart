@@ -11,16 +11,24 @@ class AppLogger {
 
   static LogLevel minimumLevel = LogLevel.info;
 
-  void debug(String event, [Map<String, Object?> fields = const {}]) => _log(LogLevel.debug, event, fields);
-  void info(String event, [Map<String, Object?> fields = const {}]) => _log(LogLevel.info, event, fields);
-  void warning(String event, [Map<String, Object?> fields = const {}]) => _log(LogLevel.warning, event, fields);
+  void debug(String event, [Map<String, Object?> fields = const {}]) =>
+      _log(LogLevel.debug, event, fields);
+  void info(String event, [Map<String, Object?> fields = const {}]) =>
+      _log(LogLevel.info, event, fields);
+  void warning(String event, [Map<String, Object?> fields = const {}]) =>
+      _log(LogLevel.warning, event, fields);
 
-  void error(String event, Object error, [StackTrace? stack, Map<String, Object?> fields = const {}]) =>
-      _log(LogLevel.error, event, {...fields, 'errorType': error.runtimeType.toString()}, stack);
+  void error(String event, Object error,
+          [StackTrace? stack, Map<String, Object?> fields = const {}]) =>
+      _log(LogLevel.error, event,
+          {...fields, 'errorType': error.runtimeType.toString()}, stack);
 
-  void _log(LogLevel level, String event, Map<String, Object?> fields, [StackTrace? stack]) {
+  void _log(LogLevel level, String event, Map<String, Object?> fields,
+      [StackTrace? stack]) {
     if (level.index < minimumLevel.index) return;
-    final details = fields.isEmpty ? '' : ' ${fields.entries.map((e) => '${e.key}=${e.value}').join(' ')}';
+    final details = fields.isEmpty
+        ? ''
+        : ' ${fields.entries.map((e) => '${e.key}=${e.value}').join(' ')}';
     developer.log(
       '[${level.name}] $event$details',
       name: area,

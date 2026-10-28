@@ -6,7 +6,9 @@ import 'package:mobile/fixtures/progress_fixtures.dart';
 
 void main() {
   group('ProgressScreen Widget Tests', () {
-    testWidgets('renders weight card, range toggle, eating bars, and metric cards', (tester) async {
+    testWidgets(
+        'renders weight card, range toggle, eating bars, and metric cards',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light,

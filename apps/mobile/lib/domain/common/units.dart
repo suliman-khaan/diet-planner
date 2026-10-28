@@ -13,7 +13,8 @@ abstract final class Units {
     return (totalInches ~/ 12, totalInches % 12);
   }
 
-  static double feetInchesToCm(int feet, int inches) => (feet * 12 + inches) * cmPerInch;
+  static double feetInchesToCm(int feet, int inches) =>
+      (feet * 12 + inches) * cmPerInch;
 
   static double kcalToKj(double kcal) => kcal * kjPerKcal;
 

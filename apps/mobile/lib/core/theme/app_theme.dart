@@ -23,17 +23,22 @@ abstract class AppTheme {
     );
 
     final textTheme = TextTheme(
-      displayLarge: AppTypography.numberLarge.copyWith(color: AppColors.lightInk),
-      headlineLarge: AppTypography.titleLarge.copyWith(color: AppColors.lightInk),
-      headlineMedium: AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
+      displayLarge:
+          AppTypography.numberLarge.copyWith(color: AppColors.lightInk),
+      headlineLarge:
+          AppTypography.titleLarge.copyWith(color: AppColors.lightInk),
+      headlineMedium:
+          AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
       headlineSmall: AppTypography.heading.copyWith(color: AppColors.lightInk),
       titleLarge: AppTypography.subheading.copyWith(color: AppColors.lightInk),
       titleMedium: AppTypography.bodyStrong.copyWith(color: AppColors.lightInk),
-      titleSmall: AppTypography.captionStrong.copyWith(color: AppColors.lightInk),
+      titleSmall:
+          AppTypography.captionStrong.copyWith(color: AppColors.lightInk),
       bodyLarge: AppTypography.bodyStrong.copyWith(color: AppColors.lightInk),
       bodyMedium: AppTypography.body.copyWith(color: AppColors.lightInk),
       bodySmall: AppTypography.caption.copyWith(color: AppColors.lightMuted),
-      labelLarge: AppTypography.captionStrong.copyWith(color: AppColors.lightInk),
+      labelLarge:
+          AppTypography.captionStrong.copyWith(color: AppColors.lightInk),
       labelSmall: AppTypography.micro.copyWith(color: AppColors.lightMuted),
     );
 
@@ -59,8 +64,10 @@ abstract class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.card),
         ),
-        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
-        contentTextStyle: AppTypography.body.copyWith(color: AppColors.lightMuted),
+        titleTextStyle:
+            AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
+        contentTextStyle:
+            AppTypography.body.copyWith(color: AppColors.lightMuted),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.lightSurface,
@@ -72,7 +79,8 @@ abstract class AppTheme {
         foregroundColor: AppColors.lightInk,
         elevation: 0,
         scrolledUnderElevation: 0,
-        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
+        titleTextStyle:
+            AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
         iconTheme: const IconThemeData(color: AppColors.lightInk),
         actionsIconTheme: const IconThemeData(color: AppColors.lightInk),
       ),
@@ -99,7 +107,7 @@ abstract class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.lightPrimary,
           backgroundColor: AppColors.lightSurface,
-          minimumSize: const Size.fromHeight(48),
+          minimumSize: const Size(48, 48),
           side: const BorderSide(color: AppColors.lightPrimary, width: 1),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(AppRadii.control)),
@@ -128,17 +136,22 @@ abstract class AppTheme {
     );
 
     final textTheme = TextTheme(
-      displayLarge: AppTypography.numberLarge.copyWith(color: AppColors.darkInk),
-      headlineLarge: AppTypography.titleLarge.copyWith(color: AppColors.darkInk),
-      headlineMedium: AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
+      displayLarge:
+          AppTypography.numberLarge.copyWith(color: AppColors.darkInk),
+      headlineLarge:
+          AppTypography.titleLarge.copyWith(color: AppColors.darkInk),
+      headlineMedium:
+          AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
       headlineSmall: AppTypography.heading.copyWith(color: AppColors.darkInk),
       titleLarge: AppTypography.subheading.copyWith(color: AppColors.darkInk),
       titleMedium: AppTypography.bodyStrong.copyWith(color: AppColors.darkInk),
-      titleSmall: AppTypography.captionStrong.copyWith(color: AppColors.darkInk),
+      titleSmall:
+          AppTypography.captionStrong.copyWith(color: AppColors.darkInk),
       bodyLarge: AppTypography.bodyStrong.copyWith(color: AppColors.darkInk),
       bodyMedium: AppTypography.body.copyWith(color: AppColors.darkInk),
       bodySmall: AppTypography.caption.copyWith(color: AppColors.darkMuted),
-      labelLarge: AppTypography.captionStrong.copyWith(color: AppColors.darkInk),
+      labelLarge:
+          AppTypography.captionStrong.copyWith(color: AppColors.darkInk),
       labelSmall: AppTypography.micro.copyWith(color: AppColors.darkMuted),
     );
 
@@ -164,8 +177,10 @@ abstract class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.card),
         ),
-        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
-        contentTextStyle: AppTypography.body.copyWith(color: AppColors.darkMuted),
+        titleTextStyle:
+            AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
+        contentTextStyle:
+            AppTypography.body.copyWith(color: AppColors.darkMuted),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.darkSurface,
@@ -177,7 +192,8 @@ abstract class AppTheme {
         foregroundColor: AppColors.darkInk,
         elevation: 0,
         scrolledUnderElevation: 0,
-        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
+        titleTextStyle:
+            AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
         iconTheme: const IconThemeData(color: AppColors.darkInk),
         actionsIconTheme: const IconThemeData(color: AppColors.darkInk),
       ),
@@ -204,7 +220,7 @@ abstract class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.darkPrimary,
           backgroundColor: AppColors.darkSurface,
-          minimumSize: const Size.fromHeight(48),
+          minimumSize: const Size(48, 48),
           side: const BorderSide(color: AppColors.darkPrimary, width: 1),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(AppRadii.control)),

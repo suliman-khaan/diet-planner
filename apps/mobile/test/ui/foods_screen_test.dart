@@ -6,7 +6,8 @@ import 'package:mobile/fixtures/foods_fixtures.dart';
 
 void main() {
   group('FoodsScreen Widget Tests', () {
-    testWidgets('renders search box, category chips and results list', (tester) async {
+    testWidgets('renders search box, category chips and results list',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light,
@@ -19,11 +20,15 @@ void main() {
       expect(find.text('Foods'), findsOneWidget);
       expect(find.text('Roti / Chapati (whole wheat)'), findsOneWidget);
       expect(find.text('Chicken Biryani (Karachi style)'), findsOneWidget);
-      expect(find.text('${FoodsFixtures.standardSearch.searchResults.length} results'), findsOneWidget);
+      expect(
+          find.text(
+              '${FoodsFixtures.standardSearch.searchResults.length} results'),
+          findsOneWidget);
       expect(find.text('Can\'t find a food? Tell us'), findsOneWidget);
     });
 
-    testWidgets('renders empty state when search produces no results', (tester) async {
+    testWidgets('renders empty state when search produces no results',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light,

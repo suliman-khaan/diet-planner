@@ -25,7 +25,9 @@ class LoadingSkeleton extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+        color: isDark
+            ? AppColors.darkSurfaceSecondary
+            : AppColors.lightSurfaceSecondary,
         borderRadius: borderRadius,
       ),
     );
@@ -155,7 +157,9 @@ class OfflineBanner extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+      color: isDark
+          ? AppColors.darkSurfaceSecondary
+          : AppColors.lightSurfaceSecondary,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

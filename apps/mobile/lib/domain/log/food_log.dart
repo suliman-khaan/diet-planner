@@ -90,11 +90,15 @@ class DaySummary {
 }
 
 /// A meal counts as logged when anything was logged for its slot that day.
-DaySummary summarizeDay(LocalDate date, DailyPlan? plan, List<FoodLogEntry> logs) {
+DaySummary summarizeDay(
+    LocalDate date, DailyPlan? plan, List<FoodLogEntry> logs) {
   final dayLogs = logs.where((l) => l.date == date).toList();
   final loggedSlots = {for (final l in dayLogs) l.slot};
-  final plannedSlots = plan == null ? <MealSlot>{} : {for (final m in plan.meals) m.slot};
-  final mealsLogged = plannedSlots.isEmpty ? loggedSlots.length : plannedSlots.where(loggedSlots.contains).length;
+  final plannedSlots =
+      plan == null ? <MealSlot>{} : {for (final m in plan.meals) m.slot};
+  final mealsLogged = plannedSlots.isEmpty
+      ? loggedSlots.length
+      : plannedSlots.where(loggedSlots.contains).length;
   final DayLogStatus status;
   if (dayLogs.isEmpty) {
     status = DayLogStatus.notLogged;
@@ -106,9 +110,11 @@ DaySummary summarizeDay(LocalDate date, DailyPlan? plan, List<FoodLogEntry> logs
   return DaySummary(
     date: date,
     status: status,
-    eaten: dayLogs.isEmpty ? null : Nutrition.sum(dayLogs.map((l) => l.nutrition)),
+    eaten:
+        dayLogs.isEmpty ? null : Nutrition.sum(dayLogs.map((l) => l.nutrition)),
     mealsLogged: mealsLogged,
-    mealsPlanned: plannedSlots.isEmpty ? loggedSlots.length : plannedSlots.length,
+    mealsPlanned:
+        plannedSlots.isEmpty ? loggedSlots.length : plannedSlots.length,
   );
 }
 
