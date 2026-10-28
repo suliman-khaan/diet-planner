@@ -1,15 +1,7 @@
 name: Build Android APK
 
+# Strictly manual trigger. Will never run automatically on commits or pushes.
 on:
-  push:
-    branches:
-      - main
-      - development
-      - ui
-  pull_request:
-    branches:
-      - main
-      - development
   workflow_dispatch:
 
 jobs:
@@ -38,7 +30,7 @@ jobs:
           cd apps/mobile
           if [ ! -d "android" ]; then
             echo "Generating Android platform wrapper..."
-            flutter create . --org dev.placeholder.dietplanner --platforms=android
+            flutter create . --org dev.placeholder.dietplanner --platforms=android --no-overwrite
           fi
 
       - name: Install Flutter packages
