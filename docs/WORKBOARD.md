@@ -27,9 +27,9 @@ Status: `Open` · `In progress` · `Implemented, awaiting verification` · `Veri
 | U-06 | Onboarding screens | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
 | U-07 | Today (all modes) | UI | U-04 | Implemented, awaiting verification | Antigravity | ui |
 | U-08 | Meal detail | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
-| U-09 | Portion picker + guides | UI | U-02 | Open | | |
-| U-10 | Foods search + detail | UI | U-03 | Open | | |
-| U-11 | Add / replace / quick-add sheets | UI | U-10 | Open | | |
+| U-09 | Portion picker + guides | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
+| U-10 | Foods search + detail | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
+| U-11 | Add / replace / quick-add sheets | UI | U-10 | Implemented, awaiting verification | Antigravity | ui |
 | U-12 | History | UI | U-03 | Open | | |
 | U-13 | Progress | UI | U-03 | Open | | |
 | U-14 | Shopping list | UI | U-03 | Open | | |
