@@ -2,7 +2,9 @@ name: Scaffold Android (one-off)
 
 # Generates the android/ platform folder with the CI's Flutter version so it can be committed.
 on:
-  workflow_dispatch:
+  push:
+    branches: [feat/p0-p8]
+    paths: [.github/workflows/scaffold-android.yml]
 
 jobs:
   scaffold:
