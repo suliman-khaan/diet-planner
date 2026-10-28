@@ -24,7 +24,7 @@ Phase 0 — Foundation (repository scaffold only)
 |---|---|---|
 | D — Discovery | Not started | Interviews, 150-food list, nutritionist |
 | 0 — Foundation | In progress | Git repository initialized and pushed to GitHub main. Flutter/JDK setup pending for P0-01. |
-| U — Complete UI | In progress | U-00 completed (`design/spec.md`). Code tasks (U-01..U-21) begin after P0-01. |
+| U — Complete UI | Implemented, awaiting verification | All screens, view models, design tokens, dev gallery, and widget test suites implemented (U-00 through U-21). |
 | 1 — Food catalogue | Not started | |
 | 2 — Local storage | Not started | |
 | 3 — Onboarding and target | Not started | |
