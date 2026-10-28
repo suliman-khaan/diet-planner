@@ -36,6 +36,15 @@ class OnboardingViewModel {
   final double weightKg;
   final ActivityLevel activityLevel;
   final bool isEligibleForAutoPlan;
+
+  /// Keys: pregnant, breastfeeding, diabetes, kidneyDisease, otherMedicalDiet.
+  final List<String> healthConditions;
+
+  /// Years offered for birth year, newest first.
+  final List<int> birthYearOptions;
+
+  /// Shown under the target, e.g. that safety values are provisional.
+  final String? targetNotice;
   final String? eligibilityNotice;
   final DietType dietType;
   final List<String> allergies;
@@ -63,6 +72,9 @@ class OnboardingViewModel {
     this.weightKg = 72.0,
     this.activityLevel = ActivityLevel.lightlyActive,
     this.isEligibleForAutoPlan = true,
+    this.healthConditions = const [],
+    this.birthYearOptions = const [],
+    this.targetNotice,
     this.eligibilityNotice,
     this.dietType = DietType.everything,
     this.allergies = const [],
@@ -88,6 +100,9 @@ class OnboardingViewModel {
     double? weightKg,
     ActivityLevel? activityLevel,
     bool? isEligibleForAutoPlan,
+    List<String>? healthConditions,
+    List<int>? birthYearOptions,
+    String? targetNotice,
     String? eligibilityNotice,
     DietType? dietType,
     List<String>? allergies,
@@ -111,6 +126,9 @@ class OnboardingViewModel {
       heightCm: heightCm ?? this.heightCm,
       weightKg: weightKg ?? this.weightKg,
       activityLevel: activityLevel ?? this.activityLevel,
+      healthConditions: healthConditions ?? this.healthConditions,
+      birthYearOptions: birthYearOptions ?? this.birthYearOptions,
+      targetNotice: targetNotice ?? this.targetNotice,
       isEligibleForAutoPlan:
           isEligibleForAutoPlan ?? this.isEligibleForAutoPlan,
       eligibilityNotice: eligibilityNotice ?? this.eligibilityNotice,

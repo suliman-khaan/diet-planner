@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'main_dev.dart';
+import 'app/app_config.dart';
+import 'app/bootstrap.dart';
 
-void main() {
-  runApp(const DietPlannerPrototypeApp());
-}
+/// Production entry point (`--flavor prod -t lib/main.dart`).
+Future<void> main() => bootstrap(const AppConfig(flavor: Flavor.prod));

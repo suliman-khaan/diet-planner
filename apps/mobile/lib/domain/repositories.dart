@@ -62,6 +62,10 @@ abstract interface class PlanRepository {
   /// Stores [plan] for its date, replacing any previous plan for that date. Assigns ids.
   Future<DailyPlan> savePlan(DailyPlan plan);
 
+  /// Removes (tombstones) plans for [from] and later, so they are made again with the
+  /// current profile, schedule and restrictions when next viewed. Logs are not affected.
+  Future<void> removePlansFrom(LocalDate from);
+
   /// Replaces one meal's items (regenerate, add, remove, resize). Assigns ids to new items.
   Future<PlannedMeal> saveMeal(String planId, PlannedMeal meal);
 }

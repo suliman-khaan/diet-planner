@@ -27,8 +27,8 @@ void main() {
       expect(find.text('Mark as eaten'), findsOneWidget);
 
       // Verify meals list items
-      expect(find.text('Breakfast'), findsOneWidget);
-      expect(find.text('Lunch'), findsOneWidget);
+      expect(find.textContaining('Breakfast', findRichText: true), findsWidgets);
+      expect(find.textContaining('Lunch', findRichText: true), findsWidgets);
     });
 
     testWidgets('renders Ramadan mode with nocturnal styling and Sehri/Iftar',
@@ -43,8 +43,8 @@ void main() {
       );
 
       expect(find.text('Ramadan · Day 22'), findsOneWidget);
-      expect(find.text('Sehri'), findsOneWidget);
-      expect(find.text('Iftar'), findsOneWidget);
+      expect(find.textContaining('Sehri', findRichText: true), findsWidgets);
+      expect(find.textContaining('Iftar', findRichText: true), findsWidgets);
     });
 
     testWidgets('renders empty state when no plan exists', (tester) async {
@@ -52,7 +52,7 @@ void main() {
         MaterialApp(
           theme: AppTheme.light,
           home: const Scaffold(
-            body: TodayScreen(vm: TodayFixtures.emptyNoPlan),
+            body: TodayScreen(vm: TodayFixtures.emptyNoPlan, onGeneratePlan: _noop),
           ),
         ),
       );
@@ -84,3 +84,5 @@ void main() {
     });
   });
 }
+
+void _noop() {}

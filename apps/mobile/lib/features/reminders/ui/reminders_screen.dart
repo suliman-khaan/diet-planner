@@ -5,56 +5,60 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_card.dart';
 
 class ReminderSlotItem {
+  final String id;
   final String slotName;
   final String time;
   final bool isEnabled;
 
   const ReminderSlotItem({
+    required this.id,
     required this.slotName,
     required this.time,
     required this.isEnabled,
   });
-
-  ReminderSlotItem copyWith({bool? isEnabled}) {
-    return ReminderSlotItem(
-      slotName: slotName,
-      time: time,
-      isEnabled: isEnabled ?? this.isEnabled,
-    );
-  }
 }
 
-/// Reminders configuration screen with Ramadan automatic timing shifts.
-class RemindersScreen extends StatefulWidget {
-  const RemindersScreen({super.key});
+class RemindersViewModel {
+  final bool enabled;
 
-  @override
-  State<RemindersScreen> createState() => _RemindersScreenState();
+  /// The OS refused notification permission; reminders cannot be shown.
+  final bool permissionDenied;
+  final List<ReminderSlotItem> slots;
+
+  /// e.g. "Ramadan dates: 18 Feb – 19 Mar. Sehri and iftar reminders switch on automatically."
+  final String ramadanNote;
+  final String quietHours;
+
+  const RemindersViewModel({
+    this.enabled = false,
+    this.permissionDenied = false,
+    this.slots = const [],
+    this.ramadanNote = '',
+    this.quietHours = '',
+  });
 }
 
-class _RemindersScreenState extends State<RemindersScreen> {
-  bool _ramadanAutoShift = true;
-  late List<ReminderSlotItem> _slots;
+/// Reminder settings. Notifications contain timing only, never health details.
+class RemindersScreen extends StatelessWidget {
+  final RemindersViewModel vm;
+  final ValueChanged<bool>? onEnabledChanged;
+  final void Function(String slotId, bool enabled)? onSlotChanged;
+  final VoidCallback? onOpenMealTimes;
 
-  @override
-  void initState() {
-    super.initState();
-    _slots = [
-      const ReminderSlotItem(
-          slotName: 'Breakfast', time: '8:00 am', isEnabled: true),
-      const ReminderSlotItem(
-          slotName: 'Lunch', time: '1:30 pm', isEnabled: true),
-      const ReminderSlotItem(
-          slotName: 'Evening Chai', time: '5:30 pm', isEnabled: true),
-      const ReminderSlotItem(
-          slotName: 'Dinner', time: '9:00 pm', isEnabled: true),
-    ];
-  }
+  const RemindersScreen({
+    super.key,
+    this.vm = const RemindersViewModel(),
+    this.onEnabledChanged,
+    this.onSlotChanged,
+    this.onOpenMealTimes,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
 
     return Scaffold(
       backgroundColor:
@@ -62,9 +66,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
       appBar: AppBar(
         title: Text(
           'Meal Reminders',
-          style: AppTypography.titleMedium.copyWith(
-            color: isDark ? AppColors.darkInk : AppColors.lightInk,
-          ),
+          style: AppTypography.titleMedium.copyWith(color: ink),
         ),
       ),
       body: SingleChildScrollView(
@@ -74,8 +76,24 @@ class _RemindersScreenState extends State<RemindersScreen> {
           children: [
             Text(
               'Gentle meal logging nudges. Notifications contain timing alerts only—never personal health data.',
-              style: AppTypography.caption.copyWith(
-                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+              style: AppTypography.caption.copyWith(color: muted),
+            ),
+            const SizedBox(height: 16),
+            AppCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                activeColor: primary,
+                title: Text('Meal reminders',
+                    style: AppTypography.bodyStrong.copyWith(color: ink)),
+                subtitle: Text(
+                  vm.permissionDenied
+                      ? 'Notifications are turned off for this app in Android settings. Turn them on there to get reminders.'
+                      : 'A reminder at each meal time you choose below.',
+                  style: AppTypography.caption.copyWith(color: muted),
+                ),
+                value: vm.enabled,
+                onChanged: onEnabledChanged,
               ),
             ),
             const SizedBox(height: 16),
@@ -89,29 +107,17 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Follow Ramadan timings',
-                          style: AppTypography.bodyStrong.copyWith(
-                            color:
-                                isDark ? AppColors.darkInk : AppColors.lightInk,
-                          ),
-                        ),
-                        Text(
-                          'Switches automatically to Sehri and Iftar alert times during Ramadan.',
-                          style: AppTypography.caption.copyWith(
-                            color: isDark
-                                ? AppColors.darkMuted
-                                : AppColors.lightMuted,
-                          ),
-                        ),
+                        Text('Ramadan timings',
+                            style:
+                                AppTypography.bodyStrong.copyWith(color: ink)),
+                        Text(vm.ramadanNote,
+                            style: AppTypography.caption.copyWith(color: muted)),
                       ],
                     ),
                   ),
-                  Switch(
-                    value: _ramadanAutoShift,
-                    activeColor: primary,
-                    onChanged: (val) => setState(() => _ramadanAutoShift = val),
-                  ),
+                  if (onOpenMealTimes != null)
+                    TextButton(
+                        onPressed: onOpenMealTimes, child: const Text('Edit')),
                 ],
               ),
             ),
@@ -121,45 +127,30 @@ class _RemindersScreenState extends State<RemindersScreen> {
               style: AppTypography.micro.copyWith(
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.8,
-                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                color: muted,
               ),
             ),
             const SizedBox(height: 8),
             AppCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Column(
-                children: List.generate(_slots.length, (index) {
-                  final slot = _slots[index];
-                  final isLast = index == _slots.length - 1;
-
+                children: List.generate(vm.slots.length, (index) {
+                  final slot = vm.slots[index];
+                  final isLast = index == vm.slots.length - 1;
                   return Column(
                     children: [
-                      ListTile(
+                      SwitchListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          slot.slotName,
-                          style: AppTypography.bodyStrong.copyWith(
-                            color:
-                                isDark ? AppColors.darkInk : AppColors.lightInk,
-                          ),
-                        ),
-                        subtitle: Text(
-                          slot.time,
-                          style: AppTypography.caption.copyWith(
-                            color: isDark
-                                ? AppColors.darkMuted
-                                : AppColors.lightMuted,
-                          ),
-                        ),
-                        trailing: Switch(
-                          value: slot.isEnabled,
-                          activeColor: primary,
-                          onChanged: (val) {
-                            setState(() {
-                              _slots[index] = slot.copyWith(isEnabled: val);
-                            });
-                          },
-                        ),
+                        activeColor: primary,
+                        title: Text(slot.slotName,
+                            style:
+                                AppTypography.bodyStrong.copyWith(color: ink)),
+                        subtitle: Text(slot.time,
+                            style: AppTypography.caption.copyWith(color: muted)),
+                        value: slot.isEnabled,
+                        onChanged: vm.enabled
+                            ? (val) => onSlotChanged?.call(slot.id, val)
+                            : null,
                       ),
                       if (!isLast) const Divider(height: 1),
                     ],
@@ -173,19 +164,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.schedule,
-                    size: 18,
-                    color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                  ),
+                  Icon(Icons.schedule, size: 18, color: muted),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'Android battery optimization may occasionally delay notifications by a few minutes depending on OS sleep state.',
-                      style: AppTypography.caption.copyWith(
-                        color:
-                            isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                      ),
+                      '${vm.quietHours} Android battery saving may delay a reminder by a few minutes.',
+                      style: AppTypography.caption.copyWith(color: muted),
                     ),
                   ),
                 ],

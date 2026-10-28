@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radii.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -8,6 +9,9 @@ import '../../../core/widgets/badges.dart';
 import '../../../core/widgets/macro_bars.dart';
 import '../../../core/widgets/state_widgets.dart';
 import '../view_model/today_view_model.dart';
+
+final _thousands = NumberFormat.decimalPattern('en');
+String _kcal(num v) => _thousands.format(v.round());
 
 /// Complete Today Screen supporting standard mode, Ramadan mode, and manual mode.
 class TodayScreen extends StatelessWidget {
@@ -198,7 +202,7 @@ class TodayScreen extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    vm.eatenKcal.round().toString(),
+                    _kcal(vm.eatenKcal),
                     style: AppTypography.numberLarge.copyWith(
                       color: isDark ? AppColors.darkInk : AppColors.lightInk,
                     ),
@@ -231,7 +235,7 @@ class TodayScreen extends StatelessWidget {
                     context,
                     colorDot: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                     label: 'Eaten',
-                    value: vm.eatenKcal.round().toString(),
+                    value: _kcal(vm.eatenKcal),
                   ),
                 ),
                 Expanded(
@@ -239,14 +243,14 @@ class TodayScreen extends StatelessWidget {
                     context,
                     colorDot: AppColors.plannedFill,
                     label: 'Still planned',
-                    value: vm.plannedKcal.round().toString(),
+                    value: _kcal(vm.plannedKcal),
                   ),
                 ),
                 Expanded(
                   child: _buildMetricTile(
                     context,
                     label: 'Daily target',
-                    value: '~${vm.targetKcal.round()}',
+                    value: '~${_kcal(vm.targetKcal)}',
                   ),
                 ),
               ],

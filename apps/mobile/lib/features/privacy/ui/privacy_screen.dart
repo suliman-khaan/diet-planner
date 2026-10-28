@@ -10,12 +10,20 @@ class PrivacyScreen extends StatefulWidget {
   final VoidCallback? onExportData;
   final VoidCallback? onImportData;
   final VoidCallback? onDeleteAllConfirmed;
+  final bool crashReportsConsent;
+  final bool analyticsConsent;
+  final ValueChanged<bool>? onCrashReportsConsentChanged;
+  final ValueChanged<bool>? onAnalyticsConsentChanged;
 
   const PrivacyScreen({
     super.key,
     this.onExportData,
     this.onImportData,
     this.onDeleteAllConfirmed,
+    this.crashReportsConsent = false,
+    this.analyticsConsent = false,
+    this.onCrashReportsConsentChanged,
+    this.onAnalyticsConsentChanged,
   });
 
   @override
@@ -23,8 +31,6 @@ class PrivacyScreen extends StatefulWidget {
 }
 
 class _PrivacyScreenState extends State<PrivacyScreen> {
-  bool _crashDiagnosticsConsent = false;
-
   void _showDeleteConfirmation(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -173,9 +179,30 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                     color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
                   ),
                 ),
-                value: _crashDiagnosticsConsent,
-                onChanged: (val) =>
-                    setState(() => _crashDiagnosticsConsent = val),
+                value: widget.crashReportsConsent,
+                onChanged: widget.onCrashReportsConsentChanged,
+              ),
+            ),
+            const SizedBox(height: 8),
+            AppCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                activeColor: primary,
+                title: Text(
+                  'Anonymous usage statistics',
+                  style: AppTypography.bodyStrong.copyWith(
+                    color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                  ),
+                ),
+                subtitle: Text(
+                  'Counts like "a meal was logged". Never your weight, age, allergies, foods or searches. The app works fully if this is off.',
+                  style: AppTypography.caption.copyWith(
+                    color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                  ),
+                ),
+                value: widget.analyticsConsent,
+                onChanged: widget.onAnalyticsConsentChanged,
               ),
             ),
             const SizedBox(height: 20),

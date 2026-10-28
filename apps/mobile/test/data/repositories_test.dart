@@ -32,6 +32,9 @@ void main() {
   late FixedClock clock;
   late SequentialIdGenerator ids;
 
+  // Each test opens its own in-memory or temp-file database on purpose.
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
     clock = FixedClock(DateTime(2026, 10, 29, 12));

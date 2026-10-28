@@ -23,7 +23,8 @@ import '../app_config.dart';
 final appConfigProvider = Provider<AppConfig>((ref) => throw UnimplementedError('appConfigProvider'));
 final databaseProvider = Provider<AppDatabase>((ref) => throw UnimplementedError('databaseProvider'));
 final foodRepositoryProvider = Provider<FoodRepository>((ref) => throw UnimplementedError('foodRepositoryProvider'));
-final timezoneNameProvider = Provider<String>((ref) => 'UTC');
+/// IANA timezone name, refreshed when the app resumes (the user may have travelled).
+final timezoneNameProvider = StateProvider<String>((ref) => 'UTC');
 
 final clockProvider = Provider<Clock>((ref) => const SystemClock());
 final idGeneratorProvider = Provider<IdGenerator>((ref) => Uuid7IdGenerator());

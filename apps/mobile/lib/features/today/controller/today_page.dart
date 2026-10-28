@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/providers/providers.dart';
 import '../../../app/routes.dart';
 import '../../../core/widgets/state_widgets.dart';
 import '../../log/controller/log_food_flow.dart';
@@ -101,11 +102,10 @@ class _TodayPageState extends ConsumerState<TodayPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => GentleCheckInSheet(
-        onDismiss: () => Navigator.of(ctx).pop(),
-        onAdjustGoals: () {
-          Navigator.of(ctx).pop();
-          context.push(AppRoutes.transparency);
+      builder: (_) => GentleCheckInSheet(
+        onGetHelp: () {
+          final url = ref.read(appConfigProvider).wellbeingHelpUrl;
+          ref.read(linkServiceProvider).openUrl(url);
         },
       ),
     );

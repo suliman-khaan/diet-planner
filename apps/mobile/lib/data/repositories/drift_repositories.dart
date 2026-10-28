@@ -176,6 +176,19 @@ class DriftPlanRepository implements PlanRepository {
         return _writeItems(meal.id, meal, now);
       });
 
+  @override
+  Future<void> removePlansFrom(LocalDate from) => _db.transaction(() async {
+        final now = _clock.nowUtc();
+        final rows = await (_db.select(_db.plans)
+              ..where((t) =>
+                  t.date.isBiggerOrEqualValue(from.toIso()) &
+                  t.deletedAt.isNull()))
+            .get();
+        for (final r in rows) {
+          await _tombstonePlan(r.id, now);
+        }
+      });
+
   Future<PlannedMeal> _insertMeal(
       String planId, PlannedMeal meal, int position, DateTime now) async {
     final mealId = _ids.newId();

@@ -4,8 +4,29 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_card.dart';
 
+/// Current values shown under each setting.
+class SettingsViewModel {
+  final String targetSummary;
+  final String richnessSummary;
+  final String exclusionsSummary;
+  final String scheduleSummary;
+  final String versionLabel;
+
+  const SettingsViewModel({
+    this.targetSummary = '',
+    this.richnessSummary = '',
+    this.exclusionsSummary = '',
+    this.scheduleSummary = '',
+    this.versionLabel = '',
+  });
+}
+
 /// More & Settings screen.
 class SettingsScreen extends StatelessWidget {
+  final SettingsViewModel vm;
+  final VoidCallback? onOpenMealSchedule;
+  final VoidCallback? onSendFeedback;
+  final VoidCallback? onOpenAbout;
   final VoidCallback? onOpenPrivacy;
   final VoidCallback? onOpenTransparency;
   final VoidCallback? onOpenReminders;
@@ -18,6 +39,10 @@ class SettingsScreen extends StatelessWidget {
 
   const SettingsScreen({
     super.key,
+    this.vm = const SettingsViewModel(),
+    this.onOpenMealSchedule,
+    this.onSendFeedback,
+    this.onOpenAbout,
     this.onOpenPrivacy,
     this.onOpenTransparency,
     this.onOpenReminders,
@@ -73,7 +98,7 @@ class SettingsScreen extends StatelessWidget {
                   context,
                   icon: Icons.person_outline,
                   title: 'Profile & calorie target',
-                  subtitle: '1,850 kcal/day · Recalculates portions',
+                  subtitle: vm.targetSummary,
                   onTap: onOpenProfileTarget,
                 ),
                 const Divider(height: 1),
@@ -81,7 +106,7 @@ class SettingsScreen extends StatelessWidget {
                   context,
                   icon: Icons.soup_kitchen_outlined,
                   title: 'Default cooking richness',
-                  subtitle: 'Normal (2 tsp oil per katori)',
+                  subtitle: vm.richnessSummary,
                   onTap: onOpenCookingRichness,
                 ),
                 const Divider(height: 1),
@@ -89,8 +114,16 @@ class SettingsScreen extends StatelessWidget {
                   context,
                   icon: Icons.no_food_outlined,
                   title: 'Allergies & exclusions',
-                  subtitle: 'Vegetarian, nut exclusions',
+                  subtitle: vm.exclusionsSummary,
                   onTap: onOpenAllergies,
+                ),
+                const Divider(height: 1),
+                _buildTile(
+                  context,
+                  icon: Icons.schedule,
+                  title: 'Meal times & Ramadan',
+                  subtitle: vm.scheduleSummary,
+                  onTap: onOpenMealSchedule,
                 ),
                 const Divider(height: 1),
                 _buildTile(
@@ -120,13 +153,25 @@ class SettingsScreen extends StatelessWidget {
                     title: 'Privacy & data ownership',
                     subtitle: 'Export, import, delete all',
                     onTap: onOpenPrivacy),
+                const Divider(height: 1),
+                _buildTile(context,
+                    icon: Icons.mail_outline,
+                    title: 'Send feedback or a missing food',
+                    subtitle: 'Opens your email app',
+                    onTap: onSendFeedback),
+                const Divider(height: 1),
+                _buildTile(context,
+                    icon: Icons.info_outline,
+                    title: 'About & disclaimer',
+                    subtitle: 'Estimates, data sources, not medical advice',
+                    onTap: onOpenAbout),
               ],
             ),
           ),
           const SizedBox(height: 24),
           Center(
             child: Text(
-              'Diet Planner v0.1.0 · Pakistani Food Catalogue v1',
+              vm.versionLabel,
               style: AppTypography.micro.copyWith(
                 color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
               ),

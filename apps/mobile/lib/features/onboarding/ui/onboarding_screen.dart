@@ -5,6 +5,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_buttons.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/badges.dart';
 import '../../../core/widgets/macro_bars.dart';
 import '../../../core/widgets/segmented_controls.dart';
 import '../view_model/onboarding_view_model.dart';
@@ -25,6 +26,9 @@ class OnboardingScreen extends StatelessWidget {
   final VoidCallback? onBack;
   final VoidCallback? onFinish;
   final VoidCallback? onSkipToDashboard;
+  final ValueChanged<int>? onBirthYearChanged;
+  final ValueChanged<String>? onConditionToggled;
+  final VoidCallback? onOpenCalculation;
 
   const OnboardingScreen({
     super.key,
@@ -42,6 +46,9 @@ class OnboardingScreen extends StatelessWidget {
     this.onBack,
     this.onFinish,
     this.onSkipToDashboard,
+    this.onBirthYearChanged,
+    this.onConditionToggled,
+    this.onOpenCalculation,
   });
 
   @override
@@ -406,34 +413,95 @@ class OnboardingScreen extends StatelessWidget {
   Widget _buildEligibilityStep(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+    const conditions = {
+      'pregnant': 'Pregnant',
+      'breastfeeding': 'Breastfeeding',
+      'diabetes': 'Diabetes',
+      'kidneyDisease': 'Kidney disease',
+      'otherMedicalDiet': 'Another medical diet from a doctor',
+    };
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Health & eligibility check',
-          style: AppTypography.titleMedium.copyWith(
-            color: isDark ? AppColors.darkInk : AppColors.lightInk,
-          ),
+          'A few safety questions',
+          style: AppTypography.titleMedium.copyWith(color: ink),
         ),
         const SizedBox(height: 8),
         Text(
-          'To ensure safety, automated calorie targets are only generated for adults aged 18+ without restricted conditions.',
-          style: AppTypography.body.copyWith(
-            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-          ),
+          'Automatic meal plans are for adults aged 18 and over who are not pregnant, breastfeeding or on a medical diet. Everyone can still log food.',
+          style: AppTypography.body.copyWith(color: muted),
         ),
         const SizedBox(height: 20),
         AppCard(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
-              Icon(Icons.check_circle_outline, color: primary, size: 24),
+              Expanded(
+                child: Text('Year you were born',
+                    style: AppTypography.bodyStrong.copyWith(color: ink)),
+              ),
+              DropdownButton<int>(
+                value: vm.birthYearOptions.contains(vm.birthYear)
+                    ? vm.birthYear
+                    : null,
+                hint: const Text('Choose'),
+                items: [
+                  for (final y in vm.birthYearOptions)
+                    DropdownMenuItem(value: y, child: Text('$y')),
+                ],
+                onChanged: (y) {
+                  if (y != null) onBirthYearChanged?.call(y);
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        AppCard(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Text('Does any of this apply to you?',
+                    style: AppTypography.bodyStrong.copyWith(color: ink)),
+              ),
+              for (final c in conditions.entries)
+                CheckboxListTile(
+                  value: vm.healthConditions.contains(c.key),
+                  activeColor: primary,
+                  title: Text(c.value),
+                  onChanged: (_) => onConditionToggled?.call(c.key),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        AppCard(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                vm.isEligibleForAutoPlan
+                    ? Icons.check_circle_outline
+                    : Icons.info_outline,
+                color: vm.isEligibleForAutoPlan ? primary : muted,
+                size: 24,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Eligible for automated daily meal planning and targets.',
-                  style: AppTypography.bodyStrong,
+                  vm.eligibilityNotice ??
+                      (vm.isEligibleForAutoPlan
+                          ? 'Automatic daily meal plans are available for you.'
+                          : 'You can log food and see estimated totals.'),
+                  style: AppTypography.body.copyWith(color: ink),
                 ),
               ),
             ],
@@ -837,22 +905,37 @@ class OnboardingScreen extends StatelessWidget {
 
   Widget _buildTargetSummaryStep(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+    final kcal = vm.recommendedCalories;
+
+    if (!vm.isEligibleForAutoPlan || kcal == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('You are all set',
+              style: AppTypography.titleLarge.copyWith(color: ink)),
+          const SizedBox(height: 8),
+          Text(
+            vm.eligibilityNotice ??
+                'You can log what you eat and see estimated totals.',
+            style: AppTypography.body.copyWith(color: muted),
+          ),
+        ],
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your Daily Nutrition Target',
-          style: AppTypography.titleLarge.copyWith(
-            color: isDark ? AppColors.darkInk : AppColors.lightInk,
-          ),
+          'Your daily nutrition target',
+          style: AppTypography.titleLarge.copyWith(color: ink),
         ),
         const SizedBox(height: 8),
         Text(
-          'Calculated using the Mifflin-St Jeor equation and standard healthy rate caps.',
-          style: AppTypography.body.copyWith(
-            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-          ),
+          'Calculated with the Mifflin-St Jeor equation, your activity, your goal and our safety limits.',
+          style: AppTypography.body.copyWith(color: muted),
         ),
         const SizedBox(height: 24),
         AppCard(
@@ -860,11 +943,15 @@ class OnboardingScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Estimated Daily Energy',
-                style: AppTypography.captionStrong.copyWith(
-                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Estimated daily energy',
+                    style: AppTypography.captionStrong.copyWith(color: muted),
+                  ),
+                  const EstimateBadge(),
+                ],
               ),
               const SizedBox(height: 4),
               Row(
@@ -872,18 +959,13 @@ class OnboardingScreen extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    '~${vm.recommendedCalories ?? 1850}',
-                    style: AppTypography.numberLarge.copyWith(
-                      color: isDark ? AppColors.darkInk : AppColors.lightInk,
-                    ),
+                    '~$kcal',
+                    style: AppTypography.numberLarge.copyWith(color: ink),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'kcal / day',
-                    style: AppTypography.body.copyWith(
-                      color:
-                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                    ),
+                    style: AppTypography.body.copyWith(color: muted),
                   ),
                 ],
               ),
@@ -895,8 +977,8 @@ class OnboardingScreen extends StatelessWidget {
                   Expanded(
                     child: NutrientBar(
                       label: 'Protein',
-                      currentGrams: vm.recommendedProtein ?? 95,
-                      targetGrams: vm.recommendedProtein ?? 95,
+                      currentGrams: vm.recommendedProtein ?? 0,
+                      targetGrams: vm.recommendedProtein ?? 0,
                       barColor: AppColors.protein,
                     ),
                   ),
@@ -904,8 +986,8 @@ class OnboardingScreen extends StatelessWidget {
                   Expanded(
                     child: NutrientBar(
                       label: 'Carbs',
-                      currentGrams: vm.recommendedCarbs ?? 230,
-                      targetGrams: vm.recommendedCarbs ?? 230,
+                      currentGrams: vm.recommendedCarbs ?? 0,
+                      targetGrams: vm.recommendedCarbs ?? 0,
                       barColor: AppColors.carbs,
                     ),
                   ),
@@ -917,8 +999,8 @@ class OnboardingScreen extends StatelessWidget {
                   Expanded(
                     child: NutrientBar(
                       label: 'Fat',
-                      currentGrams: vm.recommendedFat ?? 60,
-                      targetGrams: vm.recommendedFat ?? 60,
+                      currentGrams: vm.recommendedFat ?? 0,
+                      targetGrams: vm.recommendedFat ?? 0,
                       barColor: AppColors.fat,
                     ),
                   ),
@@ -926,8 +1008,8 @@ class OnboardingScreen extends StatelessWidget {
                   Expanded(
                     child: NutrientBar(
                       label: 'Fibre',
-                      currentGrams: vm.recommendedFibre ?? 28,
-                      targetGrams: vm.recommendedFibre ?? 28,
+                      currentGrams: vm.recommendedFibre ?? 0,
+                      targetGrams: vm.recommendedFibre ?? 0,
                       barColor: AppColors.fibre,
                     ),
                   ),
@@ -936,6 +1018,17 @@ class OnboardingScreen extends StatelessWidget {
             ],
           ),
         ),
+        if (vm.targetNotice != null) ...[
+          const SizedBox(height: 12),
+          Text(vm.targetNotice!,
+              style: AppTypography.caption.copyWith(color: muted)),
+        ],
+        if (onOpenCalculation != null)
+          TextButton.icon(
+            onPressed: onOpenCalculation,
+            icon: const Icon(Icons.calculate_outlined),
+            label: const Text('How we calculated this'),
+          ),
       ],
     );
   }
