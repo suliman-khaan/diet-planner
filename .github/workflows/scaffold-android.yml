@@ -1,0 +1,26 @@
+name: Scaffold Android (one-off)
+
+# Generates the android/ platform folder with the CI's Flutter version so it can be committed.
+on:
+  workflow_dispatch:
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Flutter version
+        run: flutter --version
+      - name: Generate android folder
+        working-directory: apps/mobile
+        run: flutter create . --org dev.placeholder.dietplanner --project-name mobile --platforms=android --no-overwrite
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-scaffold
+          path: apps/mobile/android
+          if-no-files-found: error
+          retention-days: 3
