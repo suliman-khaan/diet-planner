@@ -23,7 +23,8 @@ class TodayMealItemViewModel {
 @immutable
 class NextMealViewModel {
   final String id;
-  final String slotLabel; // e.g. "Next · Dinner · 9:30 pm" or "Next · Iftar · 6:18 pm"
+  final String
+      slotLabel; // e.g. "Next · Dinner · 9:30 pm" or "Next · Iftar · 6:18 pm"
   final num estimatedCalories;
   final String mainDishTitle;
   final String familyPotDetail;

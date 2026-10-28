@@ -28,43 +28,64 @@ import 'routes.dart';
 
 /// Routes. Deep links (e.g. from a reminder) use the same paths:
 /// `/today?date=2026-10-29`, `/meal/<id>?date=2026-10-29`.
-GoRouter buildRouter({required AppConfig config, required bool onboardingComplete}) => GoRouter(
-      initialLocation: onboardingComplete ? AppRoutes.today : AppRoutes.onboarding,
+GoRouter buildRouter(
+        {required AppConfig config, required bool onboardingComplete}) =>
+    GoRouter(
+      initialLocation:
+          onboardingComplete ? AppRoutes.today : AppRoutes.onboarding,
       routes: [
         GoRoute(
           path: AppRoutes.initial,
-          redirect: (_, __) => onboardingComplete ? AppRoutes.today : AppRoutes.onboarding,
+          redirect: (_, __) =>
+              onboardingComplete ? AppRoutes.today : AppRoutes.onboarding,
         ),
         GoRoute(
           path: AppRoutes.onboarding,
-          builder: (_, state) => OnboardingPage(editing: state.uri.queryParameters['edit'] == '1'),
+          builder: (_, state) =>
+              OnboardingPage(editing: state.uri.queryParameters['edit'] == '1'),
         ),
         ShellRoute(
-          builder: (context, state, child) => _TabShell(location: state.uri.path, config: config, child: child),
+          builder: (context, state, child) =>
+              _TabShell(location: state.uri.path, config: config, child: child),
           routes: [
             GoRoute(
               path: AppRoutes.today,
-              builder: (_, state) => _TodayRoute(date: _date(state.uri.queryParameters['date'])),
+              builder: (_, state) =>
+                  _TodayRoute(date: _date(state.uri.queryParameters['date'])),
             ),
-            GoRoute(path: AppRoutes.foods, builder: (_, __) => const _FoodsTab()),
-            GoRoute(path: AppRoutes.progress, builder: (_, __) => const ProgressPage()),
-            GoRoute(path: AppRoutes.more, builder: (_, __) => const SettingsPage()),
+            GoRoute(
+                path: AppRoutes.foods, builder: (_, __) => const _FoodsTab()),
+            GoRoute(
+                path: AppRoutes.progress,
+                builder: (_, __) => const ProgressPage()),
+            GoRoute(
+                path: AppRoutes.more, builder: (_, __) => const SettingsPage()),
           ],
         ),
         GoRoute(
           path: AppRoutes.mealDetail,
           builder: (_, state) => MealPage(
             mealId: state.pathParameters['mealId']!,
-            date: _date(state.uri.queryParameters['date']) ?? LocalDate.fromDateTime(DateTime.now()),
+            date: _date(state.uri.queryParameters['date']) ??
+                LocalDate.fromDateTime(DateTime.now()),
           ),
         ),
-        GoRoute(path: AppRoutes.history, builder: (_, __) => const HistoryPage()),
-        GoRoute(path: AppRoutes.shopping, builder: (_, __) => const ShoppingPage()),
-        GoRoute(path: AppRoutes.reminders, builder: (_, __) => const RemindersPage()),
-        GoRoute(path: AppRoutes.privacy, builder: (_, __) => const PrivacyPage()),
-        GoRoute(path: AppRoutes.transparency, builder: (_, __) => const TransparencyPage()),
+        GoRoute(
+            path: AppRoutes.history, builder: (_, __) => const HistoryPage()),
+        GoRoute(
+            path: AppRoutes.shopping, builder: (_, __) => const ShoppingPage()),
+        GoRoute(
+            path: AppRoutes.reminders,
+            builder: (_, __) => const RemindersPage()),
+        GoRoute(
+            path: AppRoutes.privacy, builder: (_, __) => const PrivacyPage()),
+        GoRoute(
+            path: AppRoutes.transparency,
+            builder: (_, __) => const TransparencyPage()),
         if (config.showScreenGallery)
-          GoRoute(path: AppRoutes.gallery, builder: (_, __) => const ScreenGalleryScreen()),
+          GoRoute(
+              path: AppRoutes.gallery,
+              builder: (_, __) => const ScreenGalleryScreen()),
       ],
       errorBuilder: (context, state) => Scaffold(
         appBar: AppBar(),
@@ -89,7 +110,8 @@ LocalDate? _date(String? iso) {
 }
 
 class _TabShell extends StatelessWidget {
-  const _TabShell({required this.location, required this.config, required this.child});
+  const _TabShell(
+      {required this.location, required this.config, required this.child});
 
   final String location;
   final AppConfig config;
@@ -111,7 +133,10 @@ class _TabShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tab = _paths.entries.firstWhere((e) => location.startsWith(e.value), orElse: () => _paths.entries.first).key;
+    final tab = _paths.entries
+        .firstWhere((e) => location.startsWith(e.value),
+            orElse: () => _paths.entries.first)
+        .key;
     return AppScaffold(
       currentTab: tab,
       onTabChanged: (t) => context.go(_paths[t]!),
@@ -152,7 +177,8 @@ class _TodayRouteState extends ConsumerState<_TodayRoute> {
     super.initState();
     final date = widget.date;
     if (date != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(selectedDateProvider.notifier).state = date);
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => ref.read(selectedDateProvider.notifier).state = date);
     }
   }
 
@@ -190,7 +216,8 @@ class _FoodsTab extends ConsumerWidget {
               );
           if (!ok && context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No email app found on this phone.')),
+              const SnackBar(
+                  content: Text('No email app found on this phone.')),
             );
           }
         },

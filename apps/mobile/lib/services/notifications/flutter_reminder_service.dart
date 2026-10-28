@@ -11,11 +11,14 @@ import 'reminder_service.dart';
 /// so the OS may deliver them a few minutes late (explained on the reminders screen).
 /// The plugin's boot receiver restores scheduled reminders after a reboot or app update.
 class FlutterReminderService implements ReminderService {
-  final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
   static const _log = AppLogger('reminders');
 
   @override
-  Future<void> initialize({required String timezoneName, required void Function(String route) onTap}) async {
+  Future<void> initialize(
+      {required String timezoneName,
+      required void Function(String route) onTap}) async {
     tzdata.initializeTimeZones();
     try {
       tz.setLocalLocation(tz.getLocation(timezoneName));
@@ -23,7 +26,8 @@ class FlutterReminderService implements ReminderService {
       tz.setLocalLocation(tz.UTC);
     }
     await _plugin.initialize(
-      const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')),
+      const InitializationSettings(
+          android: AndroidInitializationSettings('@mipmap/ic_launcher')),
       onDidReceiveNotificationResponse: (response) {
         final route = response.payload;
         if (route != null && route.startsWith('/')) onTap(route);
@@ -40,19 +44,23 @@ class FlutterReminderService implements ReminderService {
   }
 
   AndroidFlutterLocalNotificationsPlugin? get _android =>
-      _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
 
   @override
-  Future<bool> isPermitted() async => await _android?.areNotificationsEnabled() ?? false;
+  Future<bool> isPermitted() async =>
+      await _android?.areNotificationsEnabled() ?? false;
 
   @override
-  Future<bool> requestPermission() async => await _android?.requestNotificationsPermission() ?? false;
+  Future<bool> requestPermission() async =>
+      await _android?.requestNotificationsPermission() ?? false;
 
   @override
   Future<void> replaceAll(List<ReminderOccurrence> occurrences) async {
     await _plugin.cancelAll();
     for (final o in occurrences) {
-      final at = tz.TZDateTime(tz.local, o.date.year, o.date.month, o.date.day, o.minutesOfDay ~/ 60, o.minutesOfDay % 60);
+      final at = tz.TZDateTime(tz.local, o.date.year, o.date.month, o.date.day,
+          o.minutesOfDay ~/ 60, o.minutesOfDay % 60);
       if (at.isBefore(tz.TZDateTime.now(tz.local))) continue;
       await _plugin.zonedSchedule(
         o.id,
@@ -64,7 +72,8 @@ class FlutterReminderService implements ReminderService {
           android: AndroidNotificationDetails(
             'meal_${o.slot.name}',
             '${_slotName(o.slot)} reminders',
-            channelDescription: 'Reminders for ${_slotName(o.slot).toLowerCase()}',
+            channelDescription:
+                'Reminders for ${_slotName(o.slot).toLowerCase()}',
             importance: Importance.defaultImportance,
             priority: Priority.defaultPriority,
           ),

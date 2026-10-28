@@ -70,12 +70,14 @@ class TodayScreen extends StatelessWidget {
             _buildNotice(
               context,
               icon: Icons.science_outlined,
-              text: 'Development build: food values are draft data and have not been reviewed.',
+              text:
+                  'Development build: food values are draft data and have not been reviewed.',
             ),
           ],
           if (vm.manualOnlyMessage != null) ...[
             const SizedBox(height: 12),
-            _buildNotice(context, icon: Icons.info_outline, text: vm.manualOnlyMessage!),
+            _buildNotice(context,
+                icon: Icons.info_outline, text: vm.manualOnlyMessage!),
           ],
           const SizedBox(height: 16),
           _buildCalorieCard(context),
@@ -150,7 +152,8 @@ class TodayScreen extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.nightlight_round, size: 14, color: Colors.white),
+                const Icon(Icons.nightlight_round,
+                    size: 14, color: Colors.white),
                 const SizedBox(width: 6),
                 Text(
                   'Ramadan · Day ${vm.ramadanDay ?? 1}',
@@ -211,7 +214,8 @@ class TodayScreen extends StatelessWidget {
                   Text(
                     'kcal eaten',
                     style: AppTypography.caption.copyWith(
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
                     ),
                   ),
                 ],
@@ -233,7 +237,8 @@ class TodayScreen extends StatelessWidget {
                 Expanded(
                   child: _buildMetricTile(
                     context,
-                    colorDot: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                    colorDot:
+                        isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                     label: 'Eaten',
                     value: _kcal(vm.eatenKcal),
                   ),
@@ -303,7 +308,8 @@ class TodayScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNotice(BuildContext context, {required IconData icon, required String text}) {
+  Widget _buildNotice(BuildContext context,
+      {required IconData icon, required String text}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
     return AppCard(
@@ -314,7 +320,8 @@ class TodayScreen extends StatelessWidget {
           Icon(icon, size: 18, color: muted),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(text, style: AppTypography.caption.copyWith(color: muted)),
+            child:
+                Text(text, style: AppTypography.caption.copyWith(color: muted)),
           ),
         ],
       ),
@@ -366,7 +373,8 @@ class TodayScreen extends StatelessWidget {
   Widget _buildNextMealCard(BuildContext context) {
     final next = vm.nextMeal!;
     final isRamadan = vm.isRamadanMode;
-    final cardBg = isRamadan ? AppColors.ramadanBackground : AppColors.lightPrimary;
+    final cardBg =
+        isRamadan ? AppColors.ramadanBackground : AppColors.lightPrimary;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -385,13 +393,17 @@ class TodayScreen extends StatelessWidget {
                 style: AppTypography.micro.copyWith(
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.6,
-                  color: isRamadan ? AppColors.ramadanSoft : const Color(0xFFCFE6DB),
+                  color: isRamadan
+                      ? AppColors.ramadanSoft
+                      : const Color(0xFFCFE6DB),
                 ),
               ),
               Text(
                 '~${next.estimatedCalories.round()} kcal',
                 style: AppTypography.captionStrong.copyWith(
-                  color: isRamadan ? AppColors.ramadanSoft : const Color(0xFFCFE6DB),
+                  color: isRamadan
+                      ? AppColors.ramadanSoft
+                      : const Color(0xFFCFE6DB),
                 ),
               ),
             ],
@@ -448,7 +460,9 @@ class TodayScreen extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     side: BorderSide(
-                      color: isRamadan ? AppColors.ramadanBorder : const Color(0xFF6FA58E),
+                      color: isRamadan
+                          ? AppColors.ramadanBorder
+                          : const Color(0xFF6FA58E),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadii.control),
@@ -492,19 +506,19 @@ class TodayScreen extends StatelessWidget {
           )
         else
           ...vm.meals.map(
-          (m) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: MealListRow(
-              slotTitle: m.slotTitle,
-              time: m.time,
-              status: m.status,
-              summaryText: m.summaryText,
-              calories: m.calories,
-              onLogTap: () => onMealLogTap?.call(m.id),
-              onRowTap: () => onMealRowTap?.call(m.id),
+            (m) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: MealListRow(
+                slotTitle: m.slotTitle,
+                time: m.time,
+                status: m.status,
+                summaryText: m.summaryText,
+                calories: m.calories,
+                onLogTap: () => onMealLogTap?.call(m.id),
+                onRowTap: () => onMealRowTap?.call(m.id),
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -517,9 +531,15 @@ class TodayScreen extends StatelessWidget {
         children: [
           const LoadingSkeleton(width: 140, height: 28),
           const SizedBox(height: 16),
-          const LoadingSkeleton(width: double.infinity, height: 200, borderRadius: AppRadii.cardRadius),
+          const LoadingSkeleton(
+              width: double.infinity,
+              height: 200,
+              borderRadius: AppRadii.cardRadius),
           const SizedBox(height: 16),
-          const LoadingSkeleton(width: double.infinity, height: 160, borderRadius: AppRadii.cardRadius),
+          const LoadingSkeleton(
+              width: double.infinity,
+              height: 160,
+              borderRadius: AppRadii.cardRadius),
           const SizedBox(height: 16),
           const LoadingSkeleton(width: double.infinity, height: 72),
           const SizedBox(height: 8),

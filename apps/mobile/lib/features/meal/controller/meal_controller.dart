@@ -15,7 +15,8 @@ class MealKey {
   final String mealId;
 
   @override
-  bool operator ==(Object other) => other is MealKey && other.date == date && other.mealId == mealId;
+  bool operator ==(Object other) =>
+      other is MealKey && other.date == date && other.mealId == mealId;
 
   @override
   int get hashCode => Object.hash(date, mealId);
@@ -34,7 +35,9 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
 
   @override
   Future<MealState?> build(MealKey key) async {
-    final day = await ref.watch(dayServiceProvider).load(key.date, generateIfMissing: false);
+    final day = await ref
+        .watch(dayServiceProvider)
+        .load(key.date, generateIfMissing: false);
     final meal = day?.plan?.meals.where((m) => m.id == key.mealId).firstOrNull;
     if (day == null || meal == null) return null;
     return MealState(vm: mapMeal(day, meal), day: day, meal: meal);
@@ -62,7 +65,8 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
     await _resize(main.id, servings.toDouble());
   }
 
-  Future<void> setItemServings(String itemId, num servings) => _resize(itemId, servings.toDouble());
+  Future<void> setItemServings(String itemId, num servings) =>
+      _resize(itemId, servings.toDouble());
 
   Future<void> _resize(String itemId, double servings) async {
     final s = _s;
@@ -71,7 +75,9 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
     final items = [
       for (final i in s.meal.items)
         if (i.id == itemId)
-          planner.resizeItem(s.day.pack, i, servings: s.day.pack.food(i.foodId)!.portion.clampAndSnap(servings))
+          planner.resizeItem(s.day.pack, i,
+              servings:
+                  s.day.pack.food(i.foodId)!.portion.clampAndSnap(servings))
         else
           i,
     ];
@@ -84,7 +90,10 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
     if (s == null || s.vm.isEaten) return;
     final planner = ref.read(plannerProvider);
     await _save(s.meal.copyWith(items: [
-      for (final i in s.meal.items) i.oilLevel == null ? i : planner.resizeItem(s.day.pack, i, oilLevel: level),
+      for (final i in s.meal.items)
+        i.oilLevel == null
+            ? i
+            : planner.resizeItem(s.day.pack, i, oilLevel: level),
     ]));
   }
 
@@ -93,7 +102,8 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
     final s = _s;
     if (s == null || s.vm.isEaten) return null;
     final before = s.meal;
-    await _save(before.copyWith(items: before.items.where((i) => i.id != itemId).toList()));
+    await _save(before.copyWith(
+        items: before.items.where((i) => i.id != itemId).toList()));
     return before;
   }
 
@@ -104,7 +114,8 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
     if (s == null || s.vm.isEaten) return;
     final food = s.day.pack.food(foodId);
     if (food == null) return;
-    final item = ref.read(plannerProvider).itemFor(s.day.pack, food, food.portion.clampAndSnap(1), s.day.setup.profile.cookingRichness);
+    final item = ref.read(plannerProvider).itemFor(s.day.pack, food,
+        food.portion.clampAndSnap(1), s.day.setup.profile.cookingRichness);
     await _save(s.meal.copyWith(items: [...s.meal.items, item]));
   }
 
@@ -112,7 +123,9 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
   Future<bool> replace() async {
     final s = _s;
     if (s == null || s.vm.isEaten) return false;
-    final replacement = await ref.read(dayServiceProvider).regenerateMeal(s.day, s.meal, attempt: ++_regenerateAttempts);
+    final replacement = await ref
+        .read(dayServiceProvider)
+        .regenerateMeal(s.day, s.meal, attempt: ++_regenerateAttempts);
     ref.invalidateSelf();
     await future;
     return replacement != null;
@@ -135,11 +148,15 @@ class MealController extends FamilyAsyncNotifier<MealState?, MealKey> {
 }
 
 final mealControllerProvider =
-    AsyncNotifierProvider.family<MealController, MealState?, MealKey>(MealController.new);
+    AsyncNotifierProvider.family<MealController, MealState?, MealKey>(
+        MealController.new);
 
 MealViewModel mapMeal(DayData day, PlannedMeal meal) {
   final pack = day.pack;
-  final main = meal.items.where((i) => pack.food(i.foodId)?.role == 'main').firstOrNull ?? meal.items.firstOrNull;
+  final main = meal.items
+          .where((i) => pack.food(i.foodId)?.role == 'main')
+          .firstOrNull ??
+      meal.items.firstOrNull;
   final mainFood = main == null ? null : pack.food(main.foodId);
   final oil = main?.oilLevel ??
       meal.items.map((i) => i.oilLevel).whereType<OilLevel>().firstOrNull ??
@@ -147,7 +164,8 @@ MealViewModel mapMeal(DayData day, PlannedMeal meal) {
   return MealViewModel(
     mealId: meal.id,
     slotTitle: Fmt.slot(meal.slot),
-    timeLabel: '${Fmt.dayTitle(day.date, day.today)} · ${Fmt.time(meal.minutesOfDay)}',
+    timeLabel:
+        '${Fmt.dayTitle(day.date, day.today)} · ${Fmt.time(meal.minutesOfDay)}',
     totalCalories: meal.nutrition.kcal.round(),
     mainDishId: main?.id ?? '',
     mainDishName: mainFood?.nameEn ?? 'No main dish',
@@ -165,7 +183,8 @@ MealViewModel mapMeal(DayData day, PlannedMeal meal) {
           MealSideItemViewModel(
             id: i.id,
             name: pack.food(i.foodId)?.nameEn ?? i.foodId,
-            portionDescription: '${Fmt.portion(pack.food(i.foodId)!, i.servingId, i.servings)} · ${i.nutrition.kcal.round()} kcal',
+            portionDescription:
+                '${Fmt.portion(pack.food(i.foodId)!, i.servingId, i.servings)} · ${i.nutrition.kcal.round()} kcal',
             calories: i.nutrition.kcal.round(),
             count: i.servings,
           ),

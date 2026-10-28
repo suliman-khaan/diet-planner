@@ -36,7 +36,8 @@ class _TodayPageState extends ConsumerState<TodayPage> {
     });
 
     return async.when(
-      loading: () => const TodayScreen(vm: TodayViewModel(dateDisplay: '', isLoading: true)),
+      loading: () => const TodayScreen(
+          vm: TodayViewModel(dateDisplay: '', isLoading: true)),
       error: (e, _) => ErrorStateWidget(
         message: 'Today\'s plan could not be loaded. Your saved data is safe.',
         onRetry: controller.reload,
@@ -63,7 +64,9 @@ class _TodayPageState extends ConsumerState<TodayPage> {
           final ok = await controller.regeneratePlan();
           if (!ok && context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No safe plan could be made with your choices. You can still log food.')),
+              const SnackBar(
+                  content: Text(
+                      'No safe plan could be made with your choices. You can still log food.')),
             );
           }
         },
@@ -79,19 +82,22 @@ class _TodayPageState extends ConsumerState<TodayPage> {
 
   void _openMeal(String mealId) {
     final date = ref.read(todayControllerProvider).valueOrNull?.day?.date;
-    context.push('${AppRoutes.mealDetailPath(mealId)}?date=${date?.toIso() ?? ''}');
+    context.push(
+        '${AppRoutes.mealDetailPath(mealId)}?date=${date?.toIso() ?? ''}');
   }
 
   Future<void> _markEaten(String mealId, TodayViewModel vm) async {
     final controller = ref.read(todayControllerProvider.notifier);
     final ids = await controller.markMealEaten(mealId);
     if (!mounted || ids.isEmpty) return;
-    final slot = vm.meals.where((m) => m.id == mealId).firstOrNull?.slotTitle ?? 'Meal';
+    final slot =
+        vm.meals.where((m) => m.id == mealId).firstOrNull?.slotTitle ?? 'Meal';
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(
         content: Text('$slot logged'),
-        action: SnackBarAction(label: 'Undo', onPressed: () => controller.undo(ids)),
+        action: SnackBarAction(
+            label: 'Undo', onPressed: () => controller.undo(ids)),
       ));
   }
 

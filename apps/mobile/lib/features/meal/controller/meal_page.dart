@@ -22,12 +22,14 @@ class MealPage extends ConsumerWidget {
     final controller = ref.read(mealControllerProvider(key).notifier);
 
     void refreshToday() => ref.invalidate(todayControllerProvider);
-    void snack(String text, {SnackBarAction? action}) => ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(text), action: action));
+    void snack(String text, {SnackBarAction? action}) =>
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(text), action: action));
 
     return async.when(
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (_, __) => Scaffold(
         appBar: AppBar(),
         body: ErrorStateWidget(
@@ -42,7 +44,8 @@ class MealPage extends ConsumerWidget {
             body: const EmptyStateWidget(
               icon: Icons.restaurant_outlined,
               title: 'Meal not found',
-              message: 'This meal is no longer in the plan. It may have been replaced.',
+              message:
+                  'This meal is no longer in the plan. It may have been replaced.',
             ),
           );
         }
@@ -85,7 +88,9 @@ class MealPage extends ConsumerWidget {
             final ok = await controller.replace();
             refreshToday();
             if (context.mounted) {
-              snack(ok ? 'Here is another option' : 'No other option fits your choices for this meal');
+              snack(ok
+                  ? 'Here is another option'
+                  : 'No other option fits your choices for this meal');
             }
           },
           onToggleEaten: () async {

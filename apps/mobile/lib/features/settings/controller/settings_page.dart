@@ -43,12 +43,12 @@ class SettingsPage extends ConsumerWidget {
         onOpenMealSchedule: () => MealScheduleSheet.show(context),
         onSendFeedback: () async {
           final config = ref.read(appConfigProvider);
-          final ok = await ref
-              .read(linkServiceProvider)
-              .composeEmail(to: config.supportEmail, subject: 'Diet Planner feedback');
+          final ok = await ref.read(linkServiceProvider).composeEmail(
+              to: config.supportEmail, subject: 'Diet Planner feedback');
           if (!ok && context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No email app found on this phone.')),
+              const SnackBar(
+                  content: Text('No email app found on this phone.')),
             );
           }
         },
@@ -63,15 +63,29 @@ class SettingsPage extends ConsumerWidget {
     final p = setup.profile;
     final today = ref.read(todayProvider);
     final rows = <(String, String)>[
-      ('Sex & age', '${p.sex == Sex.male ? 'Male' : 'Female'} · born ${p.birthYear} (about ${p.ageIn(today)})'),
-      ('Height & weight', '${p.heightCm.round()} cm · ${p.weightKg.toStringAsFixed(1)} kg (BMI ${p.bmi.toStringAsFixed(1)})'),
-      ('Activity', switch (p.activity) {
-        ActivityLevel.sedentary => 'Mostly sitting',
-        ActivityLevel.light => 'Lightly active',
-        ActivityLevel.moderate => 'Moderately active',
-        ActivityLevel.veryActive => 'Very active',
-      }),
-      ('Daily target', setup.target == null ? 'Manual logging only' : '~${Fmt.kcal(setup.target!.kcal)} kcal · estimate'),
+      (
+        'Sex & age',
+        '${p.sex == Sex.male ? 'Male' : 'Female'} · born ${p.birthYear} (about ${p.ageIn(today)})'
+      ),
+      (
+        'Height & weight',
+        '${p.heightCm.round()} cm · ${p.weightKg.toStringAsFixed(1)} kg (BMI ${p.bmi.toStringAsFixed(1)})'
+      ),
+      (
+        'Activity',
+        switch (p.activity) {
+          ActivityLevel.sedentary => 'Mostly sitting',
+          ActivityLevel.light => 'Lightly active',
+          ActivityLevel.moderate => 'Moderately active',
+          ActivityLevel.veryActive => 'Very active',
+        }
+      ),
+      (
+        'Daily target',
+        setup.target == null
+            ? 'Manual logging only'
+            : '~${Fmt.kcal(setup.target!.kcal)} kcal · estimate'
+      ),
     ];
     await showModalBottomSheet<void>(
       context: context,
@@ -83,7 +97,8 @@ class SettingsPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Profile & calorie target', style: AppTypography.titleMedium),
+              Text('Profile & calorie target',
+                  style: AppTypography.titleMedium),
               const SizedBox(height: 12),
               AppCard(
                 padding: const EdgeInsets.all(16),
@@ -95,9 +110,16 @@ class SettingsPage extends ConsumerWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(flex: 2, child: Text(r.$1, style: AppTypography.caption)),
+                            Expanded(
+                                flex: 2,
+                                child:
+                                    Text(r.$1, style: AppTypography.caption)),
                             const SizedBox(width: 12),
-                            Expanded(flex: 3, child: Text(r.$2, textAlign: TextAlign.end, style: AppTypography.captionStrong)),
+                            Expanded(
+                                flex: 3,
+                                child: Text(r.$2,
+                                    textAlign: TextAlign.end,
+                                    style: AppTypography.captionStrong)),
                           ],
                         ),
                       ),
@@ -105,7 +127,8 @@ class SettingsPage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text('Changes apply to plans made from now on. Today\'s plan stays unless you make a new one.',
+              Text(
+                  'Changes apply to plans made from now on. Today\'s plan stays unless you make a new one.',
                   style: AppTypography.caption),
               const SizedBox(height: 16),
               PrimaryButton(
@@ -137,18 +160,25 @@ class SettingsPage extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Default cooking richness', style: AppTypography.titleMedium),
+                Text('Default cooking richness',
+                    style: AppTypography.titleMedium),
                 const SizedBox(height: 6),
-                Text('How much oil or ghee is assumed in salan, karahi and daal. Used for plans made from now on; '
-                    'you can still change oil for any single meal.', style: AppTypography.caption),
+                Text(
+                    'How much oil or ghee is assumed in salan, karahi and daal. Used for plans made from now on; '
+                    'you can still change oil for any single meal.',
+                    style: AppTypography.caption),
                 const SizedBox(height: 16),
-                ui.OilLevelSelector(selected: selected, onChanged: (l) => setSheet(() => selected = l)),
+                ui.OilLevelSelector(
+                    selected: selected,
+                    onChanged: (l) => setSheet(() => selected = l)),
                 const SizedBox(height: 20),
                 PrimaryButton(
                   label: 'Save',
                   onPressed: () async {
                     Navigator.of(ctx).pop();
-                    await ref.read(settingsControllerProvider.notifier).updateRichness(Fmt.fromUiOil(selected));
+                    await ref
+                        .read(settingsControllerProvider.notifier)
+                        .updateRichness(Fmt.fromUiOil(selected));
                   },
                 ),
               ],
@@ -164,7 +194,10 @@ class SettingsPage extends ConsumerWidget {
     if (setup == null || !context.mounted) return;
     var prefs = setup.preferences;
     const allergyLabels = {
-      Allergen.gluten: ('Gluten', 'Wheat roti, paratha, naan, bread, rusk, suji'),
+      Allergen.gluten: (
+        'Gluten',
+        'Wheat roti, paratha, naan, bread, rusk, suji'
+      ),
       Allergen.dairy: ('Dairy', 'Milk, chai, dahi, raita, lassi, ghee'),
       Allergen.nuts: ('Nuts', 'Almonds and other nuts'),
       Allergen.egg: ('Egg', 'Eggs and omelettes'),
@@ -184,7 +217,8 @@ class SettingsPage extends ConsumerWidget {
                 children: [
                   Text('Diet & allergies', style: AppTypography.titleMedium),
                   const SizedBox(height: 6),
-                  Text('Foods with these are never planned. Changes apply to today\'s plan right away.',
+                  Text(
+                      'Foods with these are never planned. Changes apply to today\'s plan right away.',
                       style: AppTypography.caption),
                   const SizedBox(height: 12),
                   Wrap(
@@ -199,7 +233,8 @@ class SettingsPage extends ConsumerWidget {
                             DietType.pescatarian => 'Pescatarian',
                           }),
                           selected: prefs.dietType == d,
-                          onSelected: (_) => setSheet(() => prefs = prefs.copyWith(dietType: d)),
+                          onSelected: (_) => setSheet(
+                              () => prefs = prefs.copyWith(dietType: d)),
                         ),
                     ],
                   ),
@@ -217,14 +252,17 @@ class SettingsPage extends ConsumerWidget {
                       }),
                     ),
                   const SizedBox(height: 4),
-                  Text('Ingredient lists cannot rule out cross-contact in kitchens, spice mixes or restaurants.',
+                  Text(
+                      'Ingredient lists cannot rule out cross-contact in kitchens, spice mixes or restaurants.',
                       style: AppTypography.caption),
                   const SizedBox(height: 16),
                   PrimaryButton(
                     label: 'Save',
                     onPressed: () async {
                       Navigator.of(ctx).pop();
-                      await ref.read(settingsControllerProvider.notifier).updatePreferences(prefs);
+                      await ref
+                          .read(settingsControllerProvider.notifier)
+                          .updatePreferences(prefs);
                     },
                   ),
                 ],
@@ -236,7 +274,8 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _languageSheet(BuildContext context) => showModalBottomSheet<void>(
+  Future<void> _languageSheet(BuildContext context) =>
+      showModalBottomSheet<void>(
         context: context,
         builder: (ctx) => SafeArea(
           child: Padding(
@@ -250,7 +289,8 @@ class SettingsPage extends ConsumerWidget {
                 const ListTile(
                   leading: Icon(Icons.check),
                   title: Text('English'),
-                  subtitle: Text('Food names also show in Urdu, and search understands Roman Urdu'),
+                  subtitle: Text(
+                      'Food names also show in Urdu, and search understands Roman Urdu'),
                 ),
                 const ListTile(
                   leading: SizedBox(width: 24),

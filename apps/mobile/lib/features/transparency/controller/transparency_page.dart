@@ -20,14 +20,18 @@ final transparencyProvider = FutureProvider<TransparencyViewModel>((ref) async {
   final rules = TransparencySection(
     icon: Icons.shield_outlined,
     title: 'Safety limits',
-    body: 'Automatic targets never go below ${Fmt.kcal(c.calorieFloorFemale)} kcal a day for women or '
+    body:
+        'Automatic targets never go below ${Fmt.kcal(c.calorieFloorFemale)} kcal a day for women or '
         '${Fmt.kcal(c.calorieFloorMale)} kcal for men. Weight loss is limited to about '
         '${c.defaultLossKgPerWeek} kg a week, never more than ${c.maxLossKgPerWeek} kg or '
         '${(c.maxLossFractionOfBodyWeightPerWeek * 100).round()}% of body weight. No weight-loss plan below BMI '
         '${c.minBmiForLoss}. $provisional',
   );
   if (setup == null) {
-    return TransparencyViewModel(intro: 'Finish setting up to see your own numbers.', sections: [rules], policyLine: 'Policy ${c.version}');
+    return TransparencyViewModel(
+        intro: 'Finish setting up to see your own numbers.',
+        sections: [rules],
+        policyLine: 'Policy ${c.version}');
   }
   final p = setup.profile;
   final e = checker.check(p, today);
@@ -38,46 +42,61 @@ final transparencyProvider = FutureProvider<TransparencyViewModel>((ref) async {
       policyLine: 'Policy ${c.version}',
     );
   }
-  final x = policy.compute(p.copyWith(goal: checker.effectiveGoal(p, e)), today).explanation;
+  final x = policy
+      .compute(p.copyWith(goal: checker.effectiveGoal(p, e)), today)
+      .explanation;
   final sexTerm = p.sex == Sex.male ? '+ 5' : '− 161';
   return TransparencyViewModel(
-    intro: 'Every number is an estimate made by a fixed, versioned set of rules. Here is how yours was made.',
+    intro:
+        'Every number is an estimate made by a fixed, versioned set of rules. Here is how yours was made.',
     sections: [
       TransparencySection(
         icon: Icons.functions,
         title: 'Resting energy (Mifflin-St Jeor)',
-        body: '10 × ${p.weightKg.toStringAsFixed(1)} kg + 6.25 × ${p.heightCm.round()} cm − 5 × ${x.age} years '
+        body:
+            '10 × ${p.weightKg.toStringAsFixed(1)} kg + 6.25 × ${p.heightCm.round()} cm − 5 × ${x.age} years '
             '$sexTerm = ${Fmt.kcal(x.restingKcal)} kcal a day.',
       ),
       TransparencySection(
         icon: Icons.directions_walk,
         title: 'Your activity',
-        body: '${Fmt.kcal(x.restingKcal)} × ${x.activityFactor} = ${Fmt.kcal(x.maintenanceKcal)} kcal to stay at your current weight.',
+        body:
+            '${Fmt.kcal(x.restingKcal)} × ${x.activityFactor} = ${Fmt.kcal(x.maintenanceKcal)} kcal to stay at your current weight.',
       ),
       TransparencySection(
         icon: Icons.flag_outlined,
         title: 'Your goal',
         body: switch (x.goal) {
               Goal.maintain => 'Keep your weight steady: no change.',
-              Goal.lose => 'Lose about ${(-x.weeklyChangeKg).toStringAsFixed(2)} kg a week: '
-                  '${Fmt.kcal(-x.dailyAdjustmentKcal)} kcal less each day.',
-              Goal.gain => 'Gain about ${x.weeklyChangeKg.toStringAsFixed(2)} kg a week: '
-                  '${Fmt.kcal(x.dailyAdjustmentKcal)} kcal more each day.',
+              Goal.lose =>
+                'Lose about ${(-x.weeklyChangeKg).toStringAsFixed(2)} kg a week: '
+                    '${Fmt.kcal(-x.dailyAdjustmentKcal)} kcal less each day.',
+              Goal.gain =>
+                'Gain about ${x.weeklyChangeKg.toStringAsFixed(2)} kg a week: '
+                    '${Fmt.kcal(x.dailyAdjustmentKcal)} kcal more each day.',
             } +
-            (e is MaintenanceOnly ? ' A loss plan is not offered at your BMI, so we plan for maintenance.' : '') +
-            (x.rateCapApplied ? ' The pace was limited by the safety cap.' : '') +
-            (x.floorApplied ? ' Your target was raised to the safety floor.' : ''),
+            (e is MaintenanceOnly
+                ? ' A loss plan is not offered at your BMI, so we plan for maintenance.'
+                : '') +
+            (x.rateCapApplied
+                ? ' The pace was limited by the safety cap.'
+                : '') +
+            (x.floorApplied
+                ? ' Your target was raised to the safety floor.'
+                : ''),
       ),
       TransparencySection(
         icon: Icons.restaurant,
         title: 'Your daily target',
-        body: 'About ${Fmt.kcal(x.finalKcal)} kcal, rounded to the nearest 10. Protein, carbs and fat are '
+        body:
+            'About ${Fmt.kcal(x.finalKcal)} kcal, rounded to the nearest 10. Protein, carbs and fat are '
             '${(c.proteinShare * 100).round()}%, ${(c.carbShare * 100).round()}% and ${(c.fatShare * 100).round()}% of '
             'that energy, and fibre ${c.fibreGramsPer1000Kcal.round()} g per 1,000 kcal. Food values include the oil level you choose.',
       ),
       rules,
     ],
-    policyLine: 'Policy ${x.policyVersion}${x.isProvisional ? ' · provisional' : ''}',
+    policyLine:
+        'Policy ${x.policyVersion}${x.isProvisional ? ' · provisional' : ''}',
   );
 });
 
@@ -86,7 +105,8 @@ class TransparencyPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vm = ref.watch(transparencyProvider).valueOrNull ?? const TransparencyViewModel();
+    final vm = ref.watch(transparencyProvider).valueOrNull ??
+        const TransparencyViewModel();
     return TransparencyScreen(vm: vm);
   }
 }

@@ -23,8 +23,10 @@ class SettingsController extends AsyncNotifier<SettingsViewModel> {
     final prefs = setup.preferences;
     final exclusions = [
       if (prefs.dietType != DietType.everything) _dietLabel(prefs.dietType),
-      for (final a in prefs.allergies) '${a.name[0].toUpperCase()}${a.name.substring(1)} allergy',
-      if (prefs.excludedIngredientIds.isNotEmpty) '${prefs.excludedIngredientIds.length} excluded ingredients',
+      for (final a in prefs.allergies)
+        '${a.name[0].toUpperCase()}${a.name.substring(1)} allergy',
+      if (prefs.excludedIngredientIds.isNotEmpty)
+        '${prefs.excludedIngredientIds.length} excluded ingredients',
     ];
     final slots = setup.schedule.normalSlots;
     return SettingsViewModel(
@@ -36,9 +38,12 @@ class SettingsController extends AsyncNotifier<SettingsViewModel> {
         OilLevel.normal => 'Normal (about 2 tsp oil per katori)',
         OilLevel.rich => 'Rich (about 4 tsp oil per katori)',
       },
-      exclusionsSummary: exclusions.isEmpty ? 'None set' : exclusions.join(', '),
-      scheduleSummary: '${slots.length} meals${setup.schedule.ramadanStart != null ? ' · Ramadan dates set' : ''}',
-      versionLabel: 'Diet Planner 0.1.0 · food pack ${pack.packVersion}${pack.isDraft ? ' (draft)' : ''}',
+      exclusionsSummary:
+          exclusions.isEmpty ? 'None set' : exclusions.join(', '),
+      scheduleSummary:
+          '${slots.length} meals${setup.schedule.ramadanStart != null ? ' · Ramadan dates set' : ''}',
+      versionLabel:
+          'Diet Planner 0.1.0 · food pack ${pack.packVersion}${pack.isDraft ? ' (draft)' : ''}',
     );
   }
 
@@ -73,10 +78,13 @@ class SettingsController extends AsyncNotifier<SettingsViewModel> {
     final day = await service.load(today, generateIfMissing: false);
     final plan = day?.plan;
     if (day != null && plan != null) {
-      final filter = FoodFilter(preferences: prefs, allowDraftData: ref.read(appConfigProvider).allowDraftData);
+      final filter = FoodFilter(
+          preferences: prefs,
+          allowDraftData: ref.read(appConfigProvider).allowDraftData);
       final violates = plan.meals.any((m) => m.items.any((i) {
             final food = day.pack.food(i.foodId);
-            return !isPlanItemLogged(i.id, day.logs) && (food == null || !filter.allows(food));
+            return !isPlanItemLogged(i.id, day.logs) &&
+                (food == null || !filter.allows(food));
           }));
       if (violates) await service.regenerateDay(day);
     }
@@ -87,8 +95,11 @@ class SettingsController extends AsyncNotifier<SettingsViewModel> {
   Future<void> updateRichness(OilLevel level) async {
     final setup = await _setup();
     if (setup == null) return;
-    await ref.read(planRepositoryProvider).removePlansFrom(ref.read(dayServiceProvider).today.addDays(1));
-    await _saveAndRefresh(setup.copyWith(profile: setup.profile.copyWith(cookingRichness: level)));
+    await ref
+        .read(planRepositoryProvider)
+        .removePlansFrom(ref.read(dayServiceProvider).today.addDays(1));
+    await _saveAndRefresh(setup.copyWith(
+        profile: setup.profile.copyWith(cookingRichness: level)));
   }
 
   Future<void> updateSchedule(MealSchedule schedule) async {
@@ -96,9 +107,12 @@ class SettingsController extends AsyncNotifier<SettingsViewModel> {
     if (setup == null) return;
     final service = ref.read(dayServiceProvider);
     final today = service.today;
-    final todayLogs = await ref.read(foodLogRepositoryProvider).entriesFor(today);
+    final todayLogs =
+        await ref.read(foodLogRepositoryProvider).entriesFor(today);
     // Today's plan is remade only if nothing has been logged yet.
-    await ref.read(planRepositoryProvider).removePlansFrom(todayLogs.isEmpty ? today : today.addDays(1));
+    await ref
+        .read(planRepositoryProvider)
+        .removePlansFrom(todayLogs.isEmpty ? today : today.addDays(1));
     if (schedule.ramadanStart != null && setup.schedule.ramadanStart == null) {
       ref.read(analyticsServiceProvider).log(AnalyticsEvent.ramadanModeEnabled);
     }
@@ -123,4 +137,6 @@ class SettingsController extends AsyncNotifier<SettingsViewModel> {
   static const optionalSlots = [MealSlot.snack];
 }
 
-final settingsControllerProvider = AsyncNotifierProvider<SettingsController, SettingsViewModel>(SettingsController.new);
+final settingsControllerProvider =
+    AsyncNotifierProvider<SettingsController, SettingsViewModel>(
+        SettingsController.new);

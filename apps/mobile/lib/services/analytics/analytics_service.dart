@@ -46,7 +46,9 @@ class ConsentGatedAnalytics implements AnalyticsService {
     if (!_consent) return;
     final safe = <String, Object>{
       for (final e in properties.entries)
-        if (e.value is bool || (e.value is int && (e.value as int).abs() < 1000) || e.value is Enum)
+        if (e.value is bool ||
+            (e.value is int && (e.value as int).abs() < 1000) ||
+            e.value is Enum)
           e.key: e.value is Enum ? (e.value as Enum).name : e.value,
     };
     _sink.send(_snake(event.name), safe);

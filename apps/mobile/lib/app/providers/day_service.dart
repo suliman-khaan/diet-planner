@@ -41,7 +41,8 @@ class DayData {
   bool get isManualOnly => eligibility is ManualOnly;
 
   bool isMealLogged(PlannedMeal meal) =>
-      meal.items.isNotEmpty && meal.items.every((i) => isPlanItemLogged(i.id, logs));
+      meal.items.isNotEmpty &&
+      meal.items.every((i) => isPlanItemLogged(i.id, logs));
 }
 
 /// Plan lifecycle for a day: load, generate when missing, log, regenerate, edit.
@@ -82,16 +83,22 @@ class DayService {
     var plan = await plans.planFor(date);
     PlanFailure? failure;
     // Plans are made for today and future days only; past days show what was logged.
-    if (plan == null && generateIfMissing && setup.target != null && e is! ManualOnly && !date.isBefore(today)) {
+    if (plan == null &&
+        generateIfMissing &&
+        setup.target != null &&
+        e is! ManualOnly &&
+        !date.isBefore(today)) {
       final result = planner.generate(await _request(date, setup, pack));
       switch (result) {
         case PlanSuccess(plan: final generated):
           final saved = await plans.savePlan(generated);
-          analytics.log(AnalyticsEvent.planGenerated, {'source': 'auto', 'success': true});
+          analytics.log(AnalyticsEvent.planGenerated,
+              {'source': 'auto', 'success': true});
           return _data(date, setup, pack, e, saved, null);
         case final PlanFailure f:
           failure = f;
-          analytics.log(AnalyticsEvent.planGenerated, {'source': 'auto', 'success': false, 'reason': f.reason});
+          analytics.log(AnalyticsEvent.planGenerated,
+              {'source': 'auto', 'success': false, 'reason': f.reason});
       }
     }
     return _data(date, setup, pack, e, plan, failure);
@@ -119,21 +126,27 @@ class DayService {
   /// A new whole-day plan. Meals already eaten keep their log entries (snapshots).
   Future<PlanResult> regenerateDay(DayData day) async {
     final seed = ((day.plan?.seed ?? _baseSeed(day.date)) + 1) & 0x7FFFFFFF;
-    final result = planner.generate(await _request(day.date, day.setup, day.pack, seed: seed));
+    final result = planner
+        .generate(await _request(day.date, day.setup, day.pack, seed: seed));
     if (result is PlanSuccess) {
       await plans.savePlan(result.plan);
-      analytics.log(AnalyticsEvent.planGenerated, {'source': 'regenerate', 'success': true});
+      analytics.log(AnalyticsEvent.planGenerated,
+          {'source': 'regenerate', 'success': true});
     }
     return result;
   }
 
   /// Replaces one meal with a different option of similar size. Eaten meals are never touched.
-  Future<PlannedMeal?> regenerateMeal(DayData day, PlannedMeal meal, {required int attempt}) async {
+  Future<PlannedMeal?> regenerateMeal(DayData day, PlannedMeal meal,
+      {required int attempt}) async {
     final plan = day.plan;
     if (plan == null || day.isMealLogged(meal)) return null;
-    final request = await _request(day.date, day.setup, day.pack, seed: plan.seed);
+    final request =
+        await _request(day.date, day.setup, day.pack, seed: plan.seed);
     final slot = SlotTime(meal.slot, meal.minutesOfDay);
-    final others = Planner.mainDishesIn(day.pack, [plan.copyWith(meals: plan.meals.where((m) => m.id != meal.id).toList())]);
+    final others = Planner.mainDishesIn(day.pack, [
+      plan.copyWith(meals: plan.meals.where((m) => m.id != meal.id).toList())
+    ]);
     final replacement = planner.regenerateMeal(
       request,
       slot,
@@ -147,12 +160,14 @@ class DayService {
     return plans.saveMeal(plan.id, replacement.copyWith(id: meal.id));
   }
 
-  Future<PlannedMeal> saveMeal(DailyPlan plan, PlannedMeal meal) => plans.saveMeal(plan.id, meal);
+  Future<PlannedMeal> saveMeal(DailyPlan plan, PlannedMeal meal) =>
+      plans.saveMeal(plan.id, meal);
 
   /// Logs every not-yet-logged item of [meal]. Returns the new entry ids (for undo).
   /// Tapping twice never logs twice.
   Future<List<String>> markEaten(DayData day, PlannedMeal meal) async {
-    final pending = meal.items.where((i) => !isPlanItemLogged(i.id, day.logs)).toList();
+    final pending =
+        meal.items.where((i) => !isPlanItemLogged(i.id, day.logs)).toList();
     if (pending.isEmpty) return const [];
     final entries = logEntriesForMeal(
       meal: meal.copyWith(items: pending),
@@ -162,24 +177,31 @@ class DayService {
       newId: ids.newId,
     );
     await logs.add(entries);
-    analytics.log(AnalyticsEvent.mealLogged, {'source': 'planned', 'slot': meal.slot});
-    if (meal.items.any((i) => i.fromSharedDish)) analytics.log(AnalyticsEvent.familyPotUsed);
+    analytics.log(
+        AnalyticsEvent.mealLogged, {'source': 'planned', 'slot': meal.slot});
+    if (meal.items.any((i) => i.fromSharedDish))
+      analytics.log(AnalyticsEvent.familyPotUsed);
     return [for (final e in entries) e.id];
   }
 
   Future<void> undoLog(List<String> entryIds) => logs.remove(entryIds);
 
   /// Stable per date, so reopening the app shows the same plan.
-  static int _baseSeed(LocalDate date) => SeededRandom.hashString(date.toIso()) & 0x7FFFFFFF;
+  static int _baseSeed(LocalDate date) =>
+      SeededRandom.hashString(date.toIso()) & 0x7FFFFFFF;
 
-  Future<PlanRequest> _request(LocalDate date, UserSetup setup, FoodPack pack, {int? seed}) async {
-    final recentPlans = await plans.plansBetween(date.addDays(-3), date.addDays(-1));
+  Future<PlanRequest> _request(LocalDate date, UserSetup setup, FoodPack pack,
+      {int? seed}) async {
+    final recentPlans =
+        await plans.plansBetween(date.addDays(-3), date.addDays(-1));
     return PlanRequest(
       date: date,
       target: setup.target!,
       pack: pack,
       slots: setup.schedule.slotsFor(date),
-      filter: FoodFilter(preferences: setup.preferences, allowDraftData: config.allowDraftData),
+      filter: FoodFilter(
+          preferences: setup.preferences,
+          allowDraftData: config.allowDraftData),
       oilLevel: setup.profile.cookingRichness,
       seed: seed ?? _baseSeed(date),
       policyVersion: setup.policyVersion,

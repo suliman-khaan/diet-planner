@@ -20,5 +20,6 @@ class AppConfig {
 
   /// Help link for the gentle check-in. Placeholder until the owner chooses a local
   /// resource (Phase 8 decision); points to general WHO guidance meanwhile.
-  String get wellbeingHelpUrl => 'https://www.who.int/news-room/fact-sheets/detail/healthy-diet';
+  String get wellbeingHelpUrl =>
+      'https://www.who.int/news-room/fact-sheets/detail/healthy-diet';
 }

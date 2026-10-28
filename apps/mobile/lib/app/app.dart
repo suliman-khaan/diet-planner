@@ -20,7 +20,8 @@ class DietPlannerApp extends ConsumerStatefulWidget {
   ConsumerState<DietPlannerApp> createState() => _DietPlannerAppState();
 }
 
-class _DietPlannerAppState extends ConsumerState<DietPlannerApp> with WidgetsBindingObserver {
+class _DietPlannerAppState extends ConsumerState<DietPlannerApp>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -42,7 +43,8 @@ class _DietPlannerAppState extends ConsumerState<DietPlannerApp> with WidgetsBin
   Future<void> _onResume() async {
     final tz = await currentTimezone();
     if (!mounted) return;
-    if (tz != ref.read(timezoneNameProvider)) ref.read(timezoneNameProvider.notifier).state = tz;
+    if (tz != ref.read(timezoneNameProvider))
+      ref.read(timezoneNameProvider.notifier).state = tz;
     ref
       ..invalidate(todayProvider)
       ..invalidate(todayControllerProvider);

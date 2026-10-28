@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers/formatters.dart';
 import '../../../app/providers/providers.dart';
 import '../../../app/providers/reminder_coordinator.dart';
+import '../../../domain/common/meal_slot.dart';
 import '../../../domain/food/food.dart';
 import '../../../domain/profile/eligibility.dart';
 import '../../../domain/profile/user_profile.dart';

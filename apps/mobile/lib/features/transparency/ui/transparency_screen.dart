@@ -11,7 +11,8 @@ class TransparencySection {
   final String body;
   final IconData icon;
 
-  const TransparencySection({required this.title, required this.body, required this.icon});
+  const TransparencySection(
+      {required this.title, required this.body, required this.icon});
 }
 
 class TransparencyViewModel {
@@ -32,7 +33,8 @@ class TransparencyViewModel {
 class TransparencyScreen extends StatelessWidget {
   final TransparencyViewModel vm;
 
-  const TransparencyScreen({super.key, this.vm = const TransparencyViewModel()});
+  const TransparencyScreen(
+      {super.key, this.vm = const TransparencyViewModel()});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,8 @@ class TransparencyScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(vm.headline, style: AppTypography.titleLarge.copyWith(color: ink)),
+            Text(vm.headline,
+                style: AppTypography.titleLarge.copyWith(color: ink)),
             const SizedBox(height: 8),
             Text(vm.intro, style: AppTypography.body.copyWith(color: muted)),
             const SizedBox(height: 16),
@@ -63,18 +66,22 @@ class TransparencyScreen extends StatelessWidget {
                         Icon(s.icon, color: primary),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(s.title, style: AppTypography.subheading.copyWith(color: ink)),
+                          child: Text(s.title,
+                              style: AppTypography.subheading
+                                  .copyWith(color: ink)),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(s.body, style: AppTypography.body.copyWith(color: muted)),
+                    Text(s.body,
+                        style: AppTypography.body.copyWith(color: muted)),
                   ],
                 ),
               ),
               const SizedBox(height: 12),
             ],
-            Text(vm.policyLine, style: AppTypography.captionStrong.copyWith(color: muted)),
+            Text(vm.policyLine,
+                style: AppTypography.captionStrong.copyWith(color: muted)),
           ],
         ),
       ),

@@ -19,7 +19,9 @@ class ReminderCoordinator {
       final service = _ref.read(reminderServiceProvider);
       final settings = await _ref.read(settingsRepositoryProvider).load();
       final setup = await _ref.read(profileRepositoryProvider).load();
-      if (!settings.reminders.enabled || setup == null || !await service.isPermitted()) {
+      if (!settings.reminders.enabled ||
+          setup == null ||
+          !await service.isPermitted()) {
         await service.cancelAll();
         return;
       }
@@ -31,12 +33,16 @@ class ReminderCoordinator {
         prefs: settings.reminders,
         from: today,
         nowMinutes: now.hour * 60 + now.minute,
-        loggedSlots: {today: {for (final l in logs) l.slot}},
+        loggedSlots: {
+          today: {for (final l in logs) l.slot}
+        },
       );
       await service.replaceAll(occurrences);
       final tz = _ref.read(timezoneNameProvider);
       if (settings.lastReminderTimezone != tz) {
-        await _ref.read(settingsRepositoryProvider).save(settings.copyWith(lastReminderTimezone: tz));
+        await _ref
+            .read(settingsRepositoryProvider)
+            .save(settings.copyWith(lastReminderTimezone: tz));
       }
     } on Object catch (e, st) {
       // Reminders failing must never affect planning or logging.
@@ -45,4 +51,5 @@ class ReminderCoordinator {
   }
 }
 
-final reminderCoordinatorProvider = Provider<ReminderCoordinator>(ReminderCoordinator.new);
+final reminderCoordinatorProvider =
+    Provider<ReminderCoordinator>(ReminderCoordinator.new);

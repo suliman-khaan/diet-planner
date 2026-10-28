@@ -111,7 +111,8 @@ class RemindersScreen extends StatelessWidget {
                             style:
                                 AppTypography.bodyStrong.copyWith(color: ink)),
                         Text(vm.ramadanNote,
-                            style: AppTypography.caption.copyWith(color: muted)),
+                            style:
+                                AppTypography.caption.copyWith(color: muted)),
                       ],
                     ),
                   ),
@@ -146,7 +147,8 @@ class RemindersScreen extends StatelessWidget {
                             style:
                                 AppTypography.bodyStrong.copyWith(color: ink)),
                         subtitle: Text(slot.time,
-                            style: AppTypography.caption.copyWith(color: muted)),
+                            style:
+                                AppTypography.caption.copyWith(color: muted)),
                         value: slot.isEnabled,
                         onChanged: vm.enabled
                             ? (val) => onSlotChanged?.call(slot.id, val)

@@ -134,7 +134,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Your Daily Nutrition Target'), findsOneWidget);
+      expect(find.text('Your daily nutrition target'), findsOneWidget);
       expect(find.text('~1850'), findsOneWidget);
       expect(find.text('Protein'), findsOneWidget);
       expect(find.text('Carbs'), findsOneWidget);

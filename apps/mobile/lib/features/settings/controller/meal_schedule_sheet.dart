@@ -41,7 +41,13 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
   LocalDate? _end;
   bool _saving = false;
 
-  static const _normalOrder = [MealSlot.breakfast, MealSlot.snack, MealSlot.lunch, MealSlot.chai, MealSlot.dinner];
+  static const _normalOrder = [
+    MealSlot.breakfast,
+    MealSlot.snack,
+    MealSlot.lunch,
+    MealSlot.chai,
+    MealSlot.dinner
+  ];
   static const _defaults = {
     MealSlot.breakfast: 8 * 60,
     MealSlot.snack: 11 * 60,
@@ -49,12 +55,18 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
     MealSlot.chai: 17 * 60 + 30,
     MealSlot.dinner: 21 * 60 + 30,
   };
-  static const _required = {MealSlot.breakfast, MealSlot.lunch, MealSlot.dinner};
+  static const _required = {
+    MealSlot.breakfast,
+    MealSlot.lunch,
+    MealSlot.dinner
+  };
 
   @override
   void initState() {
     super.initState();
-    _normal = {for (final s in widget.initial.normalSlots) s.slot: s.minutesOfDay};
+    _normal = {
+      for (final s in widget.initial.normalSlots) s.slot: s.minutesOfDay
+    };
     _ramadan = [...widget.initial.ramadanSlots];
     _start = widget.initial.ramadanStart;
     _end = widget.initial.ramadanEnd;
@@ -66,7 +78,8 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
       context: context,
       initialTime: TimeOfDay(hour: current ~/ 60, minute: current % 60),
     );
-    if (picked != null) setState(() => _normal[slot] = picked.hour * 60 + picked.minute);
+    if (picked != null)
+      setState(() => _normal[slot] = picked.hour * 60 + picked.minute);
   }
 
   Future<void> _pickRamadanTime(int index) async {
@@ -76,7 +89,8 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
       initialTime: TimeOfDay(hour: current ~/ 60, minute: current % 60),
     );
     if (picked != null) {
-      setState(() => _ramadan[index] = SlotTime(_ramadan[index].slot, picked.hour * 60 + picked.minute));
+      setState(() => _ramadan[index] =
+          SlotTime(_ramadan[index].slot, picked.hour * 60 + picked.minute));
     }
   }
 
@@ -86,7 +100,9 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
       context: context,
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 2),
-      initialDateRange: _start == null ? null : DateTimeRange(start: _start!.atMinutes(0), end: _end!.atMinutes(0)),
+      initialDateRange: _start == null
+          ? null
+          : DateTimeRange(start: _start!.atMinutes(0), end: _end!.atMinutes(0)),
       helpText: 'Ramadan dates',
     );
     if (range != null) {
@@ -100,12 +116,17 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
   Future<void> _save() async {
     setState(() => _saving = true);
     final schedule = MealSchedule(
-      normalSlots: [for (final s in _normalOrder) if (_normal.containsKey(s)) SlotTime(s, _normal[s]!)],
+      normalSlots: [
+        for (final s in _normalOrder)
+          if (_normal.containsKey(s)) SlotTime(s, _normal[s]!)
+      ],
       ramadanSlots: _ramadan,
       ramadanStart: _start,
       ramadanEnd: _end,
     );
-    await ref.read(settingsControllerProvider.notifier).updateSchedule(schedule);
+    await ref
+        .read(settingsControllerProvider.notifier)
+        .updateSchedule(schedule);
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -115,7 +136,8 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
     final count = _normal.length;
     return SafeArea(
       child: Padding(
-        padding: AppSpacing.screenPadding.add(EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom)),
+        padding: AppSpacing.screenPadding.add(
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom)),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -123,11 +145,13 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
             children: [
               Text('Meal times', style: AppTypography.titleMedium),
               const SizedBox(height: 4),
-              Text('Between ${MealSchedule.minSlots} and ${MealSchedule.maxSlots} meals. Changes apply to plans made from now on.',
+              Text(
+                  'Between ${MealSchedule.minSlots} and ${MealSchedule.maxSlots} meals. Changes apply to plans made from now on.',
                   style: AppTypography.caption),
               const SizedBox(height: 12),
               AppCard(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 child: Column(
                   children: [
                     for (final s in _normalOrder)
@@ -137,7 +161,8 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                         subtitle: _normal.containsKey(s)
                             ? InkWell(
                                 onTap: () => _pickTime(s),
-                                child: Text('${Fmt.time(_normal[s]!)} · tap to change',
+                                child: Text(
+                                    '${Fmt.time(_normal[s]!)} · tap to change',
                                     style: AppTypography.captionStrong),
                               )
                             : const Text('Off'),
@@ -147,7 +172,8 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                             : (on) => setState(() {
                                   if (on && count < MealSchedule.maxSlots) {
                                     _normal[s] = _defaults[s]!;
-                                  } else if (!on && count > MealSchedule.minSlots) {
+                                  } else if (!on &&
+                                      count > MealSchedule.minSlots) {
                                     _normal.remove(s);
                                   }
                                 }),
@@ -158,11 +184,13 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
               const SizedBox(height: 16),
               Text('Ramadan', style: AppTypography.subheading),
               const SizedBox(height: 4),
-              Text('On these dates, sehri and iftar replace breakfast and lunch, and reminders follow them.',
+              Text(
+                  'On these dates, sehri and iftar replace breakfast and lunch, and reminders follow them.',
                   style: AppTypography.caption),
               const SizedBox(height: 8),
               AppCard(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 child: Column(
                   children: [
                     ListTile(
@@ -187,14 +215,18 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(Fmt.slot(_ramadan[i].slot)),
-                        subtitle: Text('${Fmt.time(_ramadan[i].minutesOfDay)} · tap to change'),
+                        subtitle: Text(
+                            '${Fmt.time(_ramadan[i].minutesOfDay)} · tap to change'),
                         onTap: () => _pickRamadanTime(i),
                       ),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-              PrimaryButton(label: 'Save meal times', isLoading: _saving, onPressed: _saving ? null : _save),
+              PrimaryButton(
+                  label: 'Save meal times',
+                  isLoading: _saving,
+                  onPressed: _saving ? null : _save),
               const SizedBox(height: 8),
             ],
           ),

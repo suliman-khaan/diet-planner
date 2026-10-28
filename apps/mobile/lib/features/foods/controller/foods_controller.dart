@@ -22,8 +22,10 @@ const foodCategoryLabels = <String, Set<String>>{
   'Salads & sweets': {'salads', 'desserts'},
 };
 
-String _labelFor(String category) =>
-    foodCategoryLabels.entries.firstWhere((e) => e.value.contains(category), orElse: () => const MapEntry('All', {})).key;
+String _labelFor(String category) => foodCategoryLabels.entries
+    .firstWhere((e) => e.value.contains(category),
+        orElse: () => const MapEntry('All', {}))
+    .key;
 
 class FoodsController extends AsyncNotifier<FoodsViewModel> {
   String _query = '';
@@ -38,10 +40,14 @@ class FoodsController extends AsyncNotifier<FoodsViewModel> {
     final setup = await ref.watch(userSetupProvider.future);
     final oil = setup?.profile.cookingRichness ?? OilLevel.normal;
     final cats = foodCategoryLabels[_category] ?? const {};
-    final results = search.search(_query).where((f) => cats.isEmpty || cats.contains(f.category)).toList();
+    final results = search
+        .search(_query)
+        .where((f) => cats.isEmpty || cats.contains(f.category))
+        .toList();
     if (_query.trim().isNotEmpty && results.isEmpty) {
       // Length bucket only, never the query text.
-      ref.read(analyticsServiceProvider).log(AnalyticsEvent.searchNoResult, {'lengthBucket': _query.length ~/ 5});
+      ref.read(analyticsServiceProvider).log(
+          AnalyticsEvent.searchNoResult, {'lengthBucket': _query.length ~/ 5});
     }
     return FoodsViewModel(
       searchQuery: _query,
@@ -62,7 +68,8 @@ class FoodsController extends AsyncNotifier<FoodsViewModel> {
   }
 }
 
-final foodsControllerProvider = AsyncNotifierProvider<FoodsController, FoodsViewModel>(FoodsController.new);
+final foodsControllerProvider =
+    AsyncNotifierProvider<FoodsController, FoodsViewModel>(FoodsController.new);
 
 FoodItemViewModel foodItemViewModel(FoodPack pack, Food f, OilLevel oil) {
   final s = f.defaultServing;
@@ -78,7 +85,9 @@ FoodItemViewModel foodItemViewModel(FoodPack pack, Food f, OilLevel oil) {
     fatGrams: n.fat.round(),
     fibreGrams: n.fibre.round(),
     isReviewed: f.status.isVerified,
-    allergens: [for (final a in f.allergens) a.name[0].toUpperCase() + a.name.substring(1)],
+    allergens: [
+      for (final a in f.allergens) a.name[0].toUpperCase() + a.name.substring(1)
+    ],
     category: _labelFor(f.category),
   );
 }

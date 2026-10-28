@@ -33,14 +33,18 @@ class ShoppingController extends AsyncNotifier<ShoppingViewModel> {
     final day = await ref.watch(dayServiceProvider).load(_date);
     final repo = ref.read(shoppingRepositoryProvider);
     final purchased = await repo.purchasedKeys(_date);
-    final lines = day?.plan == null ? const <ShoppingLine>[] : shoppingLinesFor(day!.pack, day.plan!.meals);
+    final lines = day?.plan == null
+        ? const <ShoppingLine>[]
+        : shoppingLinesFor(day!.pack, day.plan!.meals);
     final manual = await repo.manualItems(_date);
     return ShoppingViewModel(items: [
       for (final l in lines)
         ShoppingItemViewModel(
           id: l.ingredientId,
           name: l.name,
-          amount: l.unit == ShoppingUnit.millilitres ? Units.formatMillilitres(l.amount) : Units.formatGrams(l.amount),
+          amount: l.unit == ShoppingUnit.millilitres
+              ? Units.formatMillilitres(l.amount)
+              : Units.formatGrams(l.amount),
           category: _categoryLabel(l.category),
           isPurchased: purchased.contains(l.ingredientId),
         ),
@@ -60,7 +64,8 @@ class ShoppingController extends AsyncNotifier<ShoppingViewModel> {
     if (item == null) return;
     final repo = ref.read(shoppingRepositoryProvider);
     if (id.startsWith(_manualPrefix)) {
-      await repo.setManualPurchased(id.substring(_manualPrefix.length), !item.isPurchased);
+      await repo.setManualPurchased(
+          id.substring(_manualPrefix.length), !item.isPurchased);
     } else {
       await repo.setPurchased(_date, id, !item.isPurchased);
     }
@@ -69,21 +74,27 @@ class ShoppingController extends AsyncNotifier<ShoppingViewModel> {
 
   Future<void> addManual(String name) async {
     if (name.trim().isEmpty) return;
-    await ref.read(shoppingRepositoryProvider).addManualItem(_date, name.trim());
+    await ref
+        .read(shoppingRepositoryProvider)
+        .addManualItem(_date, name.trim());
     ref.invalidateSelf();
   }
 
   /// Removes ticked items you added; ticked plan ingredients stay ticked.
   Future<void> clearChecked() async {
     final repo = ref.read(shoppingRepositoryProvider);
-    for (final i in state.valueOrNull?.items ?? const <ShoppingItemViewModel>[]) {
-      if (i.isPurchased && i.id.startsWith(_manualPrefix)) await repo.removeManualItem(i.id.substring(_manualPrefix.length));
+    for (final i
+        in state.valueOrNull?.items ?? const <ShoppingItemViewModel>[]) {
+      if (i.isPurchased && i.id.startsWith(_manualPrefix))
+        await repo.removeManualItem(i.id.substring(_manualPrefix.length));
     }
     ref.invalidateSelf();
   }
 }
 
-final shoppingControllerProvider = AsyncNotifierProvider<ShoppingController, ShoppingViewModel>(ShoppingController.new);
+final shoppingControllerProvider =
+    AsyncNotifierProvider<ShoppingController, ShoppingViewModel>(
+        ShoppingController.new);
 
 class ShoppingPage extends ConsumerWidget {
   const ShoppingPage({super.key});
@@ -95,7 +106,8 @@ class ShoppingPage extends ConsumerWidget {
     const note = 'Raw ingredients for your own portions in today\'s plan. '
         'For the family pot, buy for everyone who eats it.';
     return async.when(
-      loading: () => const ShoppingScreen(vm: ShoppingViewModel(isLoading: true)),
+      loading: () =>
+          const ShoppingScreen(vm: ShoppingViewModel(isLoading: true)),
       error: (_, __) => Scaffold(
         appBar: AppBar(title: const Text('Shopping List')),
         body: ErrorStateWidget(
@@ -130,8 +142,12 @@ class ShoppingPage extends ConsumerWidget {
           onSubmitted: (v) => Navigator.of(ctx).pop(v),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancel')),
-          TextButton(onPressed: () => Navigator.of(ctx).pop(text.text), child: const Text('Add')),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(text.text),
+              child: const Text('Add')),
         ],
       ),
     );

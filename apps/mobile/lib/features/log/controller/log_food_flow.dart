@@ -19,7 +19,8 @@ import '../ui/quick_add_sheet.dart';
 
 /// Logging food that is not in the plan: pick from the catalogue or quick-add calories.
 abstract final class LogFoodFlow {
-  static Future<void> start(BuildContext context, WidgetRef ref, {LocalDate? date}) async {
+  static Future<void> start(BuildContext context, WidgetRef ref,
+      {LocalDate? date}) async {
     final choice = await showModalBottomSheet<String>(
       context: context,
       builder: (ctx) => SafeArea(
@@ -54,19 +55,23 @@ abstract final class LogFoodFlow {
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (_) => QuickAddSheet(
-          onQuickAddSubmitted: (label, kcal, slot) => logQuickAdd(ref, day, label, kcal.toDouble(), _slotFromLabel(slot)),
+          onQuickAddSubmitted: (label, kcal, slot) => logQuickAdd(
+              ref, day, label, kcal.toDouble(), _slotFromLabel(slot)),
         ),
       );
     }
   }
 
   /// Opens the catalogue and returns the chosen food id.
-  static Future<String?> pickFood(BuildContext context) => Navigator.of(context).push<String>(
+  static Future<String?> pickFood(BuildContext context) =>
+      Navigator.of(context).push<String>(
         MaterialPageRoute(builder: (_) => const _FoodPickerPage()),
       );
 
   /// Detail sheet for one food with "Add" logging it to [date] at the current meal slot.
-  static Future<void> showFoodDetail(BuildContext context, WidgetRef ref, String foodId, {LocalDate? date}) async {
+  static Future<void> showFoodDetail(
+      BuildContext context, WidgetRef ref, String foodId,
+      {LocalDate? date}) async {
     final pack = await ref.read(foodPackProvider.future);
     final food = pack.food(foodId);
     if (food == null || !context.mounted) return;
@@ -79,12 +84,19 @@ abstract final class LogFoodFlow {
       backgroundColor: Colors.transparent,
       builder: (_) => FoodDetailSheet(
         food: foodItemViewModel(pack, food, oil),
-        onAddToMeal: (servings) => logFood(ref, date ?? ref.read(dayServiceProvider).today, pack, food, servings.toDouble(), oil),
+        onAddToMeal: (servings) => logFood(
+            ref,
+            date ?? ref.read(dayServiceProvider).today,
+            pack,
+            food,
+            servings.toDouble(),
+            oil),
       ),
     );
   }
 
-  static Future<void> logFood(WidgetRef ref, LocalDate date, FoodPack pack, Food food, double servings, OilLevel oil) async {
+  static Future<void> logFood(WidgetRef ref, LocalDate date, FoodPack pack,
+      Food food, double servings, OilLevel oil) async {
     final service = ref.read(dayServiceProvider);
     final grams = servings * food.defaultServing.grams;
     final level = oilLevelFor(food, oil);
@@ -104,10 +116,13 @@ abstract final class LogFoodFlow {
         oilLevel: level,
       ),
     ]);
-    ref.read(analyticsServiceProvider).log(AnalyticsEvent.mealLogged, {'source': 'manual'});
+    ref
+        .read(analyticsServiceProvider)
+        .log(AnalyticsEvent.mealLogged, {'source': 'manual'});
   }
 
-  static Future<void> logQuickAdd(WidgetRef ref, LocalDate date, String label, double kcal, MealSlot slot) async {
+  static Future<void> logQuickAdd(WidgetRef ref, LocalDate date, String label,
+      double kcal, MealSlot slot) async {
     final service = ref.read(dayServiceProvider);
     await ref.read(foodLogRepositoryProvider).add([
       FoodLogEntry(
@@ -117,11 +132,14 @@ abstract final class LogFoodFlow {
         source: LogSource.quickAdd,
         label: label.trim().isEmpty ? 'Quick add' : label.trim(),
         // Quick add records energy only; macros stay unknown rather than guessed.
-        nutrition: Nutrition(kcal: kcal, protein: 0, carbs: 0, fat: 0, fibre: 0),
+        nutrition:
+            Nutrition(kcal: kcal, protein: 0, carbs: 0, fat: 0, fibre: 0),
         loggedAtUtc: service.clock.nowUtc(),
       ),
     ]);
-    ref.read(analyticsServiceProvider).log(AnalyticsEvent.mealLogged, {'source': 'quickAdd', 'slot': slot});
+    ref
+        .read(analyticsServiceProvider)
+        .log(AnalyticsEvent.mealLogged, {'source': 'quickAdd', 'slot': slot});
   }
 
   static MealSlot _currentSlot(WidgetRef ref) {
@@ -163,7 +181,8 @@ class _FoodPickerPage extends ConsumerWidget {
           onSearchChanged: controller.setQuery,
           onSearchCleared: () => controller.setQuery(''),
           onCategorySelected: controller.setCategory,
-          onFoodSelected: (FoodItemViewModel f) => Navigator.of(context).pop(f.id),
+          onFoodSelected: (FoodItemViewModel f) =>
+              Navigator.of(context).pop(f.id),
         ),
       ),
     );

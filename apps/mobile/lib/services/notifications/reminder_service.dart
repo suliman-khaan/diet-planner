@@ -4,7 +4,9 @@ import '../../domain/reminders/reminder_schedule.dart';
 /// flutter_reminder_service.dart; everything else depends on this interface.
 abstract interface class ReminderService {
   /// [onTap] receives the payload (an in-app route) when a reminder is tapped.
-  Future<void> initialize({required String timezoneName, required void Function(String route) onTap});
+  Future<void> initialize(
+      {required String timezoneName,
+      required void Function(String route) onTap});
 
   /// Route from the reminder that cold-started the app, if any.
   Future<String?> launchRoute();
@@ -27,7 +29,9 @@ class NoopReminderService implements ReminderService {
   bool permitted = true;
 
   @override
-  Future<void> initialize({required String timezoneName, required void Function(String route) onTap}) async {}
+  Future<void> initialize(
+      {required String timezoneName,
+      required void Function(String route) onTap}) async {}
 
   @override
   Future<String?> launchRoute() async => null;

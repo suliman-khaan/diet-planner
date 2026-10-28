@@ -26,8 +26,15 @@ class ProgressController extends AsyncNotifier<ProgressViewModel> {
 
     // Eating: the last 7 days including today.
     final weekFrom = today.addDays(-6);
-    final logs = await ref.read(foodLogRepositoryProvider).entriesBetween(weekFrom, today);
-    final plans = {for (final p in await ref.read(planRepositoryProvider).plansBetween(weekFrom, today)) p.date: p};
+    final logs = await ref
+        .read(foodLogRepositoryProvider)
+        .entriesBetween(weekFrom, today);
+    final plans = {
+      for (final p in await ref
+          .read(planRepositoryProvider)
+          .plansBetween(weekFrom, today))
+        p.date: p
+    };
     final target = setup?.target?.kcal ?? 0;
     final dayLetter = DateFormat('E');
     final bars = <DayEatingBarViewModel>[];
@@ -43,7 +50,9 @@ class ProgressController extends AsyncNotifier<ProgressViewModel> {
       bars.add(DayEatingBarViewModel(
         dayLabel: dayLetter.format(d.atMinutes(0)).substring(0, 1),
         // A missed day is drawn as an empty outline, never as 0 kcal.
-        percentageOfTarget: s.status == DayLogStatus.notLogged ? 1.0 : (target > 0 ? (kcal / target).clamp(0.05, 1.2) : 0.5),
+        percentageOfTarget: s.status == DayLogStatus.notLogged
+            ? 1.0
+            : (target > 0 ? (kcal / target).clamp(0.05, 1.2) : 0.5),
         calories: kcal.round(),
         status: switch (s.status) {
           DayLogStatus.complete => EatingLogStatus.fullyLogged,
@@ -64,7 +73,10 @@ class ProgressController extends AsyncNotifier<ProgressViewModel> {
               : '${change.abs().toStringAsFixed(1)} kg ${change < 0 ? 'down' : 'up'} in ${trend.spanDays} days',
       weightTrend: [
         for (final p in trend.points)
-          WeightPointViewModel(date: p.date.atMinutes(0), dateLabel: label.format(p.date.atMinutes(0)), weightKg: p.weightKg),
+          WeightPointViewModel(
+              date: p.date.atMinutes(0),
+              dateLabel: label.format(p.date.atMinutes(0)),
+              weightKg: p.weightKg),
       ],
       weekEating: bars,
       daysLoggedThisWeek: logged,
@@ -81,7 +93,9 @@ class ProgressController extends AsyncNotifier<ProgressViewModel> {
   }
 }
 
-final progressControllerProvider = AsyncNotifierProvider<ProgressController, ProgressViewModel>(ProgressController.new);
+final progressControllerProvider =
+    AsyncNotifierProvider<ProgressController, ProgressViewModel>(
+        ProgressController.new);
 
 class ProgressPage extends ConsumerWidget {
   const ProgressPage({super.key});
@@ -90,21 +104,24 @@ class ProgressPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(progressControllerProvider);
     return async.when(
-      loading: () => const ProgressScreen(vm: ProgressViewModel(isLoading: true)),
+      loading: () =>
+          const ProgressScreen(vm: ProgressViewModel(isLoading: true)),
       error: (_, __) => ErrorStateWidget(
         message: 'Progress could not be loaded. Your saved data is safe.',
         onRetry: () => ref.invalidate(progressControllerProvider),
       ),
       data: (vm) => ProgressScreen(
         vm: vm,
-        onRangeToggled: (isMonth) => ref.read(progressMonthViewProvider.notifier).state = isMonth,
+        onRangeToggled: (isMonth) =>
+            ref.read(progressMonthViewProvider.notifier).state = isMonth,
         onAddWeightTap: () => showModalBottomSheet<void>(
           context: context,
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
           builder: (_) => AddWeightSheet(
             onWeightSaved: (kg) {
-              if (kg >= 30 && kg <= 250) ref.read(progressControllerProvider.notifier).addWeight(kg);
+              if (kg >= 30 && kg <= 250)
+                ref.read(progressControllerProvider.notifier).addWeight(kg);
             },
           ),
         ),
@@ -120,8 +137,13 @@ class HistoryController extends AsyncNotifier<List<HistoryDay>> {
     final today = ref.watch(todayProvider);
     final from = today.addDays(-30);
     final to = today.addDays(-1);
-    final logs = await ref.read(foodLogRepositoryProvider).entriesBetween(from, to);
-    final plans = {for (final p in await ref.read(planRepositoryProvider).plansBetween(from, to)) p.date: p};
+    final logs =
+        await ref.read(foodLogRepositoryProvider).entriesBetween(from, to);
+    final plans = {
+      for (final p
+          in await ref.read(planRepositoryProvider).plansBetween(from, to))
+        p.date: p
+    };
     final setup = await ref.watch(userSetupProvider.future);
     final days = <HistoryDay>[];
     for (var d = to; !d.isBefore(from); d = d.addDays(-1)) {
@@ -141,7 +163,11 @@ class HistoryController extends AsyncNotifier<List<HistoryDay>> {
 }
 
 class HistoryDay {
-  const HistoryDay({required this.date, required this.summary, required this.targetKcal, required this.topDishes});
+  const HistoryDay(
+      {required this.date,
+      required this.summary,
+      required this.targetKcal,
+      required this.topDishes});
 
   final LocalDate date;
   final DaySummary summary;
@@ -149,4 +175,6 @@ class HistoryDay {
   final List<String> topDishes;
 }
 
-final historyControllerProvider = AsyncNotifierProvider<HistoryController, List<HistoryDay>>(HistoryController.new);
+final historyControllerProvider =
+    AsyncNotifierProvider<HistoryController, List<HistoryDay>>(
+        HistoryController.new);

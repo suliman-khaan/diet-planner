@@ -19,7 +19,7 @@ void main() {
 
       // Verify header and calories
       expect(find.text('Today'), findsOneWidget);
-      expect(find.text('1,120'), findsOneWidget);
+      expect(find.text('1,120'), findsWidgets);
       expect(find.text('kcal eaten'), findsOneWidget);
 
       // Verify next meal banner

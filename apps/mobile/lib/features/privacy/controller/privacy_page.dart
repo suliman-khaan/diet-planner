@@ -20,10 +20,11 @@ class PrivacyPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(appSettingsProvider).valueOrNull ?? const AppSettings();
+    final settings =
+        ref.watch(appSettingsProvider).valueOrNull ?? const AppSettings();
 
-    void snack(String text) =>
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+    void snack(String text) => ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(text)));
 
     Future<void> saveConsent({bool? crash, bool? analytics}) async {
       final repo = ref.read(settingsRepositoryProvider);
@@ -60,7 +61,9 @@ class PrivacyPage extends ConsumerWidget {
               );
         } on Object catch (e, st) {
           _log.error('export_failed', e, st);
-          if (context.mounted) snack('Export did not finish. Your data on this phone is unchanged.');
+          if (context.mounted)
+            snack(
+                'Export did not finish. Your data on this phone is unchanged.');
         }
       },
       onImportData: () async {
@@ -68,7 +71,8 @@ class PrivacyPage extends ConsumerWidget {
         try {
           text = await ref.read(backupFileServiceProvider).pickImportFile();
         } on InvalidImportFile {
-          if (context.mounted) snack('That file could not be read. Nothing was changed.');
+          if (context.mounted)
+            snack('That file could not be read. Nothing was changed.');
           return;
         }
         if (text == null || !context.mounted) return;
@@ -79,23 +83,32 @@ class PrivacyPage extends ConsumerWidget {
             content: const Text(
                 'Everything on this phone will be replaced with the backup. Export first if you want to keep what is here now.'),
             actions: [
-              TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
-              TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Replace')),
+              TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                  child: const Text('Cancel')),
+              TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(true),
+                  child: const Text('Replace')),
             ],
           ),
         );
         if (confirmed != true) return;
         try {
           final Object? decoded = jsonDecode(text);
-          if (decoded is! Map<String, Object?>) throw const InvalidImportFile('Not an object');
+          if (decoded is! Map<String, Object?>)
+            throw const InvalidImportFile('Not an object');
           await ref.read(dataPortabilityProvider).importAll(decoded);
           refreshEverything();
           await ref.read(reminderCoordinatorProvider).reschedule();
           if (context.mounted) snack('Backup restored.');
         } on FormatException {
-          if (context.mounted) snack('That file is not a Diet Planner backup. Nothing was changed.');
+          if (context.mounted)
+            snack(
+                'That file is not a Diet Planner backup. Nothing was changed.');
         } on InvalidImportFile {
-          if (context.mounted) snack('That file is not a valid Diet Planner backup. Nothing was changed.');
+          if (context.mounted)
+            snack(
+                'That file is not a valid Diet Planner backup. Nothing was changed.');
         }
       },
       onDeleteAllConfirmed: () async {

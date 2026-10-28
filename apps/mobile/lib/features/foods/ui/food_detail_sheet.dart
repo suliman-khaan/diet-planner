@@ -184,7 +184,8 @@ class _FoodDetailSheetState extends State<FoodDetailSheet> {
                 children: [
                   Icon(Icons.info_outline,
                       size: 20,
-                      color: isDark ? AppColors.darkMuted : AppColors.lightMuted),
+                      color:
+                          isDark ? AppColors.darkMuted : AppColors.lightMuted),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Column(

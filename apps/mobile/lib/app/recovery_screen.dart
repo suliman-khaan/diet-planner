@@ -8,7 +8,8 @@ import '../core/widgets/app_buttons.dart';
 /// Shown when the on-device database cannot be read. Data is never reset silently:
 /// "Start fresh" keeps the damaged file aside and only runs after the user confirms.
 class RecoveryApp extends StatelessWidget {
-  const RecoveryApp({super.key, required this.onRetry, required this.onStartFresh});
+  const RecoveryApp(
+      {super.key, required this.onRetry, required this.onStartFresh});
 
   final Future<void> Function() onRetry;
   final Future<void> Function() onStartFresh;
@@ -39,7 +40,9 @@ class _RecoveryScreen extends StatelessWidget {
                 const Spacer(),
                 const Icon(Icons.healing_outlined, size: 48),
                 const SizedBox(height: 16),
-                Text('We could not open your saved data', style: AppTypography.titleLarge, textAlign: TextAlign.center),
+                Text('We could not open your saved data',
+                    style: AppTypography.titleLarge,
+                    textAlign: TextAlign.center),
                 const SizedBox(height: 8),
                 Text(
                   'The file on this phone seems damaged. Nothing has been deleted. Try again first. '
@@ -59,8 +62,12 @@ class _RecoveryScreen extends StatelessWidget {
                         content: const Text(
                             'The damaged file is kept aside on this phone, and the app starts empty. You can then restore an exported backup.'),
                         actions: [
-                          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
-                          TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Start fresh')),
+                          TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(false),
+                              child: const Text('Cancel')),
+                          TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(true),
+                              child: const Text('Start fresh')),
                         ],
                       ),
                     );

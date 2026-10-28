@@ -16,7 +16,11 @@ import '../view_model/today_view_model.dart';
 final selectedDateProvider = StateProvider<LocalDate?>((ref) => null);
 
 class TodayState {
-  const TodayState({required this.vm, this.day, this.needsOnboarding = false, this.showCheckIn = false});
+  const TodayState(
+      {required this.vm,
+      this.day,
+      this.needsOnboarding = false,
+      this.showCheckIn = false});
 
   final TodayViewModel vm;
   final DayData? day;
@@ -33,9 +37,12 @@ class TodayController extends AsyncNotifier<TodayState> {
     final date = ref.watch(selectedDateProvider) ?? service.today;
     final day = await service.load(date);
     if (day == null) {
-      return TodayState(vm: TodayViewModel(dateDisplay: Fmt.date(date)), needsOnboarding: true);
+      return TodayState(
+          vm: TodayViewModel(dateDisplay: Fmt.date(date)),
+          needsOnboarding: true);
     }
-    return TodayState(vm: mapToday(day), day: day, showCheckIn: await _shouldCheckIn(day));
+    return TodayState(
+        vm: mapToday(day), day: day, showCheckIn: await _shouldCheckIn(day));
   }
 
   Future<void> reload() async {
@@ -44,11 +51,13 @@ class TodayController extends AsyncNotifier<TodayState> {
   }
 
   void goToDay(int delta) {
-    final current = state.valueOrNull?.day?.date ?? ref.read(dayServiceProvider).today;
+    final current =
+        state.valueOrNull?.day?.date ?? ref.read(dayServiceProvider).today;
     ref.read(selectedDateProvider.notifier).state = current.addDays(delta);
   }
 
-  void goToDate(LocalDate date) => ref.read(selectedDateProvider.notifier).state = date;
+  void goToDate(LocalDate date) =>
+      ref.read(selectedDateProvider.notifier).state = date;
 
   /// Logs a planned meal. Returns entry ids for undo; empty if it was already logged.
   Future<List<String>> markMealEaten(String mealId) async {
@@ -82,7 +91,8 @@ class TodayController extends AsyncNotifier<TodayState> {
   Future<void> dismissCheckIn() async {
     final repo = ref.read(settingsRepositoryProvider);
     final settings = await repo.load();
-    await repo.save(settings.copyWith(lowIntakeCheckDismissedOn: ref.read(dayServiceProvider).today));
+    await repo.save(settings.copyWith(
+        lowIntakeCheckDismissedOn: ref.read(dayServiceProvider).today));
     ref.invalidate(appSettingsProvider);
     await reload();
   }
@@ -93,16 +103,23 @@ class TodayController extends AsyncNotifier<TodayState> {
     if (settings.lowIntakeCheckDismissedOn == day.today) return false;
     final from = day.today.addDays(-7);
     final to = day.today.addDays(-1);
-    final logs = await ref.read(foodLogRepositoryProvider).entriesBetween(from, to);
-    final plans = {for (final p in await ref.read(planRepositoryProvider).plansBetween(from, to)) p.date: p};
+    final logs =
+        await ref.read(foodLogRepositoryProvider).entriesBetween(from, to);
+    final plans = {
+      for (final p
+          in await ref.read(planRepositoryProvider).plansBetween(from, to))
+        p.date: p
+    };
     final summaries = [
-      for (var d = from; !d.isAfter(to); d = d.addDays(1)) summarizeDay(d, plans[d], logs),
+      for (var d = from; !d.isAfter(to); d = d.addDays(1))
+        summarizeDay(d, plans[d], logs),
     ];
     return ref.read(lowIntakeCheckProvider).shouldCheckIn(summaries);
   }
 }
 
-final todayControllerProvider = AsyncNotifierProvider<TodayController, TodayState>(TodayController.new);
+final todayControllerProvider =
+    AsyncNotifierProvider<TodayController, TodayState>(TodayController.new);
 
 /// Maps a day to what the Today screen shows.
 TodayViewModel mapToday(DayData day) {
@@ -126,8 +143,12 @@ TodayViewModel mapToday(DayData day) {
       id: m.id,
       slotTitle: Fmt.slot(m.slot),
       time: Fmt.time(m.minutesOfDay),
-      status: logged ? MealStatus.eaten : (isPast ? MealStatus.notLogged : MealStatus.planned),
-      summaryText: m.items.map((i) => pack.food(i.foodId)?.nameEn ?? i.foodId).join(', '),
+      status: logged
+          ? MealStatus.eaten
+          : (isPast ? MealStatus.notLogged : MealStatus.planned),
+      summaryText: m.items
+          .map((i) => pack.food(i.foodId)?.nameEn ?? i.foodId)
+          .join(', '),
       calories: m.nutrition.kcal.round(),
     ));
   }
@@ -146,17 +167,22 @@ TodayViewModel mapToday(DayData day) {
   NextMealViewModel? nextVm;
   if (next != null) {
     final items = next.items;
-    final mainItem = items.where((i) => pack.food(i.foodId)?.role == 'main').firstOrNull ?? items.firstOrNull;
+    final mainItem =
+        items.where((i) => pack.food(i.foodId)?.role == 'main').firstOrNull ??
+            items.firstOrNull;
     if (mainItem != null) {
       final mainFood = pack.food(mainItem.foodId)!;
       nextVm = NextMealViewModel(
         id: next.id,
-        slotLabel: 'Next · ${Fmt.slot(next.slot)} · ${Fmt.time(next.minutesOfDay)}',
+        slotLabel:
+            'Next · ${Fmt.slot(next.slot)} · ${Fmt.time(next.minutesOfDay)}',
         estimatedCalories: next.nutrition.kcal.round(),
         mainDishTitle: Fmt.itemTitle(mainFood, mainItem),
         familyPotDetail: mainItem.fromSharedDish
             ? 'From the family pot · ${Fmt.oil(mainItem.oilLevel)}'
-            : (mainItem.oilLevel == null ? 'Estimate' : 'Cooked with ${Fmt.oil(mainItem.oilLevel)}'),
+            : (mainItem.oilLevel == null
+                ? 'Estimate'
+                : 'Cooked with ${Fmt.oil(mainItem.oilLevel)}'),
         sidesDetail: [
           for (final i in items)
             if (!identical(i, mainItem)) Fmt.itemTitle(pack.food(i.foodId)!, i),
@@ -170,7 +196,9 @@ TodayViewModel mapToday(DayData day) {
     dateDisplay: Fmt.date(day.date),
     title: Fmt.dayTitle(day.date, day.today),
     usesDraftData: plan?.usesDraftData ?? false,
-    manualOnlyMessage: day.eligibility is ManualOnly ? Fmt.manualOnly(day.eligibility as ManualOnly) : null,
+    manualOnlyMessage: day.eligibility is ManualOnly
+        ? Fmt.manualOnly(day.eligibility as ManualOnly)
+        : null,
     isRamadanMode: schedule.isRamadan(day.date),
     ramadanDay: schedule.ramadanDay(day.date),
     isManualOnly: manual,

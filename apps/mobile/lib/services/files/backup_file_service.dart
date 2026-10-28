@@ -34,11 +34,13 @@ class PlatformBackupFileService implements BackupFileService {
 
   @override
   Future<void> shareExport(String json, String fileName) async {
-    final dir = Directory(p.join((await getApplicationDocumentsDirectory()).path, 'exports'));
+    final dir = Directory(
+        p.join((await getApplicationDocumentsDirectory()).path, 'exports'));
     await dir.create(recursive: true);
     final file = File(p.join(dir.path, fileName));
     await file.writeAsString(json, flush: true);
-    await Share.shareXFiles([XFile(file.path, mimeType: 'application/json')], subject: 'Diet Planner backup');
+    await Share.shareXFiles([XFile(file.path, mimeType: 'application/json')],
+        subject: 'Diet Planner backup');
   }
 
   @override
@@ -51,7 +53,8 @@ class PlatformBackupFileService implements BackupFileService {
     final bytes = result?.files.single.bytes;
     if (result == null) return null;
     if (bytes == null) throw const InvalidImportFile('File could not be read');
-    if (bytes.length > maxImportBytes) throw const InvalidImportFile('File is too large');
+    if (bytes.length > maxImportBytes)
+      throw const InvalidImportFile('File is too large');
     try {
       return utf8.decode(bytes);
     } on FormatException {

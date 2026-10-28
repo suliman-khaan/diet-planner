@@ -47,16 +47,11 @@ class ProgressViewModel {
     this.currentWeightKg = 78.4,
     this.weightChangeSubtitle = '1.6 kg down in 4 weeks',
     this.weightTrend = const [
-      WeightPointViewModel(
-          dateLabel: '30 Sep', weightKg: 80.0),
-      WeightPointViewModel(
-          dateLabel: '7 Oct', weightKg: 79.5),
-      WeightPointViewModel(
-          dateLabel: '14 Oct', weightKg: 79.2),
-      WeightPointViewModel(
-          dateLabel: '21 Oct', weightKg: 78.8),
-      WeightPointViewModel(
-          dateLabel: '28 Oct', weightKg: 78.4),
+      WeightPointViewModel(dateLabel: '30 Sep', weightKg: 80.0),
+      WeightPointViewModel(dateLabel: '7 Oct', weightKg: 79.5),
+      WeightPointViewModel(dateLabel: '14 Oct', weightKg: 79.2),
+      WeightPointViewModel(dateLabel: '21 Oct', weightKg: 78.8),
+      WeightPointViewModel(dateLabel: '28 Oct', weightKg: 78.4),
     ],
     this.weekEating = const [
       DayEatingBarViewModel(

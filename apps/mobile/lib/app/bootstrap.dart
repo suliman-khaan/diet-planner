@@ -41,9 +41,11 @@ Future<void> bootstrap(AppConfig config) async {
   if (!config.isDev) {
     // Never show raw exception text to users.
     ErrorWidget.builder = (_) => const Material(
-          child: Center(child: Padding(
+          child: Center(
+              child: Padding(
             padding: EdgeInsets.all(24),
-            child: Text('Something went wrong on this screen. Your data is safe. Please go back and try again.'),
+            child: Text(
+                'Something went wrong on this screen. Your data is safe. Please go back and try again.'),
           )),
         );
   }
@@ -53,16 +55,19 @@ Future<void> bootstrap(AppConfig config) async {
     db = await openAppDatabase();
   } on StorageCorrupted catch (e) {
     _log.error('database_corrupted', e);
-    runApp(RecoveryApp(onStartFresh: () async {
-      await setAsideDamagedDatabase();
-      await bootstrap(config);
-    }, onRetry: () => bootstrap(config)));
+    runApp(RecoveryApp(
+        onStartFresh: () async {
+          await setAsideDamagedDatabase();
+          await bootstrap(config);
+        },
+        onRetry: () => bootstrap(config)));
     return;
   }
 
   final timezone = await _timezone();
   final settings = await DriftSettingsRepository(db).load();
-  final analytics = ConsentGatedAnalytics(const NoopAnalyticsSink())..setConsent(settings.analyticsConsent);
+  final analytics = ConsentGatedAnalytics(const NoopAnalyticsSink())
+    ..setConsent(settings.analyticsConsent);
   final reminders = FlutterReminderService();
   late final GoRouter router;
 
@@ -70,27 +75,35 @@ Future<void> bootstrap(AppConfig config) async {
     appConfigProvider.overrideWithValue(config),
     databaseProvider.overrideWithValue(db),
     foodRepositoryProvider.overrideWithValue(
-      AssetFoodRepository(() => rootBundle.loadString(AssetFoodRepository.bundledPackAsset)),
+      AssetFoodRepository(
+          () => rootBundle.loadString(AssetFoodRepository.bundledPackAsset)),
     ),
     timezoneNameProvider.overrideWith((ref) => timezone),
     reminderServiceProvider.overrideWithValue(reminders),
     analyticsServiceProvider.overrideWithValue(analytics),
-    backupFileServiceProvider.overrideWithValue(const PlatformBackupFileService()),
+    backupFileServiceProvider
+        .overrideWithValue(const PlatformBackupFileService()),
     linkServiceProvider.overrideWithValue(const PlatformLinkService()),
   ]);
 
-  router = buildRouter(config: config, onboardingComplete: settings.onboardingComplete);
+  router = buildRouter(
+      config: config, onboardingComplete: settings.onboardingComplete);
   try {
-    await reminders.initialize(timezoneName: timezone, onTap: (route) => router.go(route));
+    await reminders.initialize(
+        timezoneName: timezone, onTap: (route) => router.go(route));
   } on Object catch (e, st) {
     // Reminders failing must not stop the app.
     _log.error('reminders_init_failed', e, st);
   }
 
-  runApp(UncontrolledProviderScope(container: container, child: DietPlannerApp(router: router, config: config)));
+  runApp(UncontrolledProviderScope(
+      container: container,
+      child: DietPlannerApp(router: router, config: config)));
 
-  final launchRoute = await reminders.launchRoute().catchError((Object _) => null);
-  if (launchRoute != null && settings.onboardingComplete) router.go(launchRoute);
+  final launchRoute =
+      await reminders.launchRoute().catchError((Object _) => null);
+  if (launchRoute != null && settings.onboardingComplete)
+    router.go(launchRoute);
   unawaited(container.read(reminderCoordinatorProvider).reschedule());
 }
 
@@ -104,4 +117,3 @@ Future<String> _timezone() async {
 
 /// Re-reads the timezone when the app resumes, e.g. after travelling.
 Future<String> currentTimezone() => _timezone();
-

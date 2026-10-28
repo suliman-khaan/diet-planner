@@ -29,7 +29,8 @@ class OnboardingPage extends ConsumerWidget {
     });
 
     return async.when(
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (_, __) => Scaffold(
         body: ErrorStateWidget(
           message: 'Your details could not be loaded.',

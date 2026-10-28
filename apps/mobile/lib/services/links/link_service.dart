@@ -14,16 +14,20 @@ class NoopLinkService implements LinkService {
   Future<bool> openUrl(String url) async => false;
 
   @override
-  Future<bool> composeEmail({required String to, required String subject}) async => false;
+  Future<bool> composeEmail(
+          {required String to, required String subject}) async =>
+      false;
 }
 
 class PlatformLinkService implements LinkService {
   const PlatformLinkService();
 
   @override
-  Future<bool> openUrl(String url) => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  Future<bool> openUrl(String url) =>
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
 
   @override
   Future<bool> composeEmail({required String to, required String subject}) =>
-      launchUrl(Uri(scheme: 'mailto', path: to, queryParameters: {'subject': subject}));
+      launchUrl(Uri(
+          scheme: 'mailto', path: to, queryParameters: {'subject': subject}));
 }
