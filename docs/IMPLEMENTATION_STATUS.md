@@ -23,8 +23,8 @@ Phase 0 — Foundation (repository scaffold only)
 | Phase | Status | Notes |
 |---|---|---|
 | D — Discovery | Not started | Interviews, 150-food list, nutritionist |
-| 0 — Foundation | In progress | Repo structure, docs, agent rules, lanes and phase plan created. Flutter project not yet created (P0-01) |
-| U — Complete UI | Not started | Concepts in `design/ui-concepts/`. Antigravity (UI lane) can start U-00 now; code after P0-01 |
+| 0 — Foundation | In progress | Git repository initialized and pushed to GitHub main. Flutter/JDK setup pending for P0-01. |
+| U — Complete UI | In progress | U-00 completed (`design/spec.md`). Code tasks (U-01..U-21) begin after P0-01. |
 | 1 — Food catalogue | Not started | |
 | 2 — Local storage | Not started | |
 | 3 — Onboarding and target | Not started | |

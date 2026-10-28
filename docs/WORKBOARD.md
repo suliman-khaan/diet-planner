@@ -9,7 +9,7 @@ Status: `Open` · `In progress` · `Implemented, awaiting verification` · `Veri
 
 | ID | Task | Lane | Depends on | Status | Agent | Branch |
 |---|---|---|---|---|---|---|
-| P0-00 | Install Flutter/SDK/JDK, test phone, `git init` + first commit | Owner | — | Open | owner | — |
+| P0-00 | Install Flutter/SDK/JDK, test phone, `git init` + first commit | Owner | — | In progress | owner | main |
 | P0-01 | Flutter project + full lane folder skeleton + routes + pinned packages | Platform | P0-00 | Open | | |
 | P0-02 | Strict analysis options, format script | Platform | P0-01 | Open | | |
 | P0-03 | CI pipeline | Platform | P0-01 | Open | | |
@@ -18,7 +18,7 @@ Status: `Open` · `In progress` · `Implemented, awaiting verification` · `Veri
 | P0-06 | Error boundary + crash-safe startup | Platform | P0-04 | Open | | |
 | P0-07 | Baseline APK size + cold start | Platform | P0-03 | Open | | |
 | P0-08 | README setup section | Platform | P0-01 | Open | | |
-| U-00 | Design spec from `design/ui-concepts` (no code) | UI | — | Open | | |
+| U-00 | Design spec from `design/ui-concepts` (no code) | UI | — | Implemented, awaiting verification | Antigravity | ui/U-00-design-spec |
 | U-01 | Tokens + theme + bundled fonts | UI | P0-01 | Open | | |
 | U-02 | Shared widgets | UI | U-01 | Open | | |
 | U-03 | State widgets | UI | U-02 | Open | | |
