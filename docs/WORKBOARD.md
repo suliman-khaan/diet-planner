@@ -18,11 +18,11 @@ Status: `Open` · `In progress` · `Implemented, awaiting verification` · `Veri
 | P0-06 | Error boundary + crash-safe startup | Platform | P0-04 | Open | | |
 | P0-07 | Baseline APK size + cold start | Platform | P0-03 | Open | | |
 | P0-08 | README setup section | Platform | P0-01 | Open | | |
-| U-00 | Design spec from `design/ui-concepts` (no code) | UI | — | Implemented, awaiting verification | Antigravity | ui/U-00-design-spec |
-| U-01 | Tokens + theme + bundled fonts | UI | P0-01 | Open | | |
-| U-02 | Shared widgets | UI | U-01 | Open | | |
-| U-03 | State widgets | UI | U-02 | Open | | |
-| U-04 | Bottom nav + scaffold | UI | U-02 | Open | | |
+| U-00 | Design spec from `design/ui-concepts` (no code) | UI | — | Implemented, awaiting verification | Antigravity | ui |
+| U-01 | Tokens + theme + bundled fonts | UI | P0-01 | Implemented, awaiting verification | Antigravity | ui |
+| U-02 | Shared widgets | UI | U-01 | Implemented, awaiting verification | Antigravity | ui |
+| U-03 | State widgets | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
+| U-04 | Bottom nav + scaffold | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
 | U-05 | Dev Screen Gallery | UI | U-04 | Open | | |
 | U-06 | Onboarding screens | UI | U-03 | Open | | |
 | U-07 | Today (all modes) | UI | U-04 | Open | | |
