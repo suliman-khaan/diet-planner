@@ -267,7 +267,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
   Widget _buildEmptyState(BuildContext context) {
     return const EmptyStateWidget(
       title: 'No foods match your search',
-      description: 'Try searching in English or Roman Urdu (e.g. roti, daal, chawal), or browse by category above.',
+      message: 'Try searching in English or Roman Urdu (e.g. roti, daal, chawal), or browse by category above.',
       icon: Icons.search_off_rounded,
     );
   }

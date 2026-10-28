@@ -186,11 +186,10 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         return m;
       }).toList();
 
-      final newTotalLogged = _todayVm.totalLoggedCalories + 460;
+      final newEatenKcal = _todayVm.eatenKcal + 460;
       _todayVm = _todayVm.copyWith(
         meals: updatedMeals,
-        totalLoggedCalories: newTotalLogged,
-        remainingCalories: (_todayVm.targetCalories - newTotalLogged).clamp(0, 5000),
+        eatenKcal: newEatenKcal,
       );
     });
 
