@@ -26,15 +26,20 @@ class NutrientBar extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: AppTypography.micro.copyWith(
             color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
           ),
         ),
         const SizedBox(height: 2),
         RichText(
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           text: TextSpan(
             style: AppTypography.captionStrong.copyWith(
               color: isDark ? AppColors.darkInk : AppColors.lightInk,
@@ -51,22 +56,28 @@ class NutrientBar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        Container(
-          height: 4,
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: FractionallySizedBox(
-            alignment: AlignmentDirectional.centerStart,
-            widthFactor: progress.toDouble(),
-            child: Container(
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final w = constraints.maxWidth * progress;
+            return Container(
+              width: double.infinity,
+              height: 4,
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: barColor,
+                color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
                 borderRadius: BorderRadius.circular(2),
               ),
-            ),
-          ),
+              alignment: Alignment.centerLeft,
+              child: Container(
+                width: w,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: barColor,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -93,38 +104,44 @@ class CalorieSplitBar extends StatelessWidget {
     final eatenRatio = (eatenKcal / total).clamp(0.0, 1.0);
     final plannedRatio = ((eatenKcal + plannedKcal) / total).clamp(0.0, 1.0);
 
-    return Container(
-      height: 12,
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Stack(
-        children: [
-          // Planned portion
-          FractionallySizedBox(
-            alignment: AlignmentDirectional.centerStart,
-            widthFactor: plannedRatio.toDouble(),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.plannedFill,
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalWidth = constraints.maxWidth;
+        final eatenW = totalWidth * eatenRatio;
+        final plannedW = totalWidth * plannedRatio;
+
+        return Container(
+          width: double.infinity,
+          height: 12,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurfaceSecondary : AppColors.lightSurfaceSecondary,
+            borderRadius: BorderRadius.circular(6),
           ),
-          // Eaten portion
-          FractionallySizedBox(
-            alignment: AlignmentDirectional.centerStart,
-            widthFactor: eatenRatio.toDouble(),
-            child: Container(
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
-                borderRadius: BorderRadius.circular(6),
+          child: Stack(
+            children: [
+              // Planned portion
+              Container(
+                width: plannedW,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: AppColors.plannedFill,
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
-            ),
+              // Eaten portion
+              Container(
+                width: eatenW,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

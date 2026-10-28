@@ -409,7 +409,20 @@ class TodayScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        ...vm.meals.map(
+        if (vm.meals.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Center(
+              child: Text(
+                'No meals scheduled for today yet.',
+                style: AppTypography.caption.copyWith(
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
+              ),
+            ),
+          )
+        else
+          ...vm.meals.map(
           (m) => Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: MealListRow(

@@ -268,53 +268,52 @@ class ProgressScreen extends StatelessWidget {
           const SizedBox(height: 18),
           SizedBox(
             height: 130,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: vm.weekEating.map((day) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: FractionallySizedBox(
-                              heightFactor: day.percentageOfTarget.clamp(0.12, 1.0),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: day.status == EatingLogStatus.fullyLogged
-                                      ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
-                                      : (day.status == EatingLogStatus.partlyLogged
-                                          ? (isDark ? const Color(0xFF43735E) : AppColors.plannedFill)
-                                          : Colors.transparent),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: day.status == EatingLogStatus.notLogged
-                                      ? Border.all(
-                                          color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
-                                          width: 2,
-                                        )
-                                      : null,
-                                ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final barMaxHeight = (constraints.maxHeight - 26).clamp(40.0, 110.0);
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: vm.weekEating.map((day) {
+                    final barHeight = (barMaxHeight * day.percentageOfTarget.clamp(0.12, 1.0)).clamp(14.0, barMaxHeight);
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              height: barHeight,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: day.status == EatingLogStatus.fullyLogged
+                                    ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                                    : (day.status == EatingLogStatus.partlyLogged
+                                        ? (isDark ? const Color(0xFF43735E) : AppColors.plannedFill)
+                                        : Colors.transparent),
+                                borderRadius: BorderRadius.circular(8),
+                                border: day.status == EatingLogStatus.notLogged
+                                    ? Border.all(
+                                        color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
+                                        width: 2,
+                                      )
+                                    : null,
                               ),
                             ),
-                          ),
+                            const SizedBox(height: 8),
+                            Text(
+                              day.dayLabel,
+                              style: AppTypography.micro.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          day.dayLabel,
-                          style: AppTypography.micro.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  }).toList(),
                 );
-              }).toList(),
+              },
             ),
           ),
           const SizedBox(height: 16),
@@ -490,146 +489,150 @@ class _WeightLineChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (size.width < 60 || size.height < 40) return;
 
-    if (points.isEmpty) {
-      final textSpan = TextSpan(
-        text: 'No weight data logged yet',
-        style: TextStyle(color: labelColor, fontSize: 13),
-      );
-      final textPainter = TextPainter(
-        text: textSpan,
-        textDirection: TextDirection.ltr,
-      )..layout(maxWidth: size.width);
-      textPainter.paint(
-        canvas,
-        Offset((size.width - textPainter.width) / 2, (size.height - textPainter.height) / 2),
-      );
-      return;
-    }
-
-    const double yAxisWidth = 48.0;
-    const double topPadding = 12.0;
-    const double bottomPadding = 14.0;
-    final chartWidth = size.width - yAxisWidth;
-    final chartHeight = size.height - topPadding - bottomPadding;
-
-    if (chartWidth <= 0 || chartHeight <= 0) return;
-
-    // Calculate min and max weights with breathing margin
-    double minW = points.map((p) => p.weightKg).reduce(math.min);
-    double maxW = points.map((p) => p.weightKg).reduce(math.max);
-
-    if ((maxW - minW).abs() < 0.2) {
-      minW -= 1.0;
-      maxW += 1.0;
-    } else {
-      final margin = (maxW - minW) * 0.25;
-      minW -= margin;
-      maxW += margin;
-    }
-
-    final gridPaint = Paint()
-      ..color = gridColor
-      ..strokeWidth = 1.0;
-
-    // 3 horizontal reference guidelines with right-aligned weight labels
-    final gridSteps = [maxW, (maxW + minW) / 2, minW];
-    final yPositions = [
-      topPadding,
-      topPadding + chartHeight * 0.5,
-      topPadding + chartHeight,
-    ];
-
-    for (var i = 0; i < gridSteps.length; i++) {
-      final y = yPositions[i];
-      canvas.drawLine(Offset(0, y), Offset(chartWidth, y), gridPaint);
-
-      final label = '${gridSteps[i].toStringAsFixed(1)} kg';
-      final textSpan = TextSpan(
-        text: label,
-        style: TextStyle(
-          color: labelColor,
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-        ),
-      );
-      final textPainter = TextPainter(
-        text: textSpan,
-        textDirection: TextDirection.ltr,
-      )..layout();
-      textPainter.paint(canvas, Offset(chartWidth + 6, y - textPainter.height / 2));
-    }
-
-    // Map each data point to canvas pixel coordinate
-    final offsets = <Offset>[];
-    for (var i = 0; i < points.length; i++) {
-      final x = points.length == 1
-          ? chartWidth / 2
-          : (i / (points.length - 1)) * chartWidth;
-      final normalized = (points[i].weightKg - minW) / (maxW - minW);
-      final y = topPadding + (1.0 - normalized.clamp(0.0, 1.0)) * chartHeight;
-      offsets.add(Offset(x, y));
-    }
-
-    // Build smooth cubic Bezier curve path
-    final curvePath = Path()..moveTo(offsets.first.dx, offsets.first.dy);
-    for (var i = 0; i < offsets.length - 1; i++) {
-      final p0 = offsets[i];
-      final p1 = offsets[i + 1];
-      final controlPoint1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
-      final controlPoint2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
-      curvePath.cubicTo(
-        controlPoint1.dx,
-        controlPoint1.dy,
-        controlPoint2.dx,
-        controlPoint2.dy,
-        p1.dx,
-        p1.dy,
-      );
-    }
-
-    // Draw gradient fill beneath the curve
-    final fillPath = Path.from(curvePath)
-      ..lineTo(offsets.last.dx, size.height)
-      ..lineTo(offsets.first.dx, size.height)
-      ..close();
-
-    final fillPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          lineColor.withOpacity(isDark ? 0.35 : 0.20),
-          lineColor.withOpacity(0.0),
-        ],
-      ).createShader(Rect.fromLTWH(0, topPadding, chartWidth, chartHeight + bottomPadding));
-
-    canvas.drawPath(fillPath, fillPaint);
-
-    // Draw primary curve stroke
-    final strokePaint = Paint()
-      ..color = lineColor
-      ..strokeWidth = 3.0
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    canvas.drawPath(curvePath, strokePaint);
-
-    // Draw data point dots with highlighted latest dot
-    final dotPaint = Paint()..color = lineColor;
-    final dotHaloPaint = Paint()..color = lineColor.withOpacity(0.25);
-    final dotWhitePaint = Paint()..color = Colors.white;
-
-    for (var i = 0; i < offsets.length; i++) {
-      final isLast = i == offsets.length - 1;
-      if (isLast) {
-        // High-contrast pulsed dot for current weight
-        canvas.drawCircle(offsets[i], 8, dotHaloPaint);
-        canvas.drawCircle(offsets[i], 5, dotPaint);
-        canvas.drawCircle(offsets[i], 2.5, dotWhitePaint);
-      } else {
-        canvas.drawCircle(offsets[i], 3.5, dotPaint);
+    try {
+      if (points.isEmpty) {
+        final textSpan = TextSpan(
+          text: 'No weight data logged yet',
+          style: TextStyle(color: labelColor, fontSize: 13),
+        );
+        final textPainter = TextPainter(
+          text: textSpan,
+          textDirection: TextDirection.ltr,
+        )..layout(maxWidth: size.width);
+        textPainter.paint(
+          canvas,
+          Offset((size.width - textPainter.width) / 2, (size.height - textPainter.height) / 2),
+        );
+        return;
       }
+
+      const double yAxisWidth = 48.0;
+      const double topPadding = 12.0;
+      const double bottomPadding = 14.0;
+      final chartWidth = size.width - yAxisWidth;
+      final chartHeight = size.height - topPadding - bottomPadding;
+
+      if (chartWidth <= 0 || chartHeight <= 0) return;
+
+      // Calculate min and max weights with breathing margin
+      double minW = points.map((p) => p.weightKg).reduce(math.min);
+      double maxW = points.map((p) => p.weightKg).reduce(math.max);
+
+      if ((maxW - minW).abs() < 0.2) {
+        minW -= 1.0;
+        maxW += 1.0;
+      } else {
+        final margin = (maxW - minW) * 0.25;
+        minW -= margin;
+        maxW += margin;
+      }
+
+      final gridPaint = Paint()
+        ..color = gridColor
+        ..strokeWidth = 1.0;
+
+      // 3 horizontal reference guidelines with right-aligned weight labels
+      final gridSteps = [maxW, (maxW + minW) / 2, minW];
+      final yPositions = [
+        topPadding,
+        topPadding + chartHeight * 0.5,
+        topPadding + chartHeight,
+      ];
+
+      for (var i = 0; i < gridSteps.length; i++) {
+        final y = yPositions[i];
+        canvas.drawLine(Offset(0, y), Offset(chartWidth, y), gridPaint);
+
+        final label = '${gridSteps[i].toStringAsFixed(1)} kg';
+        final textSpan = TextSpan(
+          text: label,
+          style: TextStyle(
+            color: labelColor,
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+          ),
+        );
+        final textPainter = TextPainter(
+          text: textSpan,
+          textDirection: TextDirection.ltr,
+        )..layout();
+        textPainter.paint(canvas, Offset(chartWidth + 6, y - textPainter.height / 2));
+      }
+
+      // Map each data point to canvas pixel coordinate
+      final offsets = <Offset>[];
+      for (var i = 0; i < points.length; i++) {
+        final x = points.length == 1
+            ? chartWidth / 2
+            : (i / (points.length - 1)) * chartWidth;
+        final normalized = (points[i].weightKg - minW) / (maxW - minW);
+        final y = topPadding + (1.0 - normalized.clamp(0.0, 1.0)) * chartHeight;
+        offsets.add(Offset(x, y));
+      }
+
+      // Build smooth cubic Bezier curve path
+      final curvePath = Path()..moveTo(offsets.first.dx, offsets.first.dy);
+      for (var i = 0; i < offsets.length - 1; i++) {
+        final p0 = offsets[i];
+        final p1 = offsets[i + 1];
+        final controlPoint1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
+        final controlPoint2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
+        curvePath.cubicTo(
+          controlPoint1.dx,
+          controlPoint1.dy,
+          controlPoint2.dx,
+          controlPoint2.dy,
+          p1.dx,
+          p1.dy,
+        );
+      }
+
+      // Draw gradient fill beneath the curve
+      final fillPath = Path.from(curvePath)
+        ..lineTo(offsets.last.dx, size.height)
+        ..lineTo(offsets.first.dx, size.height)
+        ..close();
+
+      final fillPaint = Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            lineColor.withValues(alpha: isDark ? 0.35 : 0.20),
+            lineColor.withValues(alpha: 0.0),
+          ],
+        ).createShader(Rect.fromLTWH(0, topPadding, chartWidth, chartHeight + bottomPadding));
+
+      canvas.drawPath(fillPath, fillPaint);
+
+      // Draw primary curve stroke
+      final strokePaint = Paint()
+        ..color = lineColor
+        ..strokeWidth = 3.0
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round;
+
+      canvas.drawPath(curvePath, strokePaint);
+
+      // Draw data point dots with highlighted latest dot
+      final dotPaint = Paint()..color = lineColor;
+      final dotHaloPaint = Paint()..color = lineColor.withValues(alpha: 0.25);
+      final dotWhitePaint = Paint()..color = Colors.white;
+
+      for (var i = 0; i < offsets.length; i++) {
+        final isLast = i == offsets.length - 1;
+        if (isLast) {
+          // High-contrast pulsed dot for current weight
+          canvas.drawCircle(offsets[i], 8, dotHaloPaint);
+          canvas.drawCircle(offsets[i], 5, dotPaint);
+          canvas.drawCircle(offsets[i], 2.5, dotWhitePaint);
+        } else {
+          canvas.drawCircle(offsets[i], 3.5, dotPaint);
+        }
+      }
+    } catch (_) {
+      // Gracefully prevent painter crash
     }
   }
 

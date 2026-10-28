@@ -1193,123 +1193,128 @@ void _showHeightPickerSheet({
                   ),
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  height: 190,
-                  child: Stack(
+                // Column headers outside the wheel stack for precise vertical alignment
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
                     children: [
-                      // Selection highlight bar in center
-                      Center(
-                        child: Container(
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: primary.withValues(alpha: 0.5),
-                              width: 1.5,
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Feet (ft)',
+                            style: AppTypography.captionStrong.copyWith(
+                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
                             ),
                           ),
                         ),
                       ),
-                      // Two wheel columns: Feet and Inches
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Inches (in)',
+                            style: AppTypography.captionStrong.copyWith(
+                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Wheel container with centered highlight rectangle
+                SizedBox(
+                  height: 160,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Selection highlight bar in dead center
+                      Container(
+                        height: 44,
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.darkPrimarySoft : AppColors.lightPrimarySoft,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: primary.withValues(alpha: 0.5),
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      // Two wheel columns with matching height and center
                       Row(
                         children: [
                           // Feet Wheel
                           Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Feet (ft)',
-                                  style: AppTypography.captionStrong.copyWith(
-                                    color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Expanded(
-                                  child: ListWheelScrollView.useDelegate(
-                                    controller: feetController,
-                                    itemExtent: 44,
-                                    physics: const FixedExtentScrollPhysics(),
-                                    perspective: 0.003,
-                                    overAndUnderCenterOpacity: 0.45,
-                                    onSelectedItemChanged: (index) {
-                                      setSheetState(() {
-                                        selectedFeet = index + 4;
-                                      });
-                                    },
-                                    childDelegate: ListWheelChildBuilderDelegate(
-                                      childCount: 4, // 4, 5, 6, 7
-                                      builder: (context, index) {
-                                        final ft = index + 4;
-                                        final isSel = ft == selectedFeet;
-                                        return Center(
-                                          child: Text(
-                                            '$ft ft',
-                                            style: (isSel ? AppTypography.heading : AppTypography.body).copyWith(
-                                              color: isSel
-                                                  ? (isDark ? AppColors.darkInk : AppColors.lightInk)
-                                                  : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
-                                              fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
-                                            ),
-                                          ),
-                                        );
-                                      },
+                            child: ListWheelScrollView.useDelegate(
+                              controller: feetController,
+                              itemExtent: 44,
+                              physics: const FixedExtentScrollPhysics(),
+                              perspective: 0.003,
+                              overAndUnderCenterOpacity: 0.45,
+                              onSelectedItemChanged: (index) {
+                                setSheetState(() {
+                                  selectedFeet = index + 4;
+                                });
+                              },
+                              childDelegate: ListWheelChildBuilderDelegate(
+                                childCount: 4, // 4, 5, 6, 7
+                                builder: (context, index) {
+                                  final ft = index + 4;
+                                  final isSel = ft == selectedFeet;
+                                  return Center(
+                                    child: Text(
+                                      '$ft ft',
+                                      style: (isSel ? AppTypography.heading : AppTypography.body).copyWith(
+                                        color: isSel
+                                            ? (isDark ? AppColors.darkInk : AppColors.lightInk)
+                                            : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
+                                        fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ],
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           // Divider line
                           Container(
                             width: 1,
-                            height: 120,
+                            height: 100,
                             margin: const EdgeInsets.symmetric(horizontal: 8),
                             color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                           ),
                           // Inches Wheel
                           Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Inches (in)',
-                                  style: AppTypography.captionStrong.copyWith(
-                                    color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Expanded(
-                                  child: ListWheelScrollView.useDelegate(
-                                    controller: inchesController,
-                                    itemExtent: 44,
-                                    physics: const FixedExtentScrollPhysics(),
-                                    perspective: 0.003,
-                                    overAndUnderCenterOpacity: 0.45,
-                                    onSelectedItemChanged: (index) {
-                                      setSheetState(() {
-                                        selectedInches = index;
-                                      });
-                                    },
-                                    childDelegate: ListWheelChildBuilderDelegate(
-                                      childCount: 12, // 0..11
-                                      builder: (context, index) {
-                                        final isSel = index == selectedInches;
-                                        return Center(
-                                          child: Text(
-                                            '$index in',
-                                            style: (isSel ? AppTypography.heading : AppTypography.body).copyWith(
-                                              color: isSel
-                                                  ? (isDark ? AppColors.darkInk : AppColors.lightInk)
-                                                  : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
-                                              fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
-                                            ),
-                                          ),
-                                        );
-                                      },
+                            child: ListWheelScrollView.useDelegate(
+                              controller: inchesController,
+                              itemExtent: 44,
+                              physics: const FixedExtentScrollPhysics(),
+                              perspective: 0.003,
+                              overAndUnderCenterOpacity: 0.45,
+                              onSelectedItemChanged: (index) {
+                                setSheetState(() {
+                                  selectedInches = index;
+                                });
+                              },
+                              childDelegate: ListWheelChildBuilderDelegate(
+                                childCount: 12, // 0..11
+                                builder: (context, index) {
+                                  final isSel = index == selectedInches;
+                                  return Center(
+                                    child: Text(
+                                      '$index in',
+                                      style: (isSel ? AppTypography.heading : AppTypography.body).copyWith(
+                                        color: isSel
+                                            ? (isDark ? AppColors.darkInk : AppColors.lightInk)
+                                            : (isDark ? AppColors.darkMuted : AppColors.lightMuted),
+                                        fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ],
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ],

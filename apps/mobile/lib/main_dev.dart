@@ -54,7 +54,10 @@ class _DietPlannerPrototypeAppState extends State<DietPlannerPrototypeApp> {
 
   void _toggleTheme() {
     setState(() {
-      _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+      final isCurrentlyDark = _themeMode == ThemeMode.dark ||
+          (_themeMode == ThemeMode.system &&
+              WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark);
+      _themeMode = isCurrentlyDark ? ThemeMode.light : ThemeMode.dark;
     });
   }
 
@@ -310,82 +313,96 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadii.card)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Profile & Health Target',
-                  style: AppTypography.titleMedium.copyWith(
-                    color: isDark ? AppColors.darkInk : AppColors.lightInk,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(ctx).pop(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            AppCard(
-              padding: const EdgeInsets.all(16),
-              child: Column(
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildProfileRow('Sex & Age', 'Male · 28 years old', isDark),
-                  const Divider(height: 16),
-                  _buildProfileRow('Height & Weight', '175 cm · 78.4 kg (BMI 25.6)', isDark),
-                  const Divider(height: 16),
-                  _buildProfileRow('Activity Level', 'Moderate (3–5 workouts/week)', isDark),
-                  const Divider(height: 16),
-                  _buildProfileRow('Daily Calorie Target', '1,850 kcal/day (400 kcal deficit)', isDark),
+                  Text(
+                    'Profile & Health Target',
+                    style: AppTypography.titleMedium.copyWith(
+                      color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-            PrimaryButton(
-              label: 'Re-run Onboarding Assessment',
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                setState(() => _isOnboarding = true);
-              },
-            ),
-          ],
+              const SizedBox(height: 12),
+              AppCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _buildProfileRow('Sex & Age', 'Male · 28 years old', isDark),
+                    const Divider(height: 16),
+                    _buildProfileRow('Height & Weight', '175 cm · 78.4 kg (BMI 25.6)', isDark),
+                    const Divider(height: 16),
+                    _buildProfileRow('Activity Level', 'Moderate (3–5 workouts/week)', isDark),
+                    const Divider(height: 16),
+                    _buildProfileRow('Daily Calorie Target', '1,850 kcal/day (400 deficit)', isDark),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              PrimaryButton(
+                label: 'Re-run Onboarding Assessment',
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  setState(() => _isOnboarding = true);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildProfileRow(String label, String value, bool isDark) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: AppTypography.caption.copyWith(
-            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              label,
+              style: AppTypography.caption.copyWith(
+                color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+              ),
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: AppTypography.captionStrong.copyWith(
-            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 3,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: AppTypography.captionStrong.copyWith(
+                color: isDark ? AppColors.darkInk : AppColors.lightInk,
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -752,7 +769,7 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
           actions: [
             if (_currentTab == AppTab.today)
               IconButton(
-                icon: Icon(_todayVm.isRamadanMode ? Icons.sunny : Icons.nightlight_round),
+                icon: const Icon(Icons.mosque),
                 tooltip: _todayVm.isRamadanMode ? 'Switch to Normal Mode' : 'Switch to Ramadan Mode',
                 onPressed: () {
                   setState(() {
@@ -778,22 +795,7 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
             ),
           ],
         ),
-        // Animated switcher for smooth tab-to-tab transitions
-        body: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 250),
-          switchInCurve: Curves.easeOut,
-          switchOutCurve: Curves.easeIn,
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-          child: KeyedSubtree(
-            key: ValueKey(_currentTab),
-            child: _buildCurrentTabBody(context),
-          ),
-        ),
+        body: _buildCurrentTabBody(context),
       ),
     );
   }
