@@ -1,0 +1,60 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - development
+      - ui
+  pull_request:
+    branches:
+      - main
+      - development
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Dev Gallery APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Generate Android platform files if missing
+        run: |
+          cd apps/mobile
+          if [ ! -d "android" ]; then
+            echo "Generating Android platform wrapper..."
+            flutter create . --org dev.placeholder.dietplanner --platforms=android
+          fi
+
+      - name: Install Flutter packages
+        run: |
+          cd apps/mobile
+          flutter pub get
+
+      - name: Build Debug APK (Dev Gallery)
+        run: |
+          cd apps/mobile
+          flutter build apk --debug -t lib/main_dev.dart
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: diet-planner-dev-apk
+          path: apps/mobile/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14

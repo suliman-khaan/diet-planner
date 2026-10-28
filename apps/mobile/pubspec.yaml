@@ -50,19 +50,7 @@ flutter:
   fonts:
     - family: Plus Jakarta Sans
       fonts:
-        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/PlusJakartaSans-ExtraBold.ttf
-          weight: 800
+        - asset: assets/fonts/PlusJakartaSans-Variable.ttf
     - family: Noto Nastaliq Urdu
       fonts:
-        - asset: assets/fonts/NotoNastaliqUrdu-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/NotoNastaliqUrdu-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/NotoNastaliqUrdu-Variable.ttf
