@@ -69,7 +69,7 @@ class ShoppingScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(start: 4, bottom: 8),
+                  padding: const EdgeInsetsDirectional.only(start: 4, bottom: 8),
                   child: Text(
                     entry.key.toUpperCase(),
                     style: AppTypography.micro.copyWith(

@@ -96,7 +96,7 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildGroupHeader(BuildContext context, String title) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.only(start: 4, bottom: 8),
+      padding: const EdgeInsetsDirectional.only(start: 4, bottom: 8),
       child: Text(
         title,
         style: AppTypography.micro.copyWith(

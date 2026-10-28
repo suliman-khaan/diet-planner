@@ -273,7 +273,7 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
   Widget _buildSectionHeader(String title) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, start: 4),
+      padding: const EdgeInsetsDirectional.only(bottom: 8, start: 4),
       child: Text(
         title,
         style: AppTypography.micro.copyWith(

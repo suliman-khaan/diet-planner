@@ -17,8 +17,6 @@ abstract class AppTheme {
       onSecondary: AppColors.lightOnPrimary,
       surface: AppColors.lightSurface,
       onSurface: AppColors.lightInk,
-      background: AppColors.lightBackground,
-      onBackground: AppColors.lightInk,
       error: Color(0xFFB3261E),
       onError: Colors.white,
       outline: AppColors.lightBorder,
@@ -30,7 +28,7 @@ abstract class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.lightBackground,
       fontFamily: AppTypography.fontLatin,
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         color: AppColors.lightSurface,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -91,8 +89,6 @@ abstract class AppTheme {
       onSecondary: AppColors.darkOnPrimary,
       surface: AppColors.darkSurface,
       onSurface: AppColors.darkInk,
-      background: AppColors.darkBackground,
-      onBackground: AppColors.darkInk,
       error: Color(0xFFF2B8B5),
       onError: Color(0xFF601410),
       outline: AppColors.darkBorder,
@@ -104,7 +100,7 @@ abstract class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.darkBackground,
       fontFamily: AppTypography.fontLatin,
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         color: AppColors.darkSurface,
         elevation: 0,
         margin: EdgeInsets.zero,

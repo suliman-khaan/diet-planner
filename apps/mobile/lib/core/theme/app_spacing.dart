@@ -13,7 +13,7 @@ abstract class AppSpacing {
   static const double hero = 48.0;
 
   // Directional EdgeInsets (RTL safe)
-  static const EdgeInsets screenPadding = EdgeInsetsDirectional.only(
+  static const EdgeInsetsDirectional screenPadding = EdgeInsetsDirectional.only(
     start: md,
     end: md,
     top: lg,
