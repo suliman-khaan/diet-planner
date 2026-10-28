@@ -41,12 +41,12 @@ jobs:
       - name: Build Debug APK (Dev Gallery)
         run: |
           cd apps/mobile
-          flutter build apk --debug -t lib/main_dev.dart
+          flutter build apk --debug --flavor dev -t lib/main_dev.dart
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: diet-planner-dev-apk
-          path: apps/mobile/build/app/outputs/flutter-apk/app-debug.apk
+          path: apps/mobile/build/app/outputs/flutter-apk/app-dev-debug.apk
           if-no-files-found: error
           retention-days: 14

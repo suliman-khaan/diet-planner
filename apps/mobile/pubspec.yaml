@@ -7,6 +7,7 @@ environment:
   sdk: ">=3.3.0 <4.0.0"
   flutter: ">=3.19.0"
 
+# Every dependency is recorded in docs/DECISIONS.md (reason, licence, size).
 dependencies:
   flutter:
     sdk: flutter
@@ -15,7 +16,6 @@ dependencies:
 
   # State management & routing
   flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
   go_router: ^14.0.1
 
   # Data & persistence
@@ -23,21 +23,25 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.20
   path_provider: ^2.1.2
   path: ^1.9.0
+  shared_preferences: ^2.3.0
 
-  # Serialization & utilities
-  freezed_annotation: ^2.4.1
-  json_annotation: ^4.8.1
+  # Utilities
   intl: ^0.20.3
   uuid: ^4.3.3
+
+  # Platform services (each sits behind an interface in lib/services)
+  flutter_local_notifications: ^19.4.0
+  timezone: ^0.10.0
+  flutter_timezone: ^4.1.0
+  share_plus: ^10.1.4
+  file_picker: ^8.1.2
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
   build_runner: ^2.4.8
-  freezed: ^2.4.7
-  json_serializable: ^6.7.1
-  riverpod_generator: ^2.4.0
   drift_dev: ^2.16.0
 
 flutter:

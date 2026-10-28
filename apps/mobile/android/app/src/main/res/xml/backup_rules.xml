@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and lower. Keep the user's local database and settings so a phone change does not
+     lose their logs. Decision recorded in docs/DECISIONS.md (owner may switch to exclude). -->
+<full-backup-content>
+    <include domain="database" path="." />
+    <include domain="sharedpref" path="." />
+    <include domain="file" path="app_flutter/" />
+    <exclude domain="file" path="app_flutter/exports/" />
+</full-backup-content>
