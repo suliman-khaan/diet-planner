@@ -70,12 +70,39 @@ jobs:
           retention-days: 7
       - name: Code generation (Drift)
         run: dart run build_runner build --delete-conflicting-outputs
-      - name: Format check
-        run: dart format --output=none --set-exit-if-changed lib test integration_test
+      - name: Format (later steps run on formatted code; the job fails at the end if anything changed)
+        id: format
+        run: |
+          dart format lib test $(test -d integration_test && echo integration_test)
+          changed=$(git status --porcelain -- lib test | awk '{print $2}' | sed 's#^apps/mobile/##')
+          if [ -n "$changed" ]; then
+            echo "Unformatted files:"; echo "$changed"
+            echo "$changed" > /tmp/formatted-files.txt
+            tar -czf /tmp/formatted.tgz $changed
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload formatted files
+        if: steps.format.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatted
+          path: /tmp/formatted.tgz
+          retention-days: 3
       - name: Analyze (warnings are errors)
+        id: analyze
+        if: always() && steps.format.outcome == 'success'
         run: flutter analyze --no-fatal-infos
       - name: Tests
+        if: always() && steps.format.outcome == 'success'
         run: flutter test --coverage --reporter expanded
+      - name: Upload newly recorded golden data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-data
+          path: apps/mobile/test/golden_data/
+          if-no-files-found: ignore
+          retention-days: 3
       - name: Domain coverage ≥ 90%
         run: |
           awk -F: '
@@ -110,3 +137,8 @@ jobs:
             apps/mobile/build/app/outputs/flutter-apk/app-dev-debug.apk
             apps/mobile/build/app/outputs/flutter-apk/*arm64*release*.apk
           retention-days: 14
+      - name: Fail if code was not formatted
+        if: always() && steps.format.outputs.changed == 'true'
+        run: |
+          echo "::error::Files need dart format (download the formatted artifact)"
+          exit 1

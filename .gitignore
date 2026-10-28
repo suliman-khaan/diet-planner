@@ -39,3 +39,6 @@ dist/
 # Local scratch
 *.log
 tmp/
+
+# Generated code (Drift) — produced in CI by build_runner
+*.g.dart
