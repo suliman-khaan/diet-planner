@@ -9,8 +9,8 @@ import '../../../core/widgets/badges.dart';
 import '../../../core/widgets/state_widgets.dart';
 import '../view_model/foods_view_model.dart';
 
-/// Foods search & catalogue screen with Roman Urdu aliases and filters.
-class FoodsScreen extends StatelessWidget {
+/// Foods search & catalogue screen with Roman Urdu aliases, category filters, and state management.
+class FoodsScreen extends StatefulWidget {
   final FoodsViewModel vm;
   final ValueChanged<String>? onSearchChanged;
   final VoidCallback? onSearchCleared;
@@ -29,6 +29,40 @@ class FoodsScreen extends StatelessWidget {
   });
 
   @override
+  State<FoodsScreen> createState() => _FoodsScreenState();
+}
+
+class _FoodsScreenState extends State<FoodsScreen> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(text: widget.vm.searchQuery);
+  }
+
+  @override
+  void didUpdateWidget(covariant FoodsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.vm.searchQuery != oldWidget.vm.searchQuery &&
+        widget.vm.searchQuery != _searchController.text) {
+      _searchController.text = widget.vm.searchQuery;
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _handleClear() {
+    _searchController.clear();
+    widget.onSearchCleared?.call();
+    widget.onSearchChanged?.call('');
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -45,35 +79,36 @@ class FoodsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           AppTextField(
-            hintText: 'Search foods (e.g. chana chat, daal)',
+            controller: _searchController,
+            hintText: 'Search foods (e.g. roti, biryani, daal)',
             helperText: 'Type in English or Roman Urdu. Spelling does not need to be exact.',
             prefixIcon: Icon(
               Icons.search,
               color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
             ),
-            onChanged: onSearchChanged,
-            onClear: onSearchCleared,
+            onChanged: (text) => widget.onSearchChanged?.call(text),
+            onClear: _handleClear,
           ),
           const SizedBox(height: 14),
           _buildCategoryChips(context),
           const SizedBox(height: 14),
           Text(
-            '${vm.searchResults.length} results',
+            '${widget.vm.searchResults.length} results',
             style: AppTypography.captionStrong.copyWith(
               color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
             ),
           ),
           const SizedBox(height: 10),
-          if (vm.isLoading)
+          if (widget.vm.isLoading)
             _buildLoadingSkeleton()
-          else if (vm.searchResults.isEmpty)
+          else if (widget.vm.searchResults.isEmpty)
             _buildEmptyState(context)
           else
             _buildResultsList(context),
           const SizedBox(height: 16),
           Center(
             child: TextButton(
-              onPressed: onRequestMissingFood,
+              onPressed: widget.onRequestMissingFood,
               child: Text(
                 'Can\'t find a food? Tell us',
                 style: AppTypography.captionStrong.copyWith(
@@ -93,9 +128,8 @@ class FoodsScreen extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: vm.categories.map((cat) {
-          final isSelected = cat == vm.selectedCategory;
-          final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+        children: widget.vm.categories.map((cat) {
+          final isSelected = cat == widget.vm.selectedCategory;
 
           return Padding(
             padding: const EdgeInsets.only(right: 8),
@@ -109,7 +143,7 @@ class FoodsScreen extends StatelessWidget {
                     : (isDark ? AppColors.darkInk : AppColors.lightInk),
               ),
               backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-              selectedColor: isDark ? AppColors.darkInk : AppColors.lightInk,
+              selectedColor: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadii.chipRadius,
                 side: BorderSide(
@@ -118,7 +152,7 @@ class FoodsScreen extends StatelessWidget {
                       : (isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong),
                 ),
               ),
-              onSelected: (_) => onCategorySelected?.call(cat),
+              onSelected: (_) => widget.onCategorySelected?.call(cat),
             ),
           );
         }).toList(),
@@ -132,14 +166,14 @@ class FoodsScreen extends StatelessWidget {
     return AppCard(
       padding: EdgeInsets.zero,
       child: Column(
-        children: List.generate(vm.searchResults.length, (index) {
-          final item = vm.searchResults[index];
-          final isLast = index == vm.searchResults.length - 1;
+        children: List.generate(widget.vm.searchResults.length, (index) {
+          final item = widget.vm.searchResults[index];
+          final isLast = index == widget.vm.searchResults.length - 1;
 
           return Column(
             children: [
               InkWell(
-                onTap: () => onFoodSelected?.call(item),
+                onTap: () => widget.onFoodSelected?.call(item),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   child: Row(
@@ -154,11 +188,11 @@ class FoodsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Icon(
-                          Icons.restaurant,
+                          _getCategoryIcon(item.category),
                           color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,41 +203,28 @@ class FoodsScreen extends StatelessWidget {
                                 color: isDark ? AppColors.darkInk : AppColors.lightInk,
                               ),
                             ),
+                            const SizedBox(height: 2),
                             Text(
-                              item.urduName,
-                              style: AppTypography.urduSubtitle.copyWith(
+                              '${item.urduName} · ${item.standardServing}',
+                              style: AppTypography.caption.copyWith(
                                 color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
                               ),
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  '${item.standardServing} · ',
-                                  style: AppTypography.micro.copyWith(
-                                    color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                                  ),
-                                ),
-                                ReviewStatusBadge(isReviewed: item.isReviewed),
-                              ],
                             ),
                           ],
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            item.calories.round().toString(),
-                            style: AppTypography.bodyStrong.copyWith(
+                            '~${item.calories.round()} kcal',
+                            style: AppTypography.captionStrong.copyWith(
                               color: isDark ? AppColors.darkInk : AppColors.lightInk,
                             ),
                           ),
-                          Text(
-                            'kcal',
-                            style: AppTypography.micro.copyWith(
-                              color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                            ),
-                          ),
+                          const SizedBox(height: 4),
+                          ReviewStatusBadge(isReviewed: item.isReviewed),
                         ],
                       ),
                     ],
@@ -213,7 +234,7 @@ class FoodsScreen extends StatelessWidget {
               if (!isLast)
                 Divider(
                   height: 1,
-                  indent: 80,
+                  indent: 82,
                   color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                 ),
             ],
@@ -223,13 +244,31 @@ class FoodsScreen extends StatelessWidget {
     );
   }
 
+  IconData _getCategoryIcon(String category) {
+    switch (category) {
+      case 'Breads':
+        return Icons.bakery_dining_outlined;
+      case 'Rice':
+        return Icons.rice_bowl_outlined;
+      case 'Meat & chicken':
+        return Icons.kebab_dining_outlined;
+      case 'Vegetables':
+        return Icons.eco_outlined;
+      case 'Daal & chana':
+        return Icons.soup_kitchen_outlined;
+      case 'Beverages':
+        return Icons.local_cafe_outlined;
+      case 'Snacks':
+      default:
+        return Icons.restaurant;
+    }
+  }
+
   Widget _buildEmptyState(BuildContext context) {
-    return EmptyStateWidget(
-      icon: Icons.search_off,
-      title: 'No foods found',
-      message: 'Try searching by Roman Urdu (e.g. "chana chaat", "roti", "salan").',
-      actionLabel: 'Suggest missing food',
-      onAction: onRequestMissingFood,
+    return const EmptyStateWidget(
+      title: 'No foods match your search',
+      description: 'Try searching in English or Roman Urdu (e.g. roti, daal, chawal), or browse by category above.',
+      icon: Icons.search_off_rounded,
     );
   }
 
@@ -238,7 +277,7 @@ class FoodsScreen extends StatelessWidget {
       children: List.generate(
         4,
         (i) => const Padding(
-          padding: EdgeInsets.only(bottom: 8),
+          padding: EdgeInsets.only(bottom: 12),
           child: LoadingSkeleton(width: double.infinity, height: 72),
         ),
       ),

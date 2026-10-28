@@ -54,6 +54,20 @@ abstract class AppTheme {
           side: BorderSide(color: AppColors.lightBorder, width: 1),
         ),
       ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.lightSurface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.card),
+        ),
+        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.lightInk),
+        contentTextStyle: AppTypography.body.copyWith(color: AppColors.lightMuted),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.lightSurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+      ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.lightBackground,
         foregroundColor: AppColors.lightInk,
@@ -142,6 +156,20 @@ abstract class AppTheme {
           borderRadius: AppRadii.cardRadius,
           side: BorderSide(color: AppColors.darkBorder, width: 1),
         ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.darkSurface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.card),
+        ),
+        titleTextStyle: AppTypography.titleMedium.copyWith(color: AppColors.darkInk),
+        contentTextStyle: AppTypography.body.copyWith(color: AppColors.darkMuted),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.darkSurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.darkBackground,

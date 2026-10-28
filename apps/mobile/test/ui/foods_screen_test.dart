@@ -17,9 +17,9 @@ void main() {
       );
 
       expect(find.text('Foods'), findsOneWidget);
-      expect(find.text('Chana chaat'), findsOneWidget);
-      expect(find.text('Chana daal'), findsOneWidget);
-      expect(find.text('4 results'), findsOneWidget);
+      expect(find.text('Roti / Chapati (whole wheat)'), findsOneWidget);
+      expect(find.text('Chicken Biryani (Karachi style)'), findsOneWidget);
+      expect(find.text('${FoodsFixtures.standardSearch.searchResults.length} results'), findsOneWidget);
       expect(find.text('Can\'t find a food? Tell us'), findsOneWidget);
     });
 
@@ -33,8 +33,7 @@ void main() {
         ),
       );
 
-      expect(find.text('No foods found'), findsOneWidget);
-      expect(find.text('Suggest missing food'), findsOneWidget);
+      expect(find.text('No foods match your search'), findsOneWidget);
     });
   });
 }

@@ -3,7 +3,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radii.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
-import '../../../core/widgets/app_buttons.dart';
 import '../../../core/widgets/app_card.dart';
 
 /// Privacy & Data Management screen.
@@ -27,28 +26,71 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
   bool _crashDiagnosticsConsent = false;
 
   void _showDeleteConfirmation(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete all local data?'),
-        content: const Text(
-          'This will permanently erase all your profile details, past weight records, and meal history from this phone. This action cannot be undone.',
+        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.card),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+        title: Text(
+          'Delete all local data?',
+          style: AppTypography.titleMedium.copyWith(
+            color: isDark ? AppColors.darkInk : AppColors.lightInk,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade700,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              widget.onDeleteAllConfirmed?.call();
-            },
-            child: const Text('Delete everything'),
+        ),
+        content: Text(
+          'This will permanently erase all your profile details, past weight records, and meal history from this phone. This action cannot be undone.',
+          style: AppTypography.body.copyWith(
+            color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+          ),
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 46,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: isDark ? AppColors.darkInk : AppColors.lightInk,
+                      side: BorderSide(
+                        color: isDark ? AppColors.darkBorderStrong : AppColors.lightBorderStrong,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadii.control),
+                      ),
+                    ),
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SizedBox(
+                  height: 46,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade700,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadii.control),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      widget.onDeleteAllConfirmed?.call();
+                    },
+                    child: const Text('Delete all'),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

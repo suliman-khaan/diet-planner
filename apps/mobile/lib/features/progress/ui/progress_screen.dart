@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radii.dart';
@@ -8,7 +9,7 @@ import '../../../core/widgets/state_widgets.dart';
 import '../view_model/progress_view_model.dart';
 import 'add_weight_sheet.dart';
 
-/// Progress screen displaying weight trends and logged-days summary.
+/// Progress screen displaying weight trends, line chart, and logged-days consistency.
 class ProgressScreen extends StatelessWidget {
   final ProgressViewModel vm;
   final ValueChanged<bool>? onRangeToggled; // false = week, true = month
@@ -77,8 +78,18 @@ class ProgressScreen extends StatelessWidget {
       padding: const EdgeInsets.all(3),
       child: Row(
         children: [
-          _buildToggleOption(context, label: 'Week', isSelected: !vm.isMonthView, onTap: () => onRangeToggled?.call(false)),
-          _buildToggleOption(context, label: 'Month', isSelected: vm.isMonthView, onTap: () => onRangeToggled?.call(true)),
+          _buildToggleOption(
+            context,
+            label: 'Week',
+            isSelected: !vm.isMonthView,
+            onTap: () => onRangeToggled?.call(false),
+          ),
+          _buildToggleOption(
+            context,
+            label: 'Month',
+            isSelected: vm.isMonthView,
+            onTap: () => onRangeToggled?.call(true),
+          ),
         ],
       ),
     );
@@ -170,7 +181,7 @@ class ProgressScreen extends StatelessWidget {
                   Text(
                     vm.weightChangeSubtitle,
                     style: AppTypography.captionStrong.copyWith(
-                      color: isDark ? AppColors.darkInk : AppColors.lightInk,
+                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                     ),
                   ),
                 ],
@@ -191,37 +202,36 @@ class ProgressScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          // Clean vector line chart canvas
-          Container(
-            height: 120,
+          const SizedBox(height: 18),
+          // Interactive vector line chart canvas with dynamic points and guidelines
+          SizedBox(
+            height: 140,
             width: double.infinity,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                ),
-              ),
-            ),
             child: CustomPaint(
               painter: _WeightLineChartPainter(
+                points: vm.weightTrend,
                 lineColor: primary,
                 gridColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                labelColor: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                isDark: isDark,
               ),
             ),
           ),
           const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: ['30 Sep', '7 Oct', '14 Oct', '21 Oct', '28 Oct'].map((d) {
-              return Text(
-                d,
-                style: AppTypography.micro.copyWith(
-                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                ),
-              );
-            }).toList(),
-          ),
+          // Dynamic date labels aligned with data points
+          if (vm.weightTrend.isNotEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: vm.weightTrend.map((p) {
+                return Text(
+                  p.dateLabel,
+                  style: AppTypography.micro.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                  ),
+                );
+              }).toList(),
+            ),
         ],
       ),
     );
@@ -252,32 +262,35 @@ class ProgressScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           SizedBox(
-            height: 120,
+            height: 130,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: vm.weekEating.map((day) {
                 return Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Expanded(
                           child: FractionallySizedBox(
                             alignment: Alignment.bottomCenter,
-                            heightFactor: day.percentageOfTarget.clamp(0.1, 1.0),
+                            heightFactor: day.percentageOfTarget.clamp(0.12, 1.0),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: day.status == EatingLogStatus.fullyLogged
                                     ? (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
                                     : (day.status == EatingLogStatus.partlyLogged
-                                        ? AppColors.plannedFill
+                                        ? (isDark ? const Color(0xFF43735E) : AppColors.plannedFill)
                                         : Colors.transparent),
                                 borderRadius: BorderRadius.circular(8),
                                 border: day.status == EatingLogStatus.notLogged
-                                    ? Border.all(color: AppColors.plannedDash, width: 2)
+                                    ? Border.all(
+                                        color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
+                                        width: 2,
+                                      )
                                     : null,
                               ),
                             ),
@@ -287,7 +300,7 @@ class ProgressScreen extends StatelessWidget {
                         Text(
                           day.dayLabel,
                           style: AppTypography.micro.copyWith(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                             color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
                           ),
                         ),
@@ -310,7 +323,7 @@ class ProgressScreen extends StatelessWidget {
               ),
               _buildLegend(
                 context,
-                color: AppColors.plannedFill,
+                color: isDark ? const Color(0xFF43735E) : AppColors.plannedFill,
                 label: 'Partly logged',
               ),
               _buildLegend(
@@ -328,8 +341,8 @@ class ProgressScreen extends StatelessWidget {
   Widget _buildLegend(
     BuildContext context, {
     Color? color,
-    bool isDashed = false,
     required String label,
+    bool isDashed = false,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -337,18 +350,24 @@ class ProgressScreen extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: 12,
+          height: 12,
           decoration: BoxDecoration(
             color: isDashed ? Colors.transparent : color,
             borderRadius: BorderRadius.circular(3),
-            border: isDashed ? Border.all(color: AppColors.plannedDash, width: 2) : null,
+            border: isDashed
+                ? Border.all(
+                    color: isDark ? AppColors.darkBorderStrong : AppColors.plannedDash,
+                    width: 1.5,
+                  )
+                : null,
           ),
         ),
         const SizedBox(width: 6),
         Text(
           label,
           style: AppTypography.micro.copyWith(
+            fontWeight: FontWeight.w500,
             color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
           ),
         ),
@@ -357,27 +376,37 @@ class ProgressScreen extends StatelessWidget {
   }
 
   Widget _buildMetricTiles(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final inkColor = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final mutedColor = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+
     return Row(
       children: [
         Expanded(
           child: AppCard(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Days logged',
-                  style: AppTypography.micro.copyWith(color: AppColors.lightMuted),
+                  style: AppTypography.micro.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: mutedColor,
+                  ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 RichText(
                   text: TextSpan(
-                    style: AppTypography.titleMedium,
+                    style: AppTypography.titleMedium.copyWith(color: inkColor),
                     children: [
-                      TextSpan(text: '${vm.daysLoggedThisWeek} '),
+                      TextSpan(
+                        text: '${vm.daysLoggedThisWeek} ',
+                        style: TextStyle(fontWeight: FontWeight.w800, color: inkColor),
+                      ),
                       TextSpan(
                         text: 'of ${vm.totalDaysInPeriod}',
-                        style: AppTypography.captionStrong.copyWith(color: AppColors.lightMuted),
+                        style: AppTypography.captionStrong.copyWith(color: mutedColor),
                       ),
                     ],
                   ),
@@ -389,23 +418,29 @@ class ProgressScreen extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: AppCard(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Avg. protein',
-                  style: AppTypography.micro.copyWith(color: AppColors.lightMuted),
+                  style: AppTypography.micro.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: mutedColor,
+                  ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 RichText(
                   text: TextSpan(
-                    style: AppTypography.titleMedium,
+                    style: AppTypography.titleMedium.copyWith(color: inkColor),
                     children: [
-                      TextSpan(text: '${vm.averageProteinGrams.round()} '),
+                      TextSpan(
+                        text: '${vm.averageProteinGrams.round()} ',
+                        style: TextStyle(fontWeight: FontWeight.w800, color: inkColor),
+                      ),
                       TextSpan(
                         text: 'g / day',
-                        style: AppTypography.captionStrong.copyWith(color: AppColors.lightMuted),
+                        style: AppTypography.captionStrong.copyWith(color: mutedColor),
                       ),
                     ],
                   ),
@@ -428,60 +463,170 @@ class ProgressScreen extends StatelessWidget {
   }
 }
 
+/// Custom line chart painter supporting dynamic data points, smooth Bezier curves,
+/// gradient fill, horizontal reference gridlines, and labeled Y-axis values.
 class _WeightLineChartPainter extends CustomPainter {
+  final List<WeightPointViewModel> points;
   final Color lineColor;
   final Color gridColor;
+  final Color labelColor;
+  final bool isDark;
 
   _WeightLineChartPainter({
+    required this.points,
     required this.lineColor,
     required this.gridColor,
+    required this.labelColor,
+    required this.isDark,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (points.isEmpty) {
+      final textSpan = TextSpan(
+        text: 'No weight data logged yet',
+        style: TextStyle(color: labelColor, fontSize: 13),
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: size.width);
+      textPainter.paint(
+        canvas,
+        Offset((size.width - textPainter.width) / 2, (size.height - textPainter.height) / 2),
+      );
+      return;
+    }
+
+    const double yAxisWidth = 48.0;
+    const double topPadding = 12.0;
+    const double bottomPadding = 14.0;
+    final chartWidth = size.width - yAxisWidth;
+    final chartHeight = size.height - topPadding - bottomPadding;
+
+    // Calculate min and max weights with breathing margin
+    double minW = points.map((p) => p.weightKg).reduce(math.min);
+    double maxW = points.map((p) => p.weightKg).reduce(math.max);
+
+    if ((maxW - minW).abs() < 0.2) {
+      minW -= 1.0;
+      maxW += 1.0;
+    } else {
+      final margin = (maxW - minW) * 0.25;
+      minW -= margin;
+      maxW += margin;
+    }
+
     final gridPaint = Paint()
       ..color = gridColor
-      ..strokeWidth = 1;
+      ..strokeWidth = 1.0;
 
-    // Horizontal guideline
-    canvas.drawLine(Offset(0, size.height * 0.33), Offset(size.width, size.height * 0.33), gridPaint);
-    canvas.drawLine(Offset(0, size.height * 0.66), Offset(size.width, size.height * 0.66), gridPaint);
+    // 3 horizontal reference guidelines with right-aligned weight labels
+    final gridSteps = [maxW, (maxW + minW) / 2, minW];
+    final yPositions = [
+      topPadding,
+      topPadding + chartHeight * 0.5,
+      topPadding + chartHeight,
+    ];
 
-    final linePaint = Paint()
+    for (var i = 0; i < gridSteps.length; i++) {
+      final y = yPositions[i];
+      canvas.drawLine(Offset(0, y), Offset(chartWidth, y), gridPaint);
+
+      final label = '${gridSteps[i].toStringAsFixed(1)} kg';
+      final textSpan = TextSpan(
+        text: label,
+        style: TextStyle(
+          color: labelColor,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      )..layout();
+      textPainter.paint(canvas, Offset(chartWidth + 6, y - textPainter.height / 2));
+    }
+
+    // Map each data point to canvas pixel coordinate
+    final offsets = <Offset>[];
+    for (var i = 0; i < points.length; i++) {
+      final x = points.length == 1
+          ? chartWidth / 2
+          : (i / (points.length - 1)) * chartWidth;
+      final normalized = (points[i].weightKg - minW) / (maxW - minW);
+      final y = topPadding + (1.0 - normalized.clamp(0.0, 1.0)) * chartHeight;
+      offsets.add(Offset(x, y));
+    }
+
+    // Build smooth cubic Bezier curve path
+    final curvePath = Path()..moveTo(offsets.first.dx, offsets.first.dy);
+    for (var i = 0; i < offsets.length - 1; i++) {
+      final p0 = offsets[i];
+      final p1 = offsets[i + 1];
+      final controlPoint1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
+      final controlPoint2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
+      curvePath.cubicTo(
+        controlPoint1.dx,
+        controlPoint1.dy,
+        controlPoint2.dx,
+        controlPoint2.dy,
+        p1.dx,
+        p1.dy,
+      );
+    }
+
+    // Draw gradient fill beneath the curve
+    final fillPath = Path.from(curvePath)
+      ..lineTo(offsets.last.dx, size.height)
+      ..lineTo(offsets.first.dx, size.height)
+      ..close();
+
+    final fillPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          lineColor.withOpacity(isDark ? 0.35 : 0.20),
+          lineColor.withOpacity(0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, topPadding, chartWidth, chartHeight + bottomPadding));
+
+    canvas.drawPath(fillPath, fillPaint);
+
+    // Draw primary curve stroke
+    final strokePaint = Paint()
       ..color = lineColor
-      ..strokeWidth = 3
+      ..strokeWidth = 3.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
+    canvas.drawPath(curvePath, strokePaint);
+
+    // Draw data point dots with highlighted latest dot
     final dotPaint = Paint()..color = lineColor;
+    final dotHaloPaint = Paint()..color = lineColor.withOpacity(0.25);
     final dotWhitePaint = Paint()..color = Colors.white;
 
-    final points = [
-      Offset(size.width * 0.05, size.height * 0.2),
-      Offset(size.width * 0.28, size.height * 0.35),
-      Offset(size.width * 0.52, size.height * 0.5),
-      Offset(size.width * 0.76, size.height * 0.68),
-      Offset(size.width * 0.95, size.height * 0.8),
-    ];
-
-    final path = Path()..moveTo(points.first.dx, points.first.dy);
-    for (var i = 1; i < points.length; i++) {
-      path.lineTo(points[i].dx, points[i].dy);
-    }
-
-    canvas.drawPath(path, linePaint);
-
-    for (var i = 0; i < points.length; i++) {
-      if (i == points.length - 1) {
-        canvas.drawCircle(points[i], 6, dotPaint);
-        canvas.drawCircle(points[i], 3, dotWhitePaint);
+    for (var i = 0; i < offsets.length; i++) {
+      final isLast = i == offsets.length - 1;
+      if (isLast) {
+        // High-contrast pulsed dot for current weight
+        canvas.drawCircle(offsets[i], 8, dotHaloPaint);
+        canvas.drawCircle(offsets[i], 5, dotPaint);
+        canvas.drawCircle(offsets[i], 2.5, dotWhitePaint);
       } else {
-        canvas.drawCircle(points[i], 4, dotPaint);
+        canvas.drawCircle(offsets[i], 3.5, dotPaint);
       }
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _WeightLineChartPainter oldDelegate) {
+    return oldDelegate.points != points ||
+        oldDelegate.lineColor != lineColor ||
+        oldDelegate.isDark != isDark;
+  }
 }

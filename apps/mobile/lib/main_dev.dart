@@ -94,6 +94,31 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
   FoodsViewModel _foodsVm = FoodsFixtures.standardSearch;
   ProgressViewModel _progressVm = ProgressFixtures.standardMonth;
 
+  String _foodsSearchQuery = '';
+  String _foodsSelectedCategory = 'All';
+
+  void _filterFoods() {
+    var results = FoodsFixtures.allCatalogueFoods;
+    if (_foodsSelectedCategory != 'All') {
+      results = results.where((f) => f.category == _foodsSelectedCategory).toList();
+    }
+    if (_foodsSearchQuery.trim().isNotEmpty) {
+      final q = _foodsSearchQuery.trim().toLowerCase();
+      results = results.where((f) {
+        return f.englishName.toLowerCase().contains(q) ||
+            f.urduName.contains(q) ||
+            f.category.toLowerCase().contains(q);
+      }).toList();
+    }
+    setState(() {
+      _foodsVm = _foodsVm.copyWith(
+        searchQuery: _foodsSearchQuery,
+        selectedCategory: _foodsSelectedCategory,
+        searchResults: results,
+      );
+    });
+  }
+
   // --- Onboarding Flow Helpers ---
   void _nextOnboardingStep() {
     setState(() {
@@ -161,28 +186,18 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         return m;
       }).toList();
 
+      final newTotalLogged = _todayVm.totalLoggedCalories + 460;
       _todayVm = _todayVm.copyWith(
         meals: updatedMeals,
-        eatenKcal: _todayVm.eatenKcal + 620,
-        plannedKcal: (_todayVm.plannedKcal - 620).clamp(0, 3000),
+        totalLoggedCalories: newTotalLogged,
+        remainingCalories: (_todayVm.targetCalories - newTotalLogged).clamp(0, 5000),
       );
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Dinner marked as eaten!'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _dinnerVm = _dinnerVm.copyWith(isEaten: false);
-              _todayVm = _todayVm.copyWith(
-                eatenKcal: _todayVm.eatenKcal - 620,
-                plannedKcal: _todayVm.plannedKcal + 620,
-              );
-            });
-          },
-        ),
+      const SnackBar(
+        content: Text('Marked Dinner as eaten! Remaining calories updated.'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
@@ -192,10 +207,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
       MaterialPageRoute(
         builder: (_) => MealDetailScreen(
           vm: _dinnerVm,
-          onBack: () => Navigator.of(context).pop(),
           onKatoriCountChanged: (val) {
             setState(() {
-              final newKcal = 340 * val;
+              final newKcal = (180 * val).round();
               _dinnerVm = _dinnerVm.copyWith(
                 mainDishKatoriCount: val,
                 mainDishCalories: newKcal,
@@ -267,6 +281,7 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
       currentTab: _currentTab,
       onTabChanged: (tab) => setState(() => _currentTab = tab),
       body: Scaffold(
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text(_getTabTitle(_currentTab)),
           actions: [
@@ -339,35 +354,16 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         return FoodsScreen(
           vm: _foodsVm,
           onSearchChanged: (query) {
-            setState(() {
-              if (query.trim().isEmpty) {
-                _foodsVm = FoodsFixtures.standardSearch;
-              } else {
-                final filtered = FoodsFixtures.standardSearch.searchResults.where((f) {
-                  return f.englishName.toLowerCase().contains(query.toLowerCase()) ||
-                      f.urduName.contains(query);
-                }).toList();
-                _foodsVm = _foodsVm.copyWith(searchQuery: query, searchResults: filtered);
-              }
-            });
+            _foodsSearchQuery = query;
+            _filterFoods();
           },
           onSearchCleared: () {
-            setState(() => _foodsVm = FoodsFixtures.standardSearch);
+            _foodsSearchQuery = '';
+            _filterFoods();
           },
           onCategorySelected: (cat) {
-            setState(() {
-              if (cat == 'All') {
-                _foodsVm = _foodsVm.copyWith(
-                  selectedCategory: cat,
-                  searchResults: FoodsFixtures.standardSearch.searchResults,
-                );
-              } else {
-                final filtered = FoodsFixtures.standardSearch.searchResults
-                    .where((f) => f.category == cat)
-                    .toList();
-                _foodsVm = _foodsVm.copyWith(selectedCategory: cat, searchResults: filtered);
-              }
-            });
+            _foodsSelectedCategory = cat;
+            _filterFoods();
           },
           onFoodSelected: (food) {
             showModalBottomSheet(
@@ -398,7 +394,9 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         return ProgressScreen(
           vm: _progressVm,
           onRangeToggled: (isMonth) {
-            setState(() => _progressVm = ProgressViewModel(isMonthView: isMonth));
+            setState(() {
+              _progressVm = isMonth ? ProgressFixtures.standardMonth : ProgressFixtures.standardWeek;
+            });
           },
           onAddWeightTap: () {
             showModalBottomSheet(
@@ -408,11 +406,17 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
               builder: (_) => AddWeightSheet(
                 onWeightSaved: (newWeight) {
                   setState(() {
-                    _progressVm = ProgressViewModel(
+                    final updatedTrend = [
+                      ..._progressVm.weightTrend.take(_progressVm.weightTrend.length - 1),
+                      WeightPointViewModel(
+                        dateLabel: 'Today',
+                        weightKg: newWeight,
+                      ),
+                    ];
+                    _progressVm = _progressVm.copyWith(
                       currentWeightKg: newWeight,
                       weightChangeSubtitle: 'Latest entry saved just now',
-                      isMonthView: _progressVm.isMonthView,
-                      weekEating: _progressVm.weekEating,
+                      weightTrend: updatedTrend,
                     );
                   });
                 },
