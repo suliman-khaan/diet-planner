@@ -1,0 +1,13 @@
+{
+  "name": "food-pack-tools",
+  "private": true,
+  "description": "Builds and validates country food packs. No dependencies.",
+  "scripts": {
+    "test": "node --test test/validate.test.js",
+    "build:pk": "node build.js ../../content/pakistan ../../apps/mobile/assets/packs/pk-core.json",
+    "validate:pk": "node validate.js ../../apps/mobile/assets/packs/pk-core.json"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

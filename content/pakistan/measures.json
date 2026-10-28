@@ -1,0 +1,15 @@
+{
+  "note": "Household measures used for servings and the portion guide. Gram values are DRAFT estimates pending nutritionist review (task P1-03).",
+  "status": "draft",
+  "measures": [
+    { "id": "katori", "label": "Katori", "ur": "کٹوری", "description": "Small bowl used for salan and daal", "grams": 180 },
+    { "id": "half-katori", "label": "Half katori", "ur": "آدھی کٹوری", "description": "Half a small bowl", "grams": 90 },
+    { "id": "pyala", "label": "Pyala", "ur": "پیالہ", "description": "Tea cup", "ml": 180 },
+    { "id": "glass", "label": "Glass", "ur": "گلاس", "description": "Standard drinking glass", "ml": 250 },
+    { "id": "chamach", "label": "Chamach", "ur": "چمچ", "description": "Tablespoon", "grams": 15 },
+    { "id": "plate-rice", "label": "Plate of rice", "ur": "چاول کی پلیٹ", "description": "Level dinner plate portion", "grams": 200 },
+    { "id": "roti-small", "label": "Small roti", "ur": "چھوٹی روٹی", "description": "About 15 cm across", "grams": 40 },
+    { "id": "roti-medium", "label": "Medium roti", "ur": "درمیانی روٹی", "description": "About 20 cm across", "grams": 55 },
+    { "id": "roti-tandoori", "label": "Tandoori roti", "ur": "تندوری روٹی", "description": "From a tandoor, about 25 cm", "grams": 120 }
+  ]
+}

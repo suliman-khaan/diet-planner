@@ -1,0 +1,8 @@
+{
+  "packId": "pk-core",
+  "packVersion": "2026.10.0-draft",
+  "country": "PK",
+  "status": "draft",
+  "license": "Nutrition: USDA FoodData Central (public domain, CC0 1.0). Recipes and names: project content, draft.",
+  "notice": "Draft data. Not reviewed by a nutrition professional. Release builds must not auto-plan with draft foods."
+}
