@@ -16,6 +16,22 @@ abstract class OnboardingFixtures {
     goal: WeightGoal.loseWeight,
   );
 
+  static const aboutYou = OnboardingViewModel(
+    currentStep: OnboardingStep.aboutYou,
+    currentStepIndex: 3,
+    totalSteps: 8,
+    heightCm: 162.0,
+    weightKg: 72.0,
+  );
+
+  static const dietary = OnboardingViewModel(
+    currentStep: OnboardingStep.dietary,
+    currentStepIndex: 5,
+    totalSteps: 8,
+    dietType: DietType.everything,
+    allergies: ['gluten'],
+  );
+
   static const cookingRichness = OnboardingViewModel(
     currentStep: OnboardingStep.cookingRichness,
     currentStepIndex: 6,

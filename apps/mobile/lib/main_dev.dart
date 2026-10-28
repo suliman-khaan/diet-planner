@@ -125,6 +125,51 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
   }
 
   // --- Onboarding Flow Helpers ---
+  void _recalculateTarget() {
+    final isMale = _onboardingVm.sex == BiologicalSex.male;
+    final age = 2026 - _onboardingVm.birthYear;
+    final bmr = (10 * _onboardingVm.weightKg) + (6.25 * _onboardingVm.heightCm) - (5 * age) + (isMale ? 5 : -161);
+
+    double activityMult;
+    switch (_onboardingVm.activityLevel) {
+      case ActivityLevel.sedentary:
+        activityMult = 1.2;
+      case ActivityLevel.lightlyActive:
+        activityMult = 1.375;
+      case ActivityLevel.moderatelyActive:
+        activityMult = 1.55;
+      case ActivityLevel.veryActive:
+        activityMult = 1.725;
+    }
+
+    final tdee = bmr * activityMult;
+    double targetKcal;
+    switch (_onboardingVm.goal) {
+      case WeightGoal.loseWeight:
+        targetKcal = tdee - 450;
+      case WeightGoal.maintain:
+        targetKcal = tdee;
+      case WeightGoal.gainWeight:
+        targetKcal = tdee + 350;
+    }
+
+    final floor = isMale ? 1500.0 : 1200.0;
+    if (targetKcal < floor) targetKcal = floor;
+
+    final finalKcal = targetKcal.round();
+    final proteinG = ((finalKcal * 0.20) / 4).round();
+    final carbsG = ((finalKcal * 0.50) / 4).round();
+    final fatG = ((finalKcal * 0.30) / 9).round();
+
+    _onboardingVm = _onboardingVm.copyWith(
+      recommendedCalories: finalKcal,
+      recommendedProtein: proteinG,
+      recommendedCarbs: carbsG,
+      recommendedFat: fatG,
+      recommendedFibre: 28,
+    );
+  }
+
   void _nextOnboardingStep() {
     setState(() {
       switch (_onboardingVm.currentStep) {
@@ -627,13 +672,64 @@ class _PrototypeHomeFlowState extends State<PrototypeHomeFlow> {
         ),
         body: OnboardingScreen(
           vm: _onboardingVm,
-          onGoalChanged: (g) => setState(() => _onboardingVm = _onboardingVm.copyWith(goal: g)),
+          onGoalChanged: (g) {
+            setState(() {
+              _onboardingVm = _onboardingVm.copyWith(goal: g);
+              _recalculateTarget();
+            });
+          },
           onRichnessChanged: (r) => setState(() => _onboardingVm = _onboardingVm.copyWith(cookingRichness: r)),
-          onSexChanged: (s) => setState(() => _onboardingVm = _onboardingVm.copyWith(sex: s)),
-          onActivityChanged: (a) => setState(() => _onboardingVm = _onboardingVm.copyWith(activityLevel: a)),
+          onSexChanged: (s) {
+            setState(() {
+              _onboardingVm = _onboardingVm.copyWith(sex: s);
+              _recalculateTarget();
+            });
+          },
+          onActivityChanged: (a) {
+            setState(() {
+              _onboardingVm = _onboardingVm.copyWith(activityLevel: a);
+              _recalculateTarget();
+            });
+          },
+          onHeightChanged: (h) {
+            setState(() {
+              _onboardingVm = _onboardingVm.copyWith(heightCm: h);
+              _recalculateTarget();
+            });
+          },
+          onWeightChanged: (w) {
+            setState(() {
+              _onboardingVm = _onboardingVm.copyWith(weightKg: w);
+              _recalculateTarget();
+            });
+          },
+          onDietTypeChanged: (d) => setState(() => _onboardingVm = _onboardingVm.copyWith(dietType: d)),
+          onAllergyToggled: (allergy) {
+            setState(() {
+              final list = List<String>.from(_onboardingVm.allergies);
+              if (list.contains(allergy)) {
+                list.remove(allergy);
+              } else {
+                list.add(allergy);
+              }
+              _onboardingVm = _onboardingVm.copyWith(allergies: list);
+            });
+          },
           onNext: _nextOnboardingStep,
           onBack: _prevOnboardingStep,
-          onFinish: () => setState(() => _isOnboarding = false),
+          onFinish: () {
+            setState(() {
+              _isOnboarding = false;
+              if (_onboardingVm.recommendedCalories != null) {
+                _todayVm = _todayVm.copyWith(
+                  targetKcal: _onboardingVm.recommendedCalories!,
+                  proteinTarget: _onboardingVm.recommendedProtein ?? _todayVm.proteinTarget,
+                  carbsTarget: _onboardingVm.recommendedCarbs ?? _todayVm.carbsTarget,
+                  fatTarget: _onboardingVm.recommendedFat ?? _todayVm.fatTarget,
+                );
+              }
+            });
+          },
           onSkipToDashboard: () => setState(() => _isOnboarding = false),
         ),
       );
