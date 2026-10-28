@@ -30,13 +30,13 @@ Status: `Open` · `In progress` · `Implemented, awaiting verification` · `Veri
 | U-09 | Portion picker + guides | UI | U-02 | Implemented, awaiting verification | Antigravity | ui |
 | U-10 | Foods search + detail | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
 | U-11 | Add / replace / quick-add sheets | UI | U-10 | Implemented, awaiting verification | Antigravity | ui |
-| U-12 | History | UI | U-03 | Open | | |
-| U-13 | Progress | UI | U-03 | Open | | |
-| U-14 | Shopping list | UI | U-03 | Open | | |
-| U-15 | Reminders | UI | U-03 | Open | | |
-| U-16 | More + settings | UI | U-04 | Open | | |
-| U-17 | Privacy & data | UI | U-03 | Open | | |
-| U-18 | Transparency + check-in | UI | U-03 | Open | | |
+| U-12 | History | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
+| U-13 | Progress | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
+| U-14 | Shopping list | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
+| U-15 | Reminders | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
+| U-16 | More + settings | UI | U-04 | Implemented, awaiting verification | Antigravity | ui |
+| U-17 | Privacy & data | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
+| U-18 | Transparency + check-in | UI | U-03 | Implemented, awaiting verification | Antigravity | ui |
 | U-19 | Accessibility pass | UI | U-06…U-18 | Open | | |
 | U-20 | RTL readiness | UI | U-19 | Open | | |
 | U-21 | Golden + widget tests | UI | U-19 | Open | | |
