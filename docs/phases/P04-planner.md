@@ -17,8 +17,8 @@
 
 ## Exit criteria (blueprint)
 
-- [ ] Same inputs + seed + pack version = same plan
-- [ ] ≥ 95% of 1,000 generated profiles within ±10% of target
-- [ ] Zero exclusion violations in property tests
-- [ ] No-match returns a clear explanation, never forced portions
-- [ ] No double-counting of recipe ingredients
+- [x] Same inputs + seed + pack version = same plan *(CI, 2026-10-29)*
+- [x] ≥ 95% of 1,000 generated profiles within ±10% of target *(CI, 2026-10-29)*
+- [x] Zero exclusion violations in property tests *(CI, 2026-10-29)*
+- [x] No-match returns a clear explanation, never forced portions *(CI, 2026-10-29)*
+- [x] No double-counting of recipe ingredients *(CI, 2026-10-29)*

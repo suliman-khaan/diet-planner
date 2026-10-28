@@ -16,9 +16,9 @@ Screens come from PU (U-06). This phase builds the logic and wires it.
 
 ## Exit criteria (blueprint)
 
-- [ ] Completes without an account
-- [ ] Useful field errors
-- [ ] Ineligible users routed to manual mode
-- [ ] Policy tests cover floors and rate caps
-- [ ] Profile changes affect future plans only unless user regenerates
-- [ ] Floor/cap values marked as placeholders until nutritionist confirms
+- [x] Completes without an account *(CI, 2026-10-29)*
+- [x] Useful field errors *(CI, 2026-10-29)*
+- [x] Ineligible users routed to manual mode *(CI, 2026-10-29)*
+- [x] Policy tests cover floors and rate caps *(CI, 2026-10-29)*
+- [x] Profile changes affect future plans only unless user regenerates *(CI, 2026-10-29)*
+- [x] Floor/cap values marked as placeholders until nutritionist confirms *(CI, 2026-10-29)*

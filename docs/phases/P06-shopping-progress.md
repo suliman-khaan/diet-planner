@@ -12,7 +12,7 @@
 
 ## Exit criteria (blueprint)
 
-- [ ] Correct recipe scaling
-- [ ] Missed days show "not logged", never 0 kcal
-- [ ] Planned meals never assumed eaten
-- [ ] History matches snapshots
+- [x] Correct recipe scaling *(CI, 2026-10-29)*
+- [x] Missed days show "not logged", never 0 kcal *(CI, 2026-10-29)*
+- [x] Planned meals never assumed eaten *(CI, 2026-10-29)*
+- [x] History matches snapshots *(CI, 2026-10-29)*

@@ -19,8 +19,8 @@ Each task = one controller + provider override + controller tests + one integrat
 
 ## Exit criteria (blueprint)
 
-- [ ] First plan works offline
-- [ ] Add / replace / remove / resize items
-- [ ] Logging a planned meal ≤ 2 taps; no accidental duplicate logs
+- [x] First plan works offline *(CI, 2026-10-29)*
+- [x] Add / replace / remove / resize items *(CI, 2026-10-29)*
+- [x] Logging a planned meal ≤ 2 taps; no accidental duplicate logs *(CI, 2026-10-29)*
 - [ ] Usable at 200% text and 360 dp width
 - [ ] Every screen has empty, error and recovery states

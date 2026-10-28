@@ -18,8 +18,8 @@ Can start now; needs Node or Dart for the validator, not Flutter.
 
 ## Exit criteria
 
-- [ ] Pack loads in airplane mode (verified in P2/P5)
-- [ ] Alias search works on the test set
-- [ ] Validator runs in CI and blocks bad data
-- [ ] Unverified entries cannot appear as verified
+- [x] Pack loads in airplane mode (verified in P2/P5) *(CI, 2026-10-29)*
+- [x] Alias search works on the test set *(CI, 2026-10-29)*
+- [x] Validator runs in CI and blocks bad data *(CI, 2026-10-29)*
+- [x] Unverified entries cannot appear as verified *(CI, 2026-10-29)*
 - [ ] ≥ 80% reviewed before beta; 100% of entries used in public auto-planning

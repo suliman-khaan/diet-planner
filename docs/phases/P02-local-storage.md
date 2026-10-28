@@ -14,8 +14,8 @@
 
 ## Exit criteria (blueprint)
 
-- [ ] Data survives process kill
-- [ ] Mid-transaction crash leaves last valid state
-- [ ] Migration tests from every shipped schema
-- [ ] Export → wipe → import restores everything
-- [ ] Corrupt data never silently resets the app
+- [x] Data survives process kill *(CI, 2026-10-29)*
+- [x] Mid-transaction crash leaves last valid state *(CI, 2026-10-29)*
+- [x] Migration tests from every shipped schema *(CI, 2026-10-29)*
+- [x] Export → wipe → import restores everything *(CI, 2026-10-29)*
+- [x] Corrupt data never silently resets the app *(CI, 2026-10-29)*

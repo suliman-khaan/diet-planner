@@ -14,6 +14,6 @@ Notification text never contains health details.
 ## Exit criteria (blueprint)
 
 - [ ] Tested: permission granted/denied, app closed, reboot, timezone change, meal edited/completed
-- [ ] Repeated scheduling without duplicates
+- [x] Repeated scheduling without duplicates *(CI, 2026-10-29)*
 - [ ] Cold-start tap opens the right screen
-- [ ] Ramadan start/end switch
+- [x] Ramadan start/end switch *(CI, 2026-10-29)*

@@ -40,6 +40,6 @@ Feature names: `onboarding`, `today`, `meal`, `foods`, `log`, `history`, `progre
 ## Exit criteria (blueprint)
 
 - [ ] Debug and release builds compile and run on emulator and physical phone
-- [ ] CI runs analysis, tests and build
+- [x] CI runs analysis, tests and build *(CI, 2026-10-29)*
 - [ ] Release APK ≤ 25 MB; cold start ≤ 2.5 s on baseline phone
-- [ ] No secrets committed
+- [x] No secrets committed *(CI, 2026-10-29)*
