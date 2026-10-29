@@ -62,22 +62,52 @@ class ProgressController extends AsyncNotifier<ProgressViewModel> {
       ));
     }
 
-    final change = trend.changeKg;
     final label = DateFormat('d MMM');
+    final trendPoints = <WeightPointViewModel>[];
+    if (trend.points.length > 1) {
+      for (final p in trend.points) {
+        trendPoints.add(WeightPointViewModel(
+            date: p.date.atMinutes(0),
+            dateLabel: label.format(p.date.atMinutes(0)),
+            weightKg: p.weightKg));
+      }
+    } else if (weights.length > 1) {
+      final recent =
+          weights.length > 7 ? weights.sublist(weights.length - 7) : weights;
+      for (var i = 0; i < recent.length; i++) {
+        final w = recent[i];
+        trendPoints.add(WeightPointViewModel(
+            date: w.date.atMinutes(i),
+            dateLabel: '#${i + 1} (${label.format(w.date.atMinutes(0))})',
+            weightKg: w.weightKg));
+      }
+    } else if (trend.points.isNotEmpty) {
+      final p = trend.points.first;
+      trendPoints.add(WeightPointViewModel(
+          date: p.date.atMinutes(0),
+          dateLabel: label.format(p.date.atMinutes(0)),
+          weightKg: p.weightKg));
+    } else if (setup?.profile.weightKg != null && setup!.profile.weightKg > 0) {
+      trendPoints.add(WeightPointViewModel(
+          date: today.atMinutes(0),
+          dateLabel: label.format(today.atMinutes(0)),
+          weightKg: setup.profile.weightKg));
+    }
+
+    final effectiveChange = trend.changeKg ??
+        (weights.length > 1
+            ? weights.last.weightKg - weights.first.weightKg
+            : null);
+    final subtitle = effectiveChange == null
+        ? 'Add your weight regularly to see a trend'
+        : effectiveChange.abs() < 0.05
+            ? 'Steady over ${trend.spanDays > 0 ? trend.spanDays : 1} days'
+            : '${effectiveChange.abs().toStringAsFixed(1)} kg ${effectiveChange < 0 ? 'down' : 'up'}${trend.spanDays > 0 ? ' in ${trend.spanDays} days' : ' recently'}';
+
     return ProgressViewModel(
       currentWeightKg: latest?.weightKg ?? setup?.profile.weightKg ?? 0,
-      weightChangeSubtitle: change == null
-          ? 'Add your weight regularly to see a trend'
-          : change.abs() < 0.05
-              ? 'Steady over ${trend.spanDays} days'
-              : '${change.abs().toStringAsFixed(1)} kg ${change < 0 ? 'down' : 'up'} in ${trend.spanDays} days',
-      weightTrend: [
-        for (final p in trend.points)
-          WeightPointViewModel(
-              date: p.date.atMinutes(0),
-              dateLabel: label.format(p.date.atMinutes(0)),
-              weightKg: p.weightKg),
-      ],
+      weightChangeSubtitle: subtitle,
+      weightTrend: trendPoints,
       weekEating: bars,
       daysLoggedThisWeek: logged,
       totalDaysInPeriod: 7,

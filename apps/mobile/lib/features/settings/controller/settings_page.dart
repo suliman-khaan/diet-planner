@@ -295,7 +295,7 @@ class SettingsPage extends ConsumerWidget {
                 const ListTile(
                   leading: SizedBox(width: 24),
                   title: Text('اردو (Urdu)'),
-                  subtitle: Text('Planned for version 1.1'),
+                  subtitle: Text('Coming soon'),
                 ),
               ],
             ),

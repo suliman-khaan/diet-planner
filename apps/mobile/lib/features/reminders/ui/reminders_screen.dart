@@ -43,6 +43,7 @@ class RemindersScreen extends StatelessWidget {
   final RemindersViewModel vm;
   final ValueChanged<bool>? onEnabledChanged;
   final void Function(String slotId, bool enabled)? onSlotChanged;
+  final void Function(String slotId, TimeOfDay time)? onSlotTimeChanged;
   final VoidCallback? onOpenMealTimes;
 
   const RemindersScreen({
@@ -50,6 +51,7 @@ class RemindersScreen extends StatelessWidget {
     this.vm = const RemindersViewModel(),
     this.onEnabledChanged,
     this.onSlotChanged,
+    this.onSlotTimeChanged,
     this.onOpenMealTimes,
   });
 
@@ -123,13 +125,34 @@ class RemindersScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              'MEAL SLOTS',
-              style: AppTypography.micro.copyWith(
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-                color: muted,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'MEAL SLOTS',
+                  style: AppTypography.micro.copyWith(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.8,
+                    color: muted,
+                  ),
+                ),
+                if (onOpenMealTimes != null)
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 0),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: onOpenMealTimes,
+                    icon: Icon(Icons.tune, size: 14, color: primary),
+                    label: Text(
+                      'All times',
+                      style:
+                          AppTypography.captionStrong.copyWith(color: primary),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 8),
             AppCard(
@@ -140,19 +163,62 @@ class RemindersScreen extends StatelessWidget {
                   final isLast = index == vm.slots.length - 1;
                   return Column(
                     children: [
-                      SwitchListTile(
+                      ListTile(
                         contentPadding: EdgeInsets.zero,
-                        activeColor: primary,
                         title: Text(slot.slotName,
                             style:
                                 AppTypography.bodyStrong.copyWith(color: ink)),
-                        subtitle: Text(slot.time,
-                            style:
-                                AppTypography.caption.copyWith(color: muted)),
-                        value: slot.isEnabled,
-                        onChanged: vm.enabled
-                            ? (val) => onSlotChanged?.call(slot.id, val)
-                            : null,
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: InkWell(
+                            onTap: () async {
+                              final initial = _parseTimeOfDay(slot.time);
+                              final picked = await showTimePicker(
+                                context: context,
+                                initialTime: initial,
+                              );
+                              if (picked != null) {
+                                onSlotTimeChanged?.call(slot.id, picked);
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(6),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.schedule, size: 14, color: primary),
+                                const SizedBox(width: 4),
+                                Text(
+                                  slot.time,
+                                  style: AppTypography.captionStrong
+                                      .copyWith(color: primary),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: primary.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    'Edit',
+                                    style: AppTypography.micro.copyWith(
+                                      color: primary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        trailing: Switch(
+                          activeColor: primary,
+                          value: slot.isEnabled,
+                          onChanged: vm.enabled
+                              ? (val) => onSlotChanged?.call(slot.id, val)
+                              : null,
+                        ),
                       ),
                       if (!isLast) const Divider(height: 1),
                     ],
@@ -181,5 +247,24 @@ class RemindersScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  TimeOfDay _parseTimeOfDay(String timeStr) {
+    try {
+      final clean = timeStr.trim().toUpperCase();
+      final isPm = clean.contains('PM');
+      final isAm = clean.contains('AM');
+      final cleanedText =
+          clean.replaceAll('AM', '').replaceAll('PM', '').trim();
+      final parts = cleanedText.split(':');
+      if (parts.length >= 2) {
+        var hour = int.parse(parts[0].trim());
+        final minute = int.parse(parts[1].trim());
+        if (isPm && hour < 12) hour += 12;
+        if (isAm && hour == 12) hour = 0;
+        return TimeOfDay(hour: hour, minute: minute);
+      }
+    } catch (_) {}
+    return const TimeOfDay(hour: 8, minute: 0);
   }
 }

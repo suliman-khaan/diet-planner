@@ -80,7 +80,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
           const SizedBox(height: 12),
           AppTextField(
             controller: _searchController,
-            hintText: 'Search foods (e.g. roti, biryani, daal)',
+            hintText: 'Search foods...',
             helperText:
                 'Type in English or Roman Urdu. Spelling does not need to be exact.',
             prefixIcon: Icon(

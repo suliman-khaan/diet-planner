@@ -7,6 +7,7 @@ import '../../../app/providers/providers.dart';
 import '../../../app/providers/reminder_coordinator.dart';
 import '../../../core/widgets/state_widgets.dart';
 import '../../../domain/common/meal_slot.dart';
+import '../../../domain/profile/user_profile.dart';
 import '../../../services/analytics/analytics_service.dart';
 import '../../settings/controller/meal_schedule_sheet.dart';
 import '../ui/reminders_screen.dart';
@@ -98,6 +99,31 @@ class RemindersController extends AsyncNotifier<RemindersViewModel> {
     await _apply();
   }
 
+  Future<void> updateSlotTime(String slotId, TimeOfDay time) async {
+    final profileRepo = ref.read(profileRepositoryProvider);
+    final setup = await profileRepo.load();
+    if (setup == null) return;
+    final slot = MealSlot.fromName(slotId);
+    final minutes = time.hour * 60 + time.minute;
+
+    final newNormal = [
+      for (final s in setup.schedule.normalSlots)
+        if (s.slot == slot) SlotTime(slot, minutes) else s,
+    ];
+    final newRamadan = [
+      for (final s in setup.schedule.ramadanSlots)
+        if (s.slot == slot) SlotTime(slot, minutes) else s,
+    ];
+
+    final updatedSchedule = setup.schedule.copyWith(
+      normalSlots: newNormal,
+      ramadanSlots: newRamadan,
+    );
+    await profileRepo.save(setup.copyWith(schedule: updatedSchedule));
+    ref.invalidate(userSetupProvider);
+    await _apply();
+  }
+
   Future<void> _apply() async {
     ref.invalidate(appSettingsProvider);
     await ref.read(reminderCoordinatorProvider).reschedule();
@@ -129,6 +155,7 @@ class RemindersPage extends ConsumerWidget {
         vm: vm,
         onEnabledChanged: controller.setEnabled,
         onSlotChanged: controller.setSlot,
+        onSlotTimeChanged: controller.updateSlotTime,
         onOpenMealTimes: () => MealScheduleSheet.show(context),
       ),
     );

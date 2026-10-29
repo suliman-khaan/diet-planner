@@ -152,51 +152,56 @@ class ProgressScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Weight',
-                    style: AppTypography.caption.copyWith(
-                      color:
-                          isDark ? AppColors.darkMuted : AppColors.lightMuted,
-                    ),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        vm.currentWeightKg.toStringAsFixed(1),
-                        style: AppTypography.numberLarge.copyWith(
-                          fontSize: 30,
-                          color:
-                              isDark ? AppColors.darkInk : AppColors.lightInk,
-                        ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Weight',
+                      style: AppTypography.caption.copyWith(
+                        color:
+                            isDark ? AppColors.darkMuted : AppColors.lightMuted,
                       ),
-                      const SizedBox(width: 4),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text(
-                          'kg',
-                          style: AppTypography.subheading.copyWith(
-                            color: isDark
-                                ? AppColors.darkMuted
-                                : AppColors.lightMuted,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          vm.currentWeightKg.toStringAsFixed(1),
+                          style: AppTypography.numberLarge.copyWith(
+                            fontSize: 30,
+                            color:
+                                isDark ? AppColors.darkInk : AppColors.lightInk,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    vm.weightChangeSubtitle,
-                    style: AppTypography.captionStrong.copyWith(
-                      color: isDark
-                          ? AppColors.darkPrimary
-                          : AppColors.lightPrimary,
+                        const SizedBox(width: 4),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Text(
+                            'kg',
+                            style: AppTypography.subheading.copyWith(
+                              color: isDark
+                                  ? AppColors.darkMuted
+                                  : AppColors.lightMuted,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Text(
+                      vm.weightChangeSubtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.captionStrong.copyWith(
+                        color: isDark
+                            ? AppColors.darkPrimary
+                            : AppColors.lightPrimary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 12),
               SizedBox(
                 height: 44,
                 child: OutlinedButton(
@@ -232,7 +237,7 @@ class ProgressScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           // Dynamic date labels aligned with data points
-          if (vm.weightTrend.isNotEmpty)
+          if (vm.weightTrend.length > 1)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: vm.weightTrend.map((p) {
@@ -244,6 +249,16 @@ class ProgressScreen extends StatelessWidget {
                   ),
                 );
               }).toList(),
+            )
+          else if (vm.weightTrend.length == 1)
+            Center(
+              child: Text(
+                '${vm.weightTrend.first.dateLabel} (Baseline recorded)',
+                style: AppTypography.micro.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? AppColors.darkMuted : AppColors.lightMuted,
+                ),
+              ),
             ),
         ],
       ),
@@ -600,66 +615,137 @@ class _WeightLineChartPainter extends CustomPainter {
         offsets.add(Offset(x, y));
       }
 
-      // Build smooth cubic Bezier curve path
-      final curvePath = Path()..moveTo(offsets.first.dx, offsets.first.dy);
-      for (var i = 0; i < offsets.length - 1; i++) {
-        final p0 = offsets[i];
-        final p1 = offsets[i + 1];
-        final controlPoint1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
-        final controlPoint2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
-        curvePath.cubicTo(
-          controlPoint1.dx,
-          controlPoint1.dy,
-          controlPoint2.dx,
-          controlPoint2.dy,
-          p1.dx,
-          p1.dy,
-        );
-      }
-
-      // Draw gradient fill beneath the curve
-      final fillPath = Path.from(curvePath)
-        ..lineTo(offsets.last.dx, size.height)
-        ..lineTo(offsets.first.dx, size.height)
-        ..close();
-
-      final fillPaint = Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            lineColor.withValues(alpha: isDark ? 0.35 : 0.20),
-            lineColor.withValues(alpha: 0.0),
-          ],
-        ).createShader(Rect.fromLTWH(
-            0, topPadding, chartWidth, chartHeight + bottomPadding));
-
-      canvas.drawPath(fillPath, fillPaint);
-
-      // Draw primary curve stroke
-      final strokePaint = Paint()
-        ..color = lineColor
-        ..strokeWidth = 3.0
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round;
-
-      canvas.drawPath(curvePath, strokePaint);
-
-      // Draw data point dots with highlighted latest dot
       final dotPaint = Paint()..color = lineColor;
       final dotHaloPaint = Paint()..color = lineColor.withValues(alpha: 0.25);
       final dotWhitePaint = Paint()..color = Colors.white;
 
-      for (var i = 0; i < offsets.length; i++) {
-        final isLast = i == offsets.length - 1;
-        if (isLast) {
-          // High-contrast pulsed dot for current weight
-          canvas.drawCircle(offsets[i], 8, dotHaloPaint);
-          canvas.drawCircle(offsets[i], 5, dotPaint);
-          canvas.drawCircle(offsets[i], 2.5, dotWhitePaint);
-        } else {
-          canvas.drawCircle(offsets[i], 3.5, dotPaint);
+      if (points.length == 1) {
+        final y = offsets.first.dy;
+
+        // Draw soft gradient fill below baseline
+        final fillPath = Path()
+          ..moveTo(0, y)
+          ..lineTo(chartWidth, y)
+          ..lineTo(chartWidth, size.height)
+          ..lineTo(0, size.height)
+          ..close();
+
+        final fillPaint = Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              lineColor.withValues(alpha: isDark ? 0.30 : 0.18),
+              lineColor.withValues(alpha: 0.0),
+            ],
+          ).createShader(Rect.fromLTWH(0, y, chartWidth, size.height - y));
+        canvas.drawPath(fillPath, fillPaint);
+
+        // Draw horizontal baseline
+        final baseLinePaint = Paint()
+          ..color = lineColor
+          ..strokeWidth = 2.5
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+        canvas.drawLine(Offset(0, y), Offset(chartWidth, y), baseLinePaint);
+
+        // Draw central pulsed baseline dot
+        final centerOffset = Offset(chartWidth / 2, y);
+        canvas.drawCircle(centerOffset, 9, dotHaloPaint);
+        canvas.drawCircle(centerOffset, 5.5, dotPaint);
+        canvas.drawCircle(centerOffset, 2.5, dotWhitePaint);
+
+        // Draw floating pill callout above the dot
+        final badgeText =
+            '${points.first.weightKg.toStringAsFixed(1)} kg · Baseline';
+        final textSpan = TextSpan(
+          text: badgeText,
+          style: TextStyle(
+            color: isDark ? AppColors.darkInk : AppColors.lightInk,
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+          ),
+        );
+        final tp = TextPainter(text: textSpan, textDirection: TextDirection.ltr)
+          ..layout();
+        final badgeCenterY = (y - 20).clamp(topPadding + 10, chartHeight);
+        final badgeRect = RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(chartWidth / 2, badgeCenterY),
+            width: tp.width + 16,
+            height: tp.height + 8,
+          ),
+          const Radius.circular(10),
+        );
+        final bgPaint = Paint()
+          ..color = (isDark
+              ? AppColors.darkSurfaceElevated
+              : AppColors.lightSurfaceElevated);
+        final borderPaint = Paint()
+          ..color = lineColor.withValues(alpha: 0.4)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.0;
+        canvas.drawRRect(badgeRect, bgPaint);
+        canvas.drawRRect(badgeRect, borderPaint);
+        tp.paint(canvas, Offset(badgeRect.left + 8, badgeRect.top + 4));
+      } else {
+        // Build smooth cubic Bezier curve path
+        final curvePath = Path()..moveTo(offsets.first.dx, offsets.first.dy);
+        for (var i = 0; i < offsets.length - 1; i++) {
+          final p0 = offsets[i];
+          final p1 = offsets[i + 1];
+          final controlPoint1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
+          final controlPoint2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
+          curvePath.cubicTo(
+            controlPoint1.dx,
+            controlPoint1.dy,
+            controlPoint2.dx,
+            controlPoint2.dy,
+            p1.dx,
+            p1.dy,
+          );
+        }
+
+        // Draw gradient fill beneath the curve
+        final fillPath = Path.from(curvePath)
+          ..lineTo(offsets.last.dx, size.height)
+          ..lineTo(offsets.first.dx, size.height)
+          ..close();
+
+        final fillPaint = Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              lineColor.withValues(alpha: isDark ? 0.35 : 0.20),
+              lineColor.withValues(alpha: 0.0),
+            ],
+          ).createShader(Rect.fromLTWH(
+              0, topPadding, chartWidth, chartHeight + bottomPadding));
+
+        canvas.drawPath(fillPath, fillPaint);
+
+        // Draw primary curve stroke
+        final strokePaint = Paint()
+          ..color = lineColor
+          ..strokeWidth = 3.0
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
+
+        canvas.drawPath(curvePath, strokePaint);
+
+        // Draw data point dots with highlighted latest dot
+        for (var i = 0; i < offsets.length; i++) {
+          final isLast = i == offsets.length - 1;
+          if (isLast) {
+            // High-contrast pulsed dot for current weight
+            canvas.drawCircle(offsets[i], 8, dotHaloPaint);
+            canvas.drawCircle(offsets[i], 5, dotPaint);
+            canvas.drawCircle(offsets[i], 2.5, dotWhitePaint);
+          } else {
+            canvas.drawCircle(offsets[i], 3.5, dotPaint);
+          }
         }
       }
     } catch (_) {
