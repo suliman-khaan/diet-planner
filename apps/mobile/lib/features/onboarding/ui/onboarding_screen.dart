@@ -1220,7 +1220,8 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Current Weight', style: AppTypography.bodyStrong),
+                      const Text('Current Weight',
+                          style: AppTypography.bodyStrong),
                       const SizedBox(height: 2),
                       Text(
                         'Type in kg or use +/-',

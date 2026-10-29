@@ -163,8 +163,8 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(Fmt.slot(s),
-                            style: AppTypography.bodyStrong
-                                .copyWith(color: ink)),
+                            style:
+                                AppTypography.bodyStrong.copyWith(color: ink)),
                         subtitle: _normal.containsKey(s)
                             ? InkWell(
                                 onTap: () => _pickTime(s),
@@ -231,8 +231,8 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(Fmt.slot(_ramadan[i].slot),
-                            style: AppTypography.bodyStrong
-                                .copyWith(color: ink)),
+                            style:
+                                AppTypography.bodyStrong.copyWith(color: ink)),
                         subtitle: Text(
                           '${Fmt.time(_ramadan[i].minutesOfDay)} · tap to change',
                           style: AppTypography.caption.copyWith(
