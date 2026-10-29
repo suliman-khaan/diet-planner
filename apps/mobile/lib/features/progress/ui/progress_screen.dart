@@ -27,9 +27,9 @@ class ProgressScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (vm.isLoading) {
-      return Padding(
+      return const Padding(
         padding: AppSpacing.screenPadding,
-        child: const Column(
+        child: Column(
           children: [
             LoadingSkeleton(width: double.infinity, height: 220),
             SizedBox(height: 16),
@@ -120,7 +120,7 @@ class ProgressScreen extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                     blurRadius: 3,
                     offset: const Offset(0, 1),
                   )
@@ -679,8 +679,8 @@ class _WeightLineChartPainter extends CustomPainter {
         );
         final bgPaint = Paint()
           ..color = (isDark
-              ? AppColors.darkSurfaceElevated
-              : AppColors.lightSurfaceElevated);
+              ? AppColors.darkSurfaceSecondary
+              : AppColors.lightSurfaceSecondary);
         final borderPaint = Paint()
           ..color = lineColor.withValues(alpha: 0.4)
           ..style = PaintingStyle.stroke

@@ -537,7 +537,7 @@ class OnboardingScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Dietary Style', style: AppTypography.bodyStrong),
+              const Text('Dietary Style', style: AppTypography.bodyStrong),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
@@ -624,7 +624,7 @@ class OnboardingScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              Text('Allergies & Sensitivities',
+              const Text('Allergies & Sensitivities',
                   style: AppTypography.bodyStrong),
               const SizedBox(height: 10),
               Wrap(
@@ -1131,7 +1131,7 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Biological Sex', style: AppTypography.bodyStrong),
+                  const Text('Biological Sex', style: AppTypography.bodyStrong),
                   Row(
                     children: [
                       ChoiceChip(
@@ -1170,7 +1170,7 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Height', style: AppTypography.bodyStrong),
+                          const Text('Height', style: AppTypography.bodyStrong),
                           const SizedBox(height: 2),
                           Text(
                             'Tap to scroll ft & in',
@@ -1220,7 +1220,7 @@ class _AboutYouStepWidgetState extends State<_AboutYouStepWidget> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Current Weight', style: AppTypography.bodyStrong),
+                      const Text('Current Weight', style: AppTypography.bodyStrong),
                       const SizedBox(height: 2),
                       Text(
                         'Type in kg or use +/-',

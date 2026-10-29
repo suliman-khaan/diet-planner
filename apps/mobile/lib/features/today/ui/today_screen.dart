@@ -145,7 +145,7 @@ class TodayScreen extends StatelessWidget {
         if (vm.isRamadanMode)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.ramadanBackground,
               borderRadius: AppRadii.chipRadius,
             ),
@@ -524,26 +524,26 @@ class TodayScreen extends StatelessWidget {
   }
 
   Widget _buildLoadingState(BuildContext context) {
-    return Padding(
+    return const Padding(
       padding: AppSpacing.screenPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const LoadingSkeleton(width: 140, height: 28),
-          const SizedBox(height: 16),
-          const LoadingSkeleton(
+          LoadingSkeleton(width: 140, height: 28),
+          SizedBox(height: 16),
+          LoadingSkeleton(
               width: double.infinity,
               height: 200,
               borderRadius: AppRadii.cardRadius),
-          const SizedBox(height: 16),
-          const LoadingSkeleton(
+          SizedBox(height: 16),
+          LoadingSkeleton(
               width: double.infinity,
               height: 160,
               borderRadius: AppRadii.cardRadius),
-          const SizedBox(height: 16),
-          const LoadingSkeleton(width: double.infinity, height: 72),
-          const SizedBox(height: 8),
-          const LoadingSkeleton(width: double.infinity, height: 72),
+          SizedBox(height: 16),
+          LoadingSkeleton(width: double.infinity, height: 72),
+          SizedBox(height: 8),
+          LoadingSkeleton(width: double.infinity, height: 72),
         ],
       ),
     );

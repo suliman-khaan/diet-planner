@@ -41,9 +41,9 @@ class HistoryScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (vm.isLoading) {
-      return Padding(
+      return const Padding(
         padding: AppSpacing.screenPadding,
-        child: const Column(
+        child: Column(
           children: [
             LoadingSkeleton(width: double.infinity, height: 110),
             SizedBox(height: 12),

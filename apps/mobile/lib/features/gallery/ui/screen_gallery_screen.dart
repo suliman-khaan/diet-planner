@@ -219,7 +219,7 @@ class _ScreenGalleryScreenState extends State<ScreenGalleryScreen> {
               AppScaffold(
                 currentTab: AppTab.progress,
                 onTabChanged: (_) {},
-                body: ProgressScreen(vm: ProgressFixtures.standardMonth),
+                body: const ProgressScreen(vm: ProgressFixtures.standardMonth),
               ),
             ),
           ),

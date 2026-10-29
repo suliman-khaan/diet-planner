@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers/formatters.dart';
 import '../../../app/providers/providers.dart';
-import '../../../core/widgets/segmented_controls.dart';
 import '../../../domain/profile/eligibility.dart';
 import '../../../domain/profile/user_profile.dart';
 import '../../onboarding/controller/onboarding_controller.dart';
@@ -59,11 +58,7 @@ final transparencyProvider = FutureProvider<TransparencyViewModel>((ref) async {
             ovm.ActivityLevel.veryActive => ActivityLevel.veryActive,
           },
           conditions: conditions,
-          cookingRichness: switch (ob.cookingRichness) {
-            OilLevel.light => OilLevel.light,
-            OilLevel.normal => OilLevel.normal,
-            OilLevel.rich => OilLevel.rich,
-          },
+          cookingRichness: Fmt.fromUiOil(ob.cookingRichness),
         );
       }
     } catch (_) {}

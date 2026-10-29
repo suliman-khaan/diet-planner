@@ -213,7 +213,7 @@ class RemindersScreen extends StatelessWidget {
                           ),
                         ),
                         trailing: Switch(
-                          activeColor: primary,
+                          activeThumbColor: primary,
                           value: slot.isEnabled,
                           onChanged: vm.enabled
                               ? (val) => onSlotChanged?.call(slot.id, val)
