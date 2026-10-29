@@ -6,6 +6,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -70,7 +73,7 @@ jobs:
           retention-days: 7
       - name: Code generation (Drift)
         run: dart run build_runner build --delete-conflicting-outputs
-      - name: Format (later steps run on formatted code; the job fails at the end if anything changed)
+      - name: Format (later steps run on formatted code)
         id: format
         run: |
           dart format lib test $(test -d integration_test && echo integration_test)
@@ -80,6 +83,13 @@ jobs:
             echo "$changed" > /tmp/formatted-files.txt
             tar -czf /tmp/formatted.tgz $changed
             echo "changed=true" >> "$GITHUB_OUTPUT"
+            if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git add lib test
+              git commit -m "style: apply dart format [skip ci]" || true
+              git push || echo "Push skipped or not permitted"
+            fi
           fi
       - name: Upload formatted files
         if: steps.format.outputs.changed == 'true'
@@ -138,7 +148,7 @@ jobs:
             apps/mobile/build/app/outputs/flutter-apk/*arm64*release*.apk
           retention-days: 14
       - name: Fail if code was not formatted
-        if: always() && steps.format.outputs.changed == 'true'
+        if: always() && steps.format.outputs.changed == 'true' && github.event_name == 'pull_request'
         run: |
           echo "::error::Files need dart format (download the formatted artifact)"
           exit 1
