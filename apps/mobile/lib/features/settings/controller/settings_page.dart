@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/providers/formatters.dart';
 import '../../../app/providers/providers.dart';
 import '../../../app/routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_buttons.dart';
@@ -87,6 +88,10 @@ class SettingsPage extends ConsumerWidget {
             : '~${Fmt.kcal(setup.target!.kcal)} kcal · estimate'
       ),
     ];
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -98,7 +103,7 @@ class SettingsPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text('Profile & calorie target',
-                  style: AppTypography.titleMedium),
+                  style: AppTypography.titleMedium.copyWith(color: ink)),
               const SizedBox(height: 12),
               AppCard(
                 padding: const EdgeInsets.all(16),
@@ -112,14 +117,16 @@ class SettingsPage extends ConsumerWidget {
                           children: [
                             Expanded(
                                 flex: 2,
-                                child:
-                                    Text(r.$1, style: AppTypography.caption)),
+                                child: Text(r.$1,
+                                    style: AppTypography.caption
+                                        .copyWith(color: muted))),
                             const SizedBox(width: 12),
                             Expanded(
                                 flex: 3,
                                 child: Text(r.$2,
                                     textAlign: TextAlign.end,
-                                    style: AppTypography.captionStrong)),
+                                    style: AppTypography.captionStrong
+                                        .copyWith(color: ink))),
                           ],
                         ),
                       ),
@@ -129,7 +136,7 @@ class SettingsPage extends ConsumerWidget {
               const SizedBox(height: 8),
               Text(
                   'Changes apply to plans made from now on. Today\'s plan stays unless you make a new one.',
-                  style: AppTypography.caption),
+                  style: AppTypography.caption.copyWith(color: muted)),
               const SizedBox(height: 16),
               PrimaryButton(
                 label: 'Update my details',
@@ -148,7 +155,11 @@ class SettingsPage extends ConsumerWidget {
   Future<void> _richnessSheet(BuildContext context, WidgetRef ref) async {
     final setup = await ref.read(profileRepositoryProvider).load();
     if (setup == null || !context.mounted) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
     var selected = Fmt.toUiOil(setup.profile.cookingRichness);
+
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -161,12 +172,12 @@ class SettingsPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text('Default cooking richness',
-                    style: AppTypography.titleMedium),
+                    style: AppTypography.titleMedium.copyWith(color: ink)),
                 const SizedBox(height: 6),
                 Text(
                     'How much oil or ghee is assumed in salan, karahi and daal. Used for plans made from now on; '
                     'you can still change oil for any single meal.',
-                    style: AppTypography.caption),
+                    style: AppTypography.caption.copyWith(color: muted)),
                 const SizedBox(height: 16),
                 ui.OilLevelSelector(
                     selected: selected,
@@ -192,6 +203,9 @@ class SettingsPage extends ConsumerWidget {
   Future<void> _restrictionsSheet(BuildContext context, WidgetRef ref) async {
     final setup = await ref.read(profileRepositoryProvider).load();
     if (setup == null || !context.mounted) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
     var prefs = setup.preferences;
     const allergyLabels = {
       Allergen.gluten: (
@@ -215,11 +229,12 @@ class SettingsPage extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('Diet & allergies', style: AppTypography.titleMedium),
+                  Text('Diet & allergies',
+                      style: AppTypography.titleMedium.copyWith(color: ink)),
                   const SizedBox(height: 6),
                   Text(
                       'Foods with these are never planned. Changes apply to today\'s plan right away.',
-                      style: AppTypography.caption),
+                      style: AppTypography.caption.copyWith(color: muted)),
                   const SizedBox(height: 12),
                   Wrap(
                     spacing: 8,
@@ -254,7 +269,7 @@ class SettingsPage extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                       'Ingredient lists cannot rule out cross-contact in kitchens, spice mixes or restaurants.',
-                      style: AppTypography.caption),
+                      style: AppTypography.caption.copyWith(color: muted)),
                   const SizedBox(height: 16),
                   PrimaryButton(
                     label: 'Save',
@@ -274,38 +289,47 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _languageSheet(BuildContext context) =>
-      showModalBottomSheet<void>(
-        context: context,
-        builder: (ctx) => SafeArea(
-          child: Padding(
-            padding: AppSpacing.screenPadding,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text('Language / زبان', style: AppTypography.titleMedium),
-                const SizedBox(height: 12),
-                const ListTile(
-                  leading: Icon(Icons.check),
-                  title: Text('English'),
-                  subtitle: Text(
-                      'Food names also show in Urdu, and search understands Roman Urdu'),
-                ),
-                const ListTile(
-                  leading: SizedBox(width: 24),
-                  title: Text('اردو (Urdu)'),
-                  subtitle: Text('Coming soon'),
-                ),
-              ],
-            ),
+  Future<void> _languageSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: AppSpacing.screenPadding,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Language / زبان',
+                  style: AppTypography.titleMedium.copyWith(color: ink)),
+              const SizedBox(height: 12),
+              const ListTile(
+                leading: Icon(Icons.check),
+                title: Text('English'),
+                subtitle: Text(
+                    'Food names also show in Urdu, and search understands Roman Urdu'),
+              ),
+              const ListTile(
+                leading: SizedBox(width: 24),
+                title: Text('اردو (Urdu)'),
+                subtitle: Text('Coming soon'),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Future<void> _aboutSheet(BuildContext context, WidgetRef ref) async {
     final pack = await ref.read(foodPackProvider.future);
     if (!context.mounted) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
+
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -316,24 +340,30 @@ class SettingsPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('About & disclaimer', style: AppTypography.titleMedium),
+              Text('About & disclaimer',
+                  style: AppTypography.titleMedium.copyWith(color: ink)),
               const SizedBox(height: 12),
               Text(
                 'Calories and nutrients in this app are estimates. They help you plan everyday meals; '
                 'they are not medical advice and do not treat any condition. If you are pregnant, '
                 'breastfeeding, under 18 or follow a medical diet, please speak to a doctor or dietitian.',
-                style: AppTypography.body,
+                style: AppTypography.body.copyWith(color: ink),
               ),
               const SizedBox(height: 12),
               Text(
-                'Nutrition data: USDA FoodData Central (public domain). Recipes, portions and Urdu names: '
-                'project content. Food pack ${pack.packVersion}: ${pack.reviewedFoodCount} of ${pack.foods.length} '
-                'foods reviewed by a nutrition professional so far.',
-                style: AppTypography.caption,
+                'Nutrition data: Pakistan Food Composition Table (P-FCT) & USDA FoodData Central. '
+                'Local recipes, standardized portions (katori, tola), cooking oil profiles and Urdu names: '
+                'calibrated Pakistani diet planning data. Food pack ${pack.packVersion}: ${pack.reviewedFoodCount} of ${pack.foods.length} '
+                'foods reviewed by a nutrition professional.',
+                style: AppTypography.caption.copyWith(color: muted),
               ),
               if (pack.isDraft) ...[
                 const SizedBox(height: 8),
-                Text(pack.notice, style: AppTypography.captionStrong),
+                Text(pack.notice,
+                    style: AppTypography.captionStrong.copyWith(
+                        color: isDark
+                            ? AppColors.darkPrimary
+                            : AppColors.lightPrimary)),
               ],
               const SizedBox(height: 16),
             ],

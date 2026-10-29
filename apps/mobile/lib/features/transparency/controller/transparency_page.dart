@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers/formatters.dart';
 import '../../../app/providers/providers.dart';
+import '../../../core/widgets/segmented_controls.dart';
 import '../../../domain/profile/eligibility.dart';
 import '../../../domain/profile/user_profile.dart';
+import '../../onboarding/controller/onboarding_controller.dart';
+import '../../onboarding/view_model/onboarding_view_model.dart' as ovm;
 import '../ui/transparency_screen.dart';
 
 /// Builds "How we calculated this" from the user's saved profile and the active policy.
@@ -27,13 +30,51 @@ final transparencyProvider = FutureProvider<TransparencyViewModel>((ref) async {
         '${(c.maxLossFractionOfBodyWeightPerWeek * 100).round()}% of body weight. No weight-loss plan below BMI '
         '${c.minBmiForLoss}. $provisional',
   );
-  if (setup == null) {
+  var p = setup?.profile;
+  if (p == null) {
+    try {
+      final ob = ref.read(onboardingControllerProvider(false)).valueOrNull ??
+          ref.read(onboardingControllerProvider(true)).valueOrNull;
+      if (ob != null && ob.birthYear > 0) {
+        final conditions = <HealthCondition>{};
+        for (final name in ob.healthConditions) {
+          try {
+            conditions.add(HealthCondition.values.byName(name));
+          } catch (_) {}
+        }
+        p = UserProfile(
+          goal: switch (ob.goal) {
+            ovm.WeightGoal.loseWeight => Goal.lose,
+            ovm.WeightGoal.maintain => Goal.maintain,
+            ovm.WeightGoal.gainWeight => Goal.gain,
+          },
+          birthYear: ob.birthYear,
+          sex: ob.sex == ovm.BiologicalSex.male ? Sex.male : Sex.female,
+          heightCm: ob.heightCm,
+          weightKg: ob.weightKg,
+          activity: switch (ob.activityLevel) {
+            ovm.ActivityLevel.sedentary => ActivityLevel.sedentary,
+            ovm.ActivityLevel.lightlyActive => ActivityLevel.light,
+            ovm.ActivityLevel.moderatelyActive => ActivityLevel.moderate,
+            ovm.ActivityLevel.veryActive => ActivityLevel.veryActive,
+          },
+          conditions: conditions,
+          cookingRichness: switch (ob.cookingRichness) {
+            OilLevel.light => OilLevel.light,
+            OilLevel.normal => OilLevel.normal,
+            OilLevel.rich => OilLevel.rich,
+          },
+        );
+      }
+    } catch (_) {}
+  }
+
+  if (p == null) {
     return TransparencyViewModel(
         intro: 'Finish setting up to see your own numbers.',
         sections: [rules],
         policyLine: 'Policy ${c.version}');
   }
-  final p = setup.profile;
   final e = checker.check(p, today);
   if (e is ManualOnly) {
     return TransparencyViewModel(

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../../app/providers/formatters.dart';
 import '../../../app/providers/providers.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/app_buttons.dart';
@@ -132,6 +133,9 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final muted = isDark ? AppColors.darkMuted : AppColors.lightMuted;
     final fmt = DateFormat('d MMM yyyy');
     final count = _normal.length;
     return SafeArea(
@@ -143,11 +147,12 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Meal times', style: AppTypography.titleMedium),
+              Text('Meal times',
+                  style: AppTypography.titleMedium.copyWith(color: ink)),
               const SizedBox(height: 4),
               Text(
                   'Between ${MealSchedule.minSlots} and ${MealSchedule.maxSlots} meals. Changes apply to plans made from now on.',
-                  style: AppTypography.caption),
+                  style: AppTypography.caption.copyWith(color: muted)),
               const SizedBox(height: 12),
               AppCard(
                 padding:
@@ -157,15 +162,22 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                     for (final s in _normalOrder)
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(Fmt.slot(s)),
+                        title: Text(Fmt.slot(s),
+                            style: AppTypography.bodyStrong
+                                .copyWith(color: ink)),
                         subtitle: _normal.containsKey(s)
                             ? InkWell(
                                 onTap: () => _pickTime(s),
                                 child: Text(
                                     '${Fmt.time(_normal[s]!)} · tap to change',
-                                    style: AppTypography.captionStrong),
+                                    style: AppTypography.captionStrong.copyWith(
+                                        color: isDark
+                                            ? AppColors.darkPrimary
+                                            : AppColors.lightPrimary)),
                               )
-                            : const Text('Off'),
+                            : Text('Off',
+                                style: AppTypography.caption
+                                    .copyWith(color: muted)),
                         value: _normal.containsKey(s),
                         onChanged: _required.contains(s)
                             ? null
@@ -182,11 +194,12 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                 ),
               ),
               const SizedBox(height: 16),
-              Text('Ramadan', style: AppTypography.subheading),
+              Text('Ramadan',
+                  style: AppTypography.subheading.copyWith(color: ink)),
               const SizedBox(height: 4),
               Text(
                   'On these dates, sehri and iftar replace breakfast and lunch, and reminders follow them.',
-                  style: AppTypography.caption),
+                  style: AppTypography.caption.copyWith(color: muted)),
               const SizedBox(height: 8),
               AppCard(
                 padding:
@@ -196,9 +209,12 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: const Icon(Icons.nightlight_round),
-                      title: Text(_start == null
-                          ? 'Set Ramadan dates'
-                          : '${fmt.format(_start!.atMinutes(0))} – ${fmt.format(_end!.atMinutes(0))}'),
+                      title: Text(
+                        _start == null
+                            ? 'Set Ramadan dates'
+                            : '${fmt.format(_start!.atMinutes(0))} – ${fmt.format(_end!.atMinutes(0))}',
+                        style: AppTypography.bodyStrong.copyWith(color: ink),
+                      ),
                       trailing: _start == null
                           ? null
                           : IconButton(
@@ -214,9 +230,16 @@ class _MealScheduleSheetState extends ConsumerState<MealScheduleSheet> {
                     for (var i = 0; i < _ramadan.length; i++)
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(Fmt.slot(_ramadan[i].slot)),
+                        title: Text(Fmt.slot(_ramadan[i].slot),
+                            style: AppTypography.bodyStrong
+                                .copyWith(color: ink)),
                         subtitle: Text(
-                            '${Fmt.time(_ramadan[i].minutesOfDay)} · tap to change'),
+                          '${Fmt.time(_ramadan[i].minutesOfDay)} · tap to change',
+                          style: AppTypography.caption.copyWith(
+                              color: isDark
+                                  ? AppColors.darkPrimary
+                                  : AppColors.lightPrimary),
+                        ),
                         onTap: () => _pickRamadanTime(i),
                       ),
                   ],

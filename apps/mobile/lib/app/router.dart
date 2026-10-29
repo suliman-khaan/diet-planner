@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_typography.dart';
 import '../core/widgets/app_scaffold.dart';
 import '../core/widgets/state_widgets.dart';
@@ -137,19 +138,29 @@ class _TabShell extends StatelessWidget {
         .firstWhere((e) => location.startsWith(e.value),
             orElse: () => _paths.entries.first)
         .key;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = isDark ? AppColors.darkInk : AppColors.lightInk;
+    final bg = isDark ? AppColors.darkBackground : AppColors.lightBackground;
+
     return AppScaffold(
       currentTab: tab,
       onTabChanged: (t) => context.go(_paths[t]!),
       body: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          backgroundColor: bg,
           elevation: 0,
-          scrolledUnderElevation: 2,
-          title: Text(_titles[tab]!, style: AppTypography.titleMedium),
+          scrolledUnderElevation: 0,
+          title: Text(
+            _titles[tab]!,
+            style: AppTypography.titleMedium.copyWith(color: ink),
+          ),
+          iconTheme: IconThemeData(color: ink),
+          actionsIconTheme: IconThemeData(color: ink),
           actions: [
             if (config.showScreenGallery)
               IconButton(
-                icon: const Icon(Icons.grid_view_rounded),
+                icon: Icon(Icons.grid_view_rounded, color: ink),
                 tooltip: 'Dev screen gallery',
                 onPressed: () => context.push(AppRoutes.gallery),
               ),
